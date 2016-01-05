@@ -24,7 +24,7 @@ describe Dwolla::Client do
 
   it "#initialize raises ArgumentError if no id" do
     expect {
-      Dwolla::Client.new secret: secret
+      Dwolla::Client.new :secret => secret
     }.to raise_error {|e|
       expect(e).to be_a ArgumentError
       expect(e.message).to eq "id is required"
@@ -33,7 +33,7 @@ describe Dwolla::Client do
 
   it "#initialize raises ArgumentError if no secret" do
     expect {
-      Dwolla::Client.new id: id
+      Dwolla::Client.new :id => id
     }.to raise_error {|e|
       expect(e).to be_a ArgumentError
       expect(e.message).to eq "secret is required"
@@ -41,47 +41,47 @@ describe Dwolla::Client do
   end
 
   it "#initialize sets id" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect(client.id).to eq id
   end
 
   it "#initialize sets secret" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect(client.secret).to eq secret
   end
 
   it "#initialize sets auth_url" do
-    client = Dwolla::Client.new id: id, secret: secret, auth_url: auth_url
+    client = Dwolla::Client.new :id => id, :secret => secret, :auth_url => auth_url
     expect(client.auth_url).to eq auth_url
   end
 
   it "#initialize sets token_url" do
-    client = Dwolla::Client.new id: id, secret: secret, token_url: token_url
+    client = Dwolla::Client.new :id => id, :secret => secret, :token_url => token_url
     expect(client.token_url).to eq token_url
   end
 
   it "#initialize sets api_url" do
-    client = Dwolla::Client.new id: id, secret: secret, api_url: api_url
+    client = Dwolla::Client.new :id => id, :secret => secret, :api_url => api_url
     expect(client.api_url).to eq api_url
   end
 
   it "#initialize sets auth_url if none provided" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect(client.auth_url).to eq Dwolla::Client::PRESETS[:prod][:auth_url]
   end
 
   it "#initialize sets token_url if none provided" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect(client.token_url).to eq Dwolla::Client::PRESETS[:prod][:token_url]
   end
 
   it "#initialize sets api_url if none provided" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect(client.api_url).to eq Dwolla::Client::PRESETS[:prod][:api_url]
   end
 
   it "#id= raises ArgumentError" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect {
       client.id = nil
     }.to raise_error {|e|
@@ -91,7 +91,7 @@ describe Dwolla::Client do
   end
 
   it "#secret= raises ArgumentError" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect {
       client.secret = nil
     }.to raise_error {|e|
@@ -101,7 +101,7 @@ describe Dwolla::Client do
   end
 
   it "#auth_url= raises ArgumentError" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect {
       client.auth_url = nil
     }.to raise_error {|e|
@@ -111,7 +111,7 @@ describe Dwolla::Client do
   end
 
   it "#token_url= raises ArgumentError" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect {
       client.token_url = nil
     }.to raise_error {|e|
@@ -121,7 +121,7 @@ describe Dwolla::Client do
   end
 
   it "#api_url= raises ArgumentError" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect {
       client.api_url = nil
     }.to raise_error {|e|
@@ -131,7 +131,7 @@ describe Dwolla::Client do
   end
 
   it "#configure" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     client.configure(:sandbox)
     expect(client.api_url).to eq Dwolla::Client::PRESETS[:sandbox][:api_url]
     expect(client.auth_url).to eq Dwolla::Client::PRESETS[:sandbox][:auth_url]
@@ -139,7 +139,7 @@ describe Dwolla::Client do
   end
 
   it "#configure raises ArgumentError" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     not_found_preset = :not_found
     expect {
       client.configure(not_found_preset)
@@ -150,20 +150,40 @@ describe Dwolla::Client do
   end
 
   it "#on_grant" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect(client.on_grant).to eq []
   end
 
   it "#on_grant(&block) adds callback" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     callback = Proc.new {}
     client.on_grant &callback
     expect(client.on_grant).to eq [callback]
   end
 
   it "#conn" do
-    client = Dwolla::Client.new id: id, secret: secret
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect(client.conn).to be_a Faraday::Connection
     expect(client.conn).to be client.conn
+  end
+
+  it "#conn passes block to Faraday.new" do
+    client = Dwolla::Client.new :id => id, :secret => secret
+    james_bond = spy "007"
+    block = Proc.new {|b| james_bond.call }
+    client.conn &block
+    expect(james_bond).to have_received(:call)
+  end
+
+  it "#conn raises ArgumentError if block passed second time" do
+    client = Dwolla::Client.new :id => id, :secret => secret
+    block = Proc.new {}
+    client.conn &block
+    expect {
+      client.conn &block
+    }.to raise_error {|e|
+      expect(e).to be_a ArgumentError
+      expect(e.message).to eq "block has already been passed to conn"
+    }
   end
 end

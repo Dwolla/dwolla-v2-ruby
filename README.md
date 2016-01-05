@@ -25,16 +25,77 @@ Or install it yourself as:
 #### Creating a client
 
 ```ruby
-$dwolla = Dwolla::Client.new id: "CLIENT_ID", secret: "CLIENT_SECRET" #, auth_url, token_url, api_url
+$dwolla = Dwolla::Client.new :id => "CLIENT_ID", :secret => "CLIENT_SECRET"
 ```
 
 #### Configuration (optional)
 
+Use the sandbox environment:
+
 ```ruby
 $dwolla.configure :sandbox
+```
+
+Register an `on_grant` callback:
+
+```ruby
 $dwolla.on_grant do |token|
-  # save token data
+  YourDwollaTokenData.create! token.to_hash
 end
+```
+
+Configure [Faraday](https://github.com/lostisland/faraday):
+
+```ruby
+$dwolla.conn do |faraday|
+  faraday.response :logger
+  faraday.adapter  Faraday.default_adapter
+end
+```
+
+#### Authorization
+
+Get an application token:
+
+```ruby
+$dwolla.auths.client :scope => "a,b,c"
+```
+
+Get an account token:
+
+```ruby
+class YourDwollaAuthController < ApplicationController
+  def authorize
+    redirect_to auth.url
+  end
+
+  def callback
+    token = auth.callback :code => params[:code],
+                          :state => params[:state]
+    session[:dwolla_account_id] = token.account_id
+  end
+
+  private
+
+  def auth
+    $dwolla.auths.new :redirect_uri => "https://yoursite.com/callback",
+                      :scope => "a,b,c",
+                      :state => (session[:dwolla_auth_state] ||= SecureRandom.hex)
+  end
+end
+```
+
+Refresh a token:
+
+```ruby
+token = $dwolla.auths.refresh expired_token
+```
+
+Initialize a token:
+
+```ruby
+token_data = YourDwollaTokenData.find_by :account_id => "ACCOUNT_ID"
+token = $dwolla.tokens.new token_data.to_hash
 ```
 
 ## Development

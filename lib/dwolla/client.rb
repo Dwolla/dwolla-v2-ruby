@@ -58,10 +58,9 @@ module Dwolla
       @on_grant
     end
 
-    def conn
-      @conn ||= Faraday.new do |faraday|
-        faraday.response :logger
-      end
+    def conn &block
+      raise ArgumentError.new "block has already been passed to conn" if block && @conn
+      @conn ||= Faraday.new &block
     end
   end
 end
