@@ -22,7 +22,20 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+#### Creating a client
+
+```ruby
+$dwolla = Dwolla::Client.new id: "CLIENT_ID", secret: "CLIENT_SECRET" #, auth_url, token_url, api_url
+```
+
+#### Configuration (optional)
+
+```ruby
+$dwolla.configure :sandbox
+$dwolla.on_grant do |token|
+  # save token data
+end
+```
 
 ## Development
 
