@@ -12,18 +12,17 @@ module Dwolla
 
     def stringify_keys
       {
-        "client"        => client,
         "access_token"  => access_token,
         "refresh_token" => refresh_token,
         "expires_in"    => expires_in,
         "account_id"    => account_id
-      }
+      }.reject {|k,v| v.nil? }
     end
 
     private
 
     def client= val
-      raise ArgumentError.new "client must be a Dwolla::Client" unless val.is_a? Dwolla::Client
+      raise ArgumentError.new "client must be a Dwolla::Client" unless val.is_a? Client
       @client = val
     end
 

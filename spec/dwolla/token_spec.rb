@@ -113,11 +113,19 @@ describe Dwolla::Token do
   it "#stringify_keys" do
     token = Dwolla::Token.new client, params
     expect(token.stringify_keys).to eq({
-      "client"        => client,
-      "access_token"  => "ACCESS_TOKEN",
-      "refresh_token" => "REFRESH_TOKEN",
-      "expires_in"    => 123,
-      "account_id"    => "92e19aa4-93d4-49e7-b3e6-32f6d7a2a64d"
+      "access_token"  => params[:access_token],
+      "refresh_token" => params[:refresh_token],
+      "expires_in"    => params[:expires_in],
+      "account_id"    => params[:account_id]
+    })
+  end
+
+  it "#stringify_keys rejects nil values" do
+    token = Dwolla::Token.new client, params.merge(:account_id => nil)
+    expect(token.stringify_keys).to eq({
+      "access_token"  => params[:access_token],
+      "refresh_token" => params[:refresh_token],
+      "expires_in"    => params[:expires_in]
     })
   end
 end
