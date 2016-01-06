@@ -16,40 +16,19 @@ module Dwolla
     attr_reader :id, :secret, :auth_url, :token_url, :api_url
 
     def initialize opts
-      raise ArgumentError.new "id is required" if opts[:id].nil?
-      raise ArgumentError.new "secret is required" if opts[:secret].nil?
+      raise ArgumentError.new "id is required" unless opts[:id].is_a? String
+      raise ArgumentError.new "secret is required" unless opts[:secret].is_a? String
+      @id = opts[:id]
+      @secret = opts[:secret]
       configure :prod
-      opts.each {|k,v| self.public_send :"#{k}=", v }
-    end
-
-    def id= val
-      raise ArgumentError.new "id must be a String" unless val.is_a? String
-      @id = val
-    end
-
-    def secret= val
-      raise ArgumentError.new "secret must be a String" unless val.is_a? String
-      @secret = val
-    end
-
-    def auth_url= val
-      raise ArgumentError.new "auth_url must be a String" unless val.is_a? String
-      @auth_url = val
-    end
-
-    def api_url= val
-      raise ArgumentError.new "api_url must be a String" unless val.is_a? String
-      @api_url = val
-    end
-
-    def token_url= val
-      raise ArgumentError.new "token_url must be a String" unless val.is_a? String
-      @token_url = val
+      @auth_url = opts[:auth_url] if opts[:auth_url]
+      @token_url = opts[:token_url] if opts[:token_url]
+      @api_url = opts[:api_url] if opts[:api_url]
     end
 
     def configure preset
       raise ArgumentError.new "#{preset} is not a valid config" unless PRESETS.has_key? preset
-      PRESETS[preset].each {|k,v| self.public_send :"#{k}=", v }
+      PRESETS[preset].each {|k,v| instance_variable_set :"@#{k}", v }
     end
 
     def on_grant &callback
@@ -59,7 +38,7 @@ module Dwolla
     end
 
     def conn &block
-      raise ArgumentError.new "block has already been passed to conn" if block && @conn
+      raise ArgumentError.new "config block has already been passed to conn" if block && @conn
       @conn ||= Faraday.new &block
     end
   end

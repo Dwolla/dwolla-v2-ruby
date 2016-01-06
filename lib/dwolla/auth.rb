@@ -1,15 +1,35 @@
 module Dwolla
   class Auth
+    attr_reader :client, :redirect_uri, :scope, :state
+
     def self.client client, params = {}
-      raise ArgumentError.new "client must be a Dwolla::Client" unless client.is_a? Client
       request_token client, {:grant_type => "client_credentials"}.merge(params)
+    end
+
+    def initialize client, params = {}
+      @client = client
+      @redirect_uri = params[:redirect_uri]
+      @scope = params[:scope]
+      @state = params[:state]
+    end
+
+    def url
+      "#{client.auth_url}?#{URI.encode_www_form(query)}"
     end
 
     private
 
+    def query
+      {
+        :redirect_uri => redirect_uri,
+        :scope => scope,
+        :state => state
+      }
+    end
+
     def self.request_token client, params
       res = client.conn.post do |req|
-        req.headers["Authorization"] = basic_auth client
+        req.headers["Authorization"] = basic_auth(client)
         req.url client.token_url
         req.body = URI.encode_www_form(params)
       end
@@ -32,7 +52,7 @@ module Dwolla
       if obj.is_a? Hash
         Hash[obj.map{|k,v| [k.to_sym, deep_symbolize_keys(v)] }]
       elsif obj.is_a? Array
-        obj.map {|i| deep_symbolize_keys i }
+        obj.map {|i| deep_symbolize_keys(i) }
       else
         obj
       end

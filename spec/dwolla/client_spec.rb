@@ -80,56 +80,6 @@ describe Dwolla::Client do
     expect(client.api_url).to eq Dwolla::Client::PRESETS[:prod][:api_url]
   end
 
-  it "#id= raises ArgumentError" do
-    client = Dwolla::Client.new :id => id, :secret => secret
-    expect {
-      client.id = nil
-    }.to raise_error {|e|
-      expect(e).to be_a ArgumentError
-      expect(e.message).to eq "id must be a String"
-    }
-  end
-
-  it "#secret= raises ArgumentError" do
-    client = Dwolla::Client.new :id => id, :secret => secret
-    expect {
-      client.secret = nil
-    }.to raise_error {|e|
-      expect(e).to be_a ArgumentError
-      expect(e.message).to eq "secret must be a String"
-    }
-  end
-
-  it "#auth_url= raises ArgumentError" do
-    client = Dwolla::Client.new :id => id, :secret => secret
-    expect {
-      client.auth_url = nil
-    }.to raise_error {|e|
-      expect(e).to be_a ArgumentError
-      expect(e.message).to eq "auth_url must be a String"
-    }
-  end
-
-  it "#token_url= raises ArgumentError" do
-    client = Dwolla::Client.new :id => id, :secret => secret
-    expect {
-      client.token_url = nil
-    }.to raise_error {|e|
-      expect(e).to be_a ArgumentError
-      expect(e.message).to eq "token_url must be a String"
-    }
-  end
-
-  it "#api_url= raises ArgumentError" do
-    client = Dwolla::Client.new :id => id, :secret => secret
-    expect {
-      client.api_url = nil
-    }.to raise_error {|e|
-      expect(e).to be_a ArgumentError
-      expect(e.message).to eq "api_url must be a String"
-    }
-  end
-
   it "#configure" do
     client = Dwolla::Client.new :id => id, :secret => secret
     client.configure(:sandbox)
@@ -183,7 +133,7 @@ describe Dwolla::Client do
       client.conn &block
     }.to raise_error {|e|
       expect(e).to be_a ArgumentError
-      expect(e.message).to eq "block has already been passed to conn"
+      expect(e.message).to eq "config block has already been passed to conn"
     }
   end
 end
