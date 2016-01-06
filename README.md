@@ -40,7 +40,7 @@ Register an `on_grant` callback:
 
 ```ruby
 $dwolla.on_grant do |token|
-  YourDwollaTokenData.create! token.to_hash
+  YourDwollaTokenData.create! token
 end
 ```
 
@@ -95,7 +95,7 @@ Initialize a token:
 
 ```ruby
 token_data = YourDwollaTokenData.find_by :account_id => "ACCOUNT_ID"
-token = $dwolla.tokens.new token_data.to_hash
+token = $dwolla.tokens.new token_data
 ```
 
 ## Development
