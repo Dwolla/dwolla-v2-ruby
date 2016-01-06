@@ -5,7 +5,7 @@ describe Dwolla::Auth do
   let!(:token_hash) {{:access_token  => "ACCESS_TOKEN"}}
   let!(:error_hash) {{:error => "error_code"}}
 
-  it ".client with no params (success)" do
+  it ".client (success)" do
     stub_token_request client,
                        {:grant_type => "client_credentials"},
                        {:status => 200, :body => token_hash}
@@ -15,13 +15,16 @@ describe Dwolla::Auth do
     expect(token.access_token).to eq token_hash[:access_token]
   end
 
-  it ".client with no params (error)" do
+  it ".client (error)" do
     stub_token_request client,
                        {:grant_type => "client_credentials"},
                        {:status => 401, :body => error_hash}
-    error = Dwolla::Auth.client client
-    expect(error).to be_a Dwolla::Error
-    expect(error.error).to eq error_hash[:error]
+    expect {
+      Dwolla::Auth.client client
+    }.to raise_error {|e|
+      expect(e).to be_a Dwolla::Error
+      expect(e.error).to eq error_hash[:error]
+    }
   end
 
   it ".client with params (success)" do
@@ -40,9 +43,81 @@ describe Dwolla::Auth do
     stub_token_request client,
                        {:grant_type => "client_credentials"}.merge(params),
                        {:status => 401, :body => error_hash}
-    error = Dwolla::Auth.client client, params
-    expect(error).to be_a Dwolla::Error
-    expect(error.error).to eq error_hash[:error]
+    expect {
+      Dwolla::Auth.client client, params
+    }.to raise_error {|e|
+      expect(e).to be_a Dwolla::Error
+      expect(e.error).to eq error_hash[:error]
+    }
+  end
+
+  it ".refresh raises ArgumentError if second arg isn't Dwolla::Token" do
+    expect {
+      Dwolla::Auth.refresh client, "not a Dwolla::Token"
+    }.to raise_error {|e|
+      expect(e).to be_a ArgumentError
+      expect(e.message).to eq "Dwolla::Token required"
+    }
+  end
+
+  it ".refresh raises ArgumentError if token has no refresh_token" do
+    token = Dwolla::Token.new client, {}
+    expect {
+      Dwolla::Auth.refresh client, token
+    }.to raise_error {|e|
+      expect(e).to be_a ArgumentError
+      expect(e.message).to eq "invalid refresh_token"
+    }
+  end
+
+  it ".refresh (success)" do
+    old_token = Dwolla::Token.new client, :refresh_token => "REFRESH_TOKEN"
+    stub_token_request client,
+                       {:grant_type => "refresh_token", :refresh_token => old_token.refresh_token},
+                       {:status => 200, :body => token_hash}
+    token = Dwolla::Auth.refresh client, old_token
+    expect(token).to be_a Dwolla::Token
+    expect(token.client).to be client
+    expect(token.access_token).to eq token_hash[:access_token]
+  end
+
+  it ".refresh (error)" do
+    old_token = Dwolla::Token.new client, :refresh_token => "REFRESH_TOKEN"
+    stub_token_request client,
+                       {:grant_type => "refresh_token", :refresh_token => old_token.refresh_token},
+                       {:status => 401, :body => error_hash}
+    expect {
+      Dwolla::Auth.refresh client, old_token
+    }.to raise_error {|e|
+      expect(e).to be_a Dwolla::Error
+      expect(e.error).to eq error_hash[:error]
+    }
+  end
+
+  it ".refresh with params (success)" do
+    old_token = Dwolla::Token.new client, :refresh_token => "REFRESH_TOKEN"
+    params = {:scope => "a,b,c"}
+    stub_token_request client,
+                       {:grant_type => "refresh_token", :refresh_token => old_token.refresh_token}.merge(params),
+                       {:status => 200, :body => token_hash}
+    token = Dwolla::Auth.refresh client, old_token, params
+    expect(token).to be_a Dwolla::Token
+    expect(token.client).to be client
+    expect(token.access_token).to eq token_hash[:access_token]
+  end
+
+  it ".refresh with params (error)" do
+    old_token = Dwolla::Token.new client, :refresh_token => "REFRESH_TOKEN"
+    params = {:scope => "a,b,c"}
+    stub_token_request client,
+                       {:grant_type => "refresh_token", :refresh_token => old_token.refresh_token}.merge(params),
+                       {:status => 401, :body => error_hash}
+    expect {
+      Dwolla::Auth.refresh client, old_token, params
+    }.to raise_error {|e|
+      expect(e).to be_a Dwolla::Error
+      expect(e.error).to eq error_hash[:error]
+    }
   end
 
   it "#initialize sets client" do
@@ -118,9 +193,12 @@ describe Dwolla::Auth do
     stub_token_request client,
                        {:grant_type => "authorization_code"}.merge(:code => code),
                        {:status => 401, :body => error_hash}
-    error = auth.callback :code => code, :state => auth.state
-    expect(error).to be_a Dwolla::Error
-    expect(error.error).to eq error_hash[:error]
+    expect {
+      auth.callback :code => code, :state => auth.state
+    }.to raise_error {|e|
+      expect(e).to be_a Dwolla::Error
+      expect(e.error).to eq error_hash[:error]
+    }
   end
 
   it "#callback with redirect_uri (success)" do
@@ -141,9 +219,12 @@ describe Dwolla::Auth do
     stub_token_request client,
                        {:grant_type => "authorization_code"}.merge(:code => code, :redirect_uri => auth.redirect_uri),
                        {:status => 401, :body => error_hash}
-    error = auth.callback :code => code, :state => auth.state
-    expect(error).to be_a Dwolla::Error
-    expect(error.error).to eq error_hash[:error]
+    expect {
+      auth.callback :code => code, :state => auth.state
+    }.to raise_error {|e|
+      expect(e).to be_a Dwolla::Error
+      expect(e.error).to eq error_hash[:error]
+    }
   end
 
   private

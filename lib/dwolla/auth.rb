@@ -6,6 +6,12 @@ module Dwolla
       request_token client, {:grant_type => "client_credentials"}.merge(params)
     end
 
+    def self.refresh client, token, params = {}
+      raise ArgumentError.new "Dwolla::Token required" unless token.is_a? Token
+      raise ArgumentError.new "invalid refresh_token" unless token.refresh_token.is_a? String
+      request_token client, {:grant_type => "refresh_token", :refresh_token => token.refresh_token}.merge(params)
+    end
+
     def initialize client, params = {}
       @client = client
       @redirect_uri = params[:redirect_uri]
@@ -43,7 +49,7 @@ module Dwolla
       if res.status == 200
         Token.new client, parse_json(res.body)
       else
-        Error.new parse_json(res.body)
+        Error.raise! parse_json(res.body)
       end
     end
 
