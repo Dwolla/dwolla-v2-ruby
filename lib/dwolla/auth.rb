@@ -17,6 +17,13 @@ module Dwolla
       "#{client.auth_url}?#{URI.encode_www_form(query)}"
     end
 
+    def callback params
+      raise ArgumentError.new "state does not match" if params[:state] != state
+      raise ArgumentError.new "code is required" unless params[:code].is_a? String
+      params = {:code => params[:code], :redirect_uri => redirect_uri}.reject {|k,v| v.nil? }
+      self.class.request_token client, {:grant_type => "authorization_code"}.merge(params)
+    end
+
     private
 
     def query
@@ -24,7 +31,7 @@ module Dwolla
         :redirect_uri => redirect_uri,
         :scope => scope,
         :state => state
-      }
+      }.reject {|k,v| v.nil? }
     end
 
     def self.request_token client, params

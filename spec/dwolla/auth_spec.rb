@@ -69,9 +69,81 @@ describe Dwolla::Auth do
   end
 
   it "#url" do
+    params = {:scope => "a,b,c", :state => "STATE"}
+    auth = Dwolla::Auth.new client, params
+    expect(auth.url).to eq uri_with_query(client.auth_url, params)
+  end
+
+  it "#url with redirect_uri" do
     params = {:redirect_uri => "REDIRECT_URI", :scope => "a,b,c", :state => "STATE"}
     auth = Dwolla::Auth.new client, params
     expect(auth.url).to eq uri_with_query(client.auth_url, params)
+  end
+
+  it "#callback raises ArgumentError if state does not match" do
+    auth = Dwolla::Auth.new client, :state => "STATE"
+    expect {
+      auth.callback :state => "WRONG", :code => "CODE"
+    }.to raise_error {|e|
+      expect(e).to be_a ArgumentError
+      expect(e.message).to eq "state does not match"
+    }
+  end
+
+  it "#callback raises ArgumentError if no code" do
+    auth = Dwolla::Auth.new client, :state => "STATE"
+    expect {
+      auth.callback :state => auth.state
+    }.to raise_error {|e|
+      expect(e).to be_a ArgumentError
+      expect(e.message).to eq "code is required"
+    }
+  end
+
+  it "#callback (success)" do
+    auth = Dwolla::Auth.new client, :state => "STATE"
+    code = "CODE"
+    stub_token_request client,
+                       {:grant_type => "authorization_code"}.merge(:code => code),
+                       {:status => 200, :body => token_hash}
+    token = auth.callback :code => code, :state => auth.state
+    expect(token).to be_a Dwolla::Token
+    expect(token.client).to be client
+    expect(token.access_token).to eq token_hash[:access_token]
+  end
+
+  it "#callback (error)" do
+    auth = Dwolla::Auth.new client, :state => "STATE"
+    code = "CODE"
+    stub_token_request client,
+                       {:grant_type => "authorization_code"}.merge(:code => code),
+                       {:status => 401, :body => error_hash}
+    error = auth.callback :code => code, :state => auth.state
+    expect(error).to be_a Dwolla::Error
+    expect(error.error).to eq error_hash[:error]
+  end
+
+  it "#callback with redirect_uri (success)" do
+    auth = Dwolla::Auth.new client, :state => "STATE", :redirect_uri => "REDIRECT_URI"
+    code = "CODE"
+    stub_token_request client,
+                       {:grant_type => "authorization_code"}.merge(:code => code, :redirect_uri => auth.redirect_uri),
+                       {:status => 200, :body => token_hash}
+    token = auth.callback :code => code, :state => auth.state
+    expect(token).to be_a Dwolla::Token
+    expect(token.client).to be client
+    expect(token.access_token).to eq token_hash[:access_token]
+  end
+
+  it "#callback with redirect_uri (error)" do
+    auth = Dwolla::Auth.new client, :state => "STATE", :redirect_uri => "REDIRECT_URI"
+    code = "CODE"
+    stub_token_request client,
+                       {:grant_type => "authorization_code"}.merge(:code => code, :redirect_uri => auth.redirect_uri),
+                       {:status => 401, :body => error_hash}
+    error = auth.callback :code => code, :state => auth.state
+    expect(error).to be_a Dwolla::Error
+    expect(error.error).to eq error_hash[:error]
   end
 
   private
