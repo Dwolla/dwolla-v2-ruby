@@ -42,20 +42,13 @@ module Dwolla
     end
 
     def self.request_token client, params
-      res = Faraday.new(&client.faraday).post do |req|
-        req.headers["Authorization"] = basic_auth(client)
-        req.url client.token_url
-        req.body = URI.encode_www_form(params)
-      end
+      res = client.conn.post client.token_url, params
+      res_body = Util.parse_json res.body
       if res.status == 200
-        Token.new client, Util.parse_json(res.body)
+        Token.new client, res_body
       else
-        Error.raise! Util.parse_json(res.body)
+        Error.raise! res_body
       end
-    end
-
-    def self.basic_auth client
-      "Basic #{Base64.encode64("#{client.id}:#{client.secret}")}"
     end
   end
 end

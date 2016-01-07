@@ -21,7 +21,7 @@ module Dwolla
       @id = opts[:id]
       @secret = opts[:secret]
       yield self if block_given?
-      # conn
+      conn
       freeze
     end
 
@@ -44,9 +44,15 @@ module Dwolla
       @faraday
     end
 
-    # def conn &block
-    #   @conn ||= Faraday.new &block
-    # end
+    def conn
+      @conn ||= Faraday.new do |f|
+        f.request :multipart
+        f.request :url_encoded
+        f.request :basic_auth, id, secret
+        faraday.call(f) if faraday
+        f.adapter Faraday.default_adapter unless faraday
+      end
+    end
 
     def auth_url
       ENVIRONMENTS[environment][:auth_url]

@@ -237,7 +237,7 @@ describe Dwolla::Auth do
   def stub_token_request client, params, response
     stub_request(:post, token_url(client))
       .with(:headers => {"Content-Type" => "application/x-www-form-urlencoded"},
-            :body => URI.encode_www_form(params))
+            :body => params)
       .to_return(:status => response[:status],
                  :body => JSON.generate(response[:body]))
   end

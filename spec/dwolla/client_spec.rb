@@ -96,9 +96,21 @@ describe Dwolla::Client do
   end
 
   it "#faraday" do
-    block = Proc.new {}
-    client = Dwolla::Client.new(:id => id, :secret => secret)
+    client = Dwolla::Client.new :id => id, :secret => secret
     expect(client.faraday).to be nil
+  end
+
+  it "#conn" do
+    client = Dwolla::Client.new :id => id, :secret => secret
+    expect(client.conn).to be_a Faraday::Connection
+    expect(client.conn).to be client.conn
+  end
+
+  it "#conn with faraday" do
+    james_bond = spy "007"
+    block = Proc.new {|a| james_bond.call(a) }
+    client = Dwolla::Client.new(:id => id, :secret => secret) {|c| c.faraday &block }
+    expect(james_bond).to have_received(:call).with(client.conn)
   end
 
   it "#auth_url" do
