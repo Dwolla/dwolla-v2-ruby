@@ -13,7 +13,7 @@ module Dwolla
       }
     }
 
-    attr_reader :id, :secret
+    attr_reader :id, :secret, :auths, :tokens
 
     def initialize opts
       raise ArgumentError.new "id is required" unless opts[:id].is_a? String
@@ -22,6 +22,8 @@ module Dwolla
       @secret = opts[:secret]
       yield self if block_given?
       conn
+      @auths = Portal.new self, Auth
+      @tokens = Portal.new self, Token
       freeze
     end
 

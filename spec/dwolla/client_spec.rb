@@ -54,6 +54,20 @@ describe Dwolla::Client do
     expect(james_bond).to have_received(:call).with(client)
   end
 
+  it '#initialize sets auths' do
+    client = Dwolla::Client.new :id => id, :secret => secret
+    expect(client.auths).to be_a Dwolla::Portal
+    expect(client.auths.instance_variable_get :@parent).to be client
+    expect(client.auths.instance_variable_get :@klass).to be Dwolla::Auth
+  end
+
+  it '#initialize sets tokens' do
+    client = Dwolla::Client.new :id => id, :secret => secret
+    expect(client.tokens).to be_a Dwolla::Portal
+    expect(client.tokens.instance_variable_get :@parent).to be client
+    expect(client.tokens.instance_variable_get :@klass).to be Dwolla::Token
+  end
+
   it "#initialize freezes client" do
     client = Dwolla::Client.new :id => id, :secret => secret
     expect(client.frozen?).to be true

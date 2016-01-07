@@ -32,7 +32,7 @@ $dwolla = Dwolla::Client.new(:id => "CLIENT_ID", :secret => "CLIENT_SECRET") do 
   end
   config.faraday do |faraday|
     faraday.response :logger
-    faraday.adapter  Faraday.default_adapter
+    faraday.adapter Faraday.default_adapter
   end
 end
 ```
