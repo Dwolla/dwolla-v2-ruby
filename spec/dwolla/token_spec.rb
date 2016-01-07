@@ -256,4 +256,68 @@ describe Dwolla::Token do
       expect(e.error).to eq res_body[:error]
     }
   end
+
+  it "#patch (success)" do
+    token = Dwolla::Token.new client, params
+    path = "/foo"
+    res_body = {:hello => "world"}
+    stub_request(:patch, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
+      .to_return(:status => 200,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => JSON.generate(res_body))
+    expect(token.patch path).to eq res_body
+  end
+
+  it "#patch (error)" do
+    token = Dwolla::Token.new client, params
+    path = "/foo"
+    res_body = {:error => "hello"}
+    stub_request(:patch, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
+      .to_return(:status => 400,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => JSON.generate(res_body))
+    expect {
+      token.patch path
+    }.to raise_error {|e|
+      expect(e).to be_a Dwolla::Error
+      expect(e.error).to eq res_body[:error]
+    }
+  end
+
+  it "#patch with params (success)" do
+    token = Dwolla::Token.new client, params
+    path = "/foo"
+    body = {:foo => "bar"}
+    res_body = {:hello => "world"}
+    stub_request(:patch, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json",
+                         "Content-Type" => "application/json"},
+            :body => body)
+      .to_return(:status => 200,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => JSON.generate(res_body))
+    expect(token.patch path, body).to eq res_body
+  end
+
+  it "#patch with params (error)" do
+    token = Dwolla::Token.new client, params
+    path = "/foo"
+    body = {:foo => "bar"}
+    res_body = {:error => "hello"}
+    stub_request(:patch, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json",
+                         "Content-Type" => "application/json"},
+            :body => body)
+      .to_return(:status => 400,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => JSON.generate(res_body))
+    expect {
+      token.patch path, body
+    }.to raise_error {|e|
+      expect(e).to be_a Dwolla::Error
+      expect(e.error).to eq res_body[:error]
+    }
+  end
 end
