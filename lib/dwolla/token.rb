@@ -1,6 +1,6 @@
 module Dwolla
   class Token
-    HTTP_METHODS = [:get]
+    HTTP_METHODS = [:get, :post]
 
     attr_reader :client, :access_token, :refresh_token, :expires_in, :scope, :account_id
 
