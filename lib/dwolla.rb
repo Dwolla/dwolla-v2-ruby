@@ -11,6 +11,7 @@ require "dwolla/auth"
 require "dwolla/token"
 require "dwolla/errors/error"
 require "dwolla/errors/invalid_client_error"
+require "dwolla/util"
 
 module Dwolla
 end

@@ -30,7 +30,7 @@ $dwolla = Dwolla::Client.new(:id => "CLIENT_ID", :secret => "CLIENT_SECRET") do 
   config.on_grant do |token|
     YourDwollaTokenData.create! token
   end
-  config.conn do |faraday|
+  config.faraday do |faraday|
     faraday.response :logger
     faraday.adapter  Faraday.default_adapter
   end

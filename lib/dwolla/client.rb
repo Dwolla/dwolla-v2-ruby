@@ -21,7 +21,7 @@ module Dwolla
       @id = opts[:id]
       @secret = opts[:secret]
       yield self if block_given?
-      conn
+      # conn
       freeze
     end
 
@@ -39,9 +39,14 @@ module Dwolla
       @on_grant
     end
 
-    def conn &block
-      @conn ||= Faraday.new &block
+    def faraday &block
+      @faraday = block if block
+      @faraday
     end
+
+    # def conn &block
+    #   @conn ||= Faraday.new &block
+    # end
 
     def auth_url
       ENVIRONMENTS[environment][:auth_url]
