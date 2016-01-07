@@ -1,5 +1,7 @@
 module Dwolla
   class Token
+    HTTP_METHODS = [:get]
+
     attr_reader :client, :access_token, :refresh_token, :expires_in, :scope, :account_id
 
     def initialize client, params
@@ -21,6 +23,18 @@ module Dwolla
         "scope"         => scope,
         "account_id"    => account_id
       }.reject {|k,v| v.nil? }
+    end
+
+    HTTP_METHODS.each do |method|
+      define_method(method) do |url, params = nil|
+        res = conn.public_send(method, client.api_url + url, params)
+        res_body = Util.deep_symbolize_keys res.body
+        if res.status < 400
+          res_body
+        else
+          Error.raise! res_body
+        end
+      end
     end
 
     private

@@ -1,6 +1,14 @@
 require "spec_helper"
 
 describe Dwolla::Error do
+  it ".raise!(String)" do
+    expect {
+      Dwolla::Error.raise! ""
+    }.to raise_error {|e|
+      expect(e).to be_a Dwolla::Error
+    }
+  end
+
   it ".raise!({})" do
     expect {
       Dwolla::Error.raise!({})

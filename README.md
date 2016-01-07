@@ -82,6 +82,17 @@ token_data = YourDwollaTokenData.find_by :account_id => "ACCOUNT_ID"
 token = $dwolla.tokens.new token_data
 ```
 
+## Making requests
+
+```ruby
+token.get "/resource", foo: "bar"
+token.post "/resource", foo: "bar"
+token.post "/resource", foo: Faraday.UploadIO.new("/path/to/bar.png", "image/png")
+token.put "/resource", foo: "bar"
+token.put "/resource", foo: Faraday.UploadIO.new("/path/to/bar.png", "image/png")
+token.delete "/resource"
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
