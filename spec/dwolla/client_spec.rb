@@ -73,6 +73,11 @@ describe Dwolla::Client do
     }
   end
 
+  it "#environment with arg" do
+    client = Dwolla::Client.new(:id => id, :secret => secret) {|c| c.environment :sandbox }
+    expect(client.environment).to eq :sandbox
+  end
+
   it "#environment" do
     client = Dwolla::Client.new :id => id, :secret => secret
     expect(client.environment).to eq :default

@@ -30,7 +30,8 @@ module Dwolla
       @environment = env
     end
 
-    def environment
+    def environment env = nil
+      self.environment = env unless env.nil?
       @environment || :default
     end
 
