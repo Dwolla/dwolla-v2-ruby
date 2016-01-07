@@ -26,8 +26,9 @@ module Dwolla
     end
 
     HTTP_METHODS.each do |method|
-      define_method(method) do |url, params = nil|
-        res = conn.public_send(method, client.api_url + url, params)
+      define_method(method) do |path, params = nil|
+        full_url = self.class.full_url client, path
+        res = conn.public_send method, full_url, params
         res_body = Util.deep_symbolize_keys res.body
         if res.status < 400
           res_body
@@ -48,6 +49,17 @@ module Dwolla
         f.response :json, :content_type => /\bjson$/
         client.faraday.call(f) if client.faraday
         f.adapter Faraday.default_adapter unless client.faraday
+      end
+    end
+
+    def self.full_url client, path
+      path = path[:_links][:self][:href] if path.is_a? Hash
+      if path.start_with? client.api_url
+        path
+      elsif path.start_with? "/"
+        client.api_url + path
+      else
+        "#{client.api_url}/#{path}"
       end
     end
   end

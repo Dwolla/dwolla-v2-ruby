@@ -76,7 +76,9 @@ describe Dwolla::Token do
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect(token.get path).to eq res_body
+    path_variants(path).each do |path_variant|
+      expect(token.get path_variant).to eq res_body
+    end
   end
 
   it "#get (error)" do
@@ -88,12 +90,14 @@ describe Dwolla::Token do
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect {
-      token.get path
-    }.to raise_error {|e|
-      expect(e).to be_a Dwolla::Error
-      expect(e.error).to eq res_body[:error]
-    }
+    path_variants(path).each do |path_variant|
+      expect {
+        token.get path_variant
+      }.to raise_error {|e|
+        expect(e).to be_a Dwolla::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
   end
 
   it "#get with params (success)" do
@@ -107,7 +111,9 @@ describe Dwolla::Token do
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect(token.get path, query).to eq res_body
+    path_variants(path).each do |path_variant|
+      expect(token.get path, query).to eq res_body
+    end
   end
 
   it "#get with params (error)" do
@@ -121,12 +127,14 @@ describe Dwolla::Token do
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect {
-      token.get path, query
-    }.to raise_error {|e|
-      expect(e).to be_a Dwolla::Error
-      expect(e.error).to eq res_body[:error]
-    }
+    path_variants(path).each do |path_variant|
+      expect {
+        token.get path_variant, query
+      }.to raise_error {|e|
+        expect(e).to be_a Dwolla::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
   end
 
   it "#post (success)" do
@@ -138,7 +146,9 @@ describe Dwolla::Token do
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect(token.post path).to eq res_body
+    path_variants(path).each do |path_variant|
+      expect(token.post path_variant).to eq res_body
+    end
   end
 
   it "#post (error)" do
@@ -150,12 +160,14 @@ describe Dwolla::Token do
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect {
-      token.post path
-    }.to raise_error {|e|
-      expect(e).to be_a Dwolla::Error
-      expect(e.error).to eq res_body[:error]
-    }
+    path_variants(path).each do |path_variant|
+      expect {
+        token.post path_variant
+      }.to raise_error {|e|
+        expect(e).to be_a Dwolla::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
   end
 
   it "#post with params (success)" do
@@ -170,7 +182,9 @@ describe Dwolla::Token do
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect(token.post path, body).to eq res_body
+    path_variants(path).each do |path_variant|
+      expect(token.post path_variant, body).to eq res_body
+    end
   end
 
   it "#post with params (error)" do
@@ -185,12 +199,14 @@ describe Dwolla::Token do
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect {
-      token.post path, body
-    }.to raise_error {|e|
-      expect(e).to be_a Dwolla::Error
-      expect(e.error).to eq res_body[:error]
-    }
+    path_variants(path).each do |path_variant|
+      expect {
+        token.post path_variant, body
+      }.to raise_error {|e|
+        expect(e).to be_a Dwolla::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
   end
 
   it "#put (success)" do
@@ -202,7 +218,9 @@ describe Dwolla::Token do
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect(token.put path).to eq res_body
+    path_variants(path).each do |path_variant|
+      expect(token.put path_variant).to eq res_body
+    end
   end
 
   it "#put (error)" do
@@ -214,12 +232,14 @@ describe Dwolla::Token do
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect {
-      token.put path
-    }.to raise_error {|e|
-      expect(e).to be_a Dwolla::Error
-      expect(e.error).to eq res_body[:error]
-    }
+    path_variants(path).each do |path_variant|
+      expect {
+        token.put path_variant
+      }.to raise_error {|e|
+        expect(e).to be_a Dwolla::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
   end
 
   it "#put with params (success)" do
@@ -234,7 +254,9 @@ describe Dwolla::Token do
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect(token.put path, body).to eq res_body
+    path_variants(path).each do |path_variant|
+      expect(token.put path_variant, body).to eq res_body
+    end
   end
 
   it "#put with params (error)" do
@@ -249,12 +271,14 @@ describe Dwolla::Token do
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect {
-      token.put path, body
-    }.to raise_error {|e|
-      expect(e).to be_a Dwolla::Error
-      expect(e.error).to eq res_body[:error]
-    }
+    path_variants(path).each do |path_variant|
+      expect {
+        token.put path, body
+      }.to raise_error {|e|
+        expect(e).to be_a Dwolla::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
   end
 
   it "#patch (success)" do
@@ -266,7 +290,9 @@ describe Dwolla::Token do
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect(token.patch path).to eq res_body
+    path_variants(path).each do |path_variant|
+      expect(token.patch path).to eq res_body
+    end
   end
 
   it "#patch (error)" do
@@ -278,12 +304,14 @@ describe Dwolla::Token do
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect {
-      token.patch path
-    }.to raise_error {|e|
-      expect(e).to be_a Dwolla::Error
-      expect(e.error).to eq res_body[:error]
-    }
+    path_variants(path).each do |path_variant|
+      expect {
+        token.patch path
+      }.to raise_error {|e|
+        expect(e).to be_a Dwolla::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
   end
 
   it "#patch with params (success)" do
@@ -298,7 +326,9 @@ describe Dwolla::Token do
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect(token.patch path, body).to eq res_body
+    path_variants(path).each do |path_variant|
+      expect(token.patch path_variant, body).to eq res_body
+    end
   end
 
   it "#patch with params (error)" do
@@ -313,12 +343,14 @@ describe Dwolla::Token do
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect {
-      token.patch path, body
-    }.to raise_error {|e|
-      expect(e).to be_a Dwolla::Error
-      expect(e.error).to eq res_body[:error]
-    }
+    path_variants(path).each do |path_variant|
+      expect {
+        token.patch path_variant, body
+      }.to raise_error {|e|
+        expect(e).to be_a Dwolla::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
   end
 
   it "#delete (success)" do
@@ -330,7 +362,9 @@ describe Dwolla::Token do
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect(token.delete path).to eq res_body
+    path_variants(path).each do |path_variant|
+      expect(token.delete path_variant).to eq res_body
+    end
   end
 
   it "#delete (error)" do
@@ -342,12 +376,23 @@ describe Dwolla::Token do
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(res_body))
-    expect {
-      token.delete path
-    }.to raise_error {|e|
-      expect(e).to be_a Dwolla::Error
-      expect(e.error).to eq res_body[:error]
-    }
+    path_variants(path).each do |path_variant|
+      expect {
+        token.delete path_variant
+      }.to raise_error {|e|
+        expect(e).to be_a Dwolla::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
   end
 
+  private
+
+  def path_variants path
+    [
+      path,
+      client.api_url + path,
+      path[1..-1]
+    ].map {|pv| [pv, {:_links => {:self => {:href => pv}}}] }.flatten
+  end
 end
