@@ -17,6 +17,7 @@ module Dwolla
       @redirect_uri = params[:redirect_uri]
       @scope = params[:scope]
       @state = params[:state]
+      freeze
     end
 
     def url

@@ -41,6 +41,11 @@ describe Dwolla::Token do
     expect(token.account_id).to eq params[:account_id]
   end
 
+  it "#initialize freezes token" do
+    token = Dwolla::Token.new client, params
+    expect(token.frozen?).to be true
+  end
+
   it "#stringify_keys" do
     token = Dwolla::Token.new client, params
     expect(token.stringify_keys).to eq({

@@ -9,6 +9,7 @@ module Dwolla
       @expires_in = params[:expires_in]
       @scope = params[:scope]
       @account_id = params[:account_id]
+      freeze
     end
 
     def stringify_keys

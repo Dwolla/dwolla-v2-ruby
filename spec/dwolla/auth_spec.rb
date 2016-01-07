@@ -143,6 +143,11 @@ describe Dwolla::Auth do
     expect(auth.state).to eq state
   end
 
+  it "#initialize freezes auth" do
+    auth = Dwolla::Auth.new client
+    expect(auth.frozen?).to be true
+  end
+
   it "#url" do
     params = {:scope => "a,b,c", :state => "STATE"}
     auth = Dwolla::Auth.new client, params
