@@ -9,6 +9,7 @@ module Dwolla
       @expires_in = params[:expires_in]
       @scope = params[:scope]
       @account_id = params[:account_id]
+      conn
       freeze
     end
 
@@ -20,6 +21,20 @@ module Dwolla
         "scope"         => scope,
         "account_id"    => account_id
       }.reject {|k,v| v.nil? }
+    end
+
+    private
+
+    def conn
+      @conn ||= Faraday.new do |f|
+        f.authorization :Bearer, access_token if access_token
+        f.headers["Accept"] = "application/vnd.dwolla.v1.hal+json"
+        f.request :multipart
+        f.request :json
+        f.response :json, :content_type => /\bjson$/
+        client.faraday.call(f) if client.faraday
+        f.adapter Faraday.default_adapter unless client.faraday
+      end
     end
   end
 end

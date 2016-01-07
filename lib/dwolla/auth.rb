@@ -43,7 +43,7 @@ module Dwolla
 
     def self.request_token client, params
       res = client.conn.post client.token_url, params
-      res_body = Util.parse_json res.body
+      res_body = Util.deep_symbolize_keys res.body
       if res.status == 200
         Token.new client, res_body
       else

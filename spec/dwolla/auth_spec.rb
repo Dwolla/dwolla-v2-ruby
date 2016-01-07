@@ -239,6 +239,7 @@ describe Dwolla::Auth do
       .with(:headers => {"Content-Type" => "application/x-www-form-urlencoded"},
             :body => params)
       .to_return(:status => response[:status],
+                 :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(response[:body]))
   end
 

@@ -3,6 +3,7 @@ require "uri"
 require "json"
 
 require "faraday"
+require "faraday_middleware"
 
 require "dwolla/version"
 require "dwolla/client"

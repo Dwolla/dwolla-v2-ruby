@@ -46,9 +46,9 @@ module Dwolla
 
     def conn
       @conn ||= Faraday.new do |f|
-        f.request :multipart
-        f.request :url_encoded
         f.request :basic_auth, id, secret
+        f.request :url_encoded
+        f.response :json, :content_type => /\bjson$/
         faraday.call(f) if faraday
         f.adapter Faraday.default_adapter unless faraday
       end
