@@ -1,9 +1,25 @@
 require "spec_helper"
 
 describe Dwolla::Auth do
-  let!(:client) { Dwolla::Client.new :id => "CLIENT_ID", :secret => "CLIENT_SECRET" }
+  let!(:on_grant_spy) { spy "on_grant" }
+  let!(:client) {
+    Dwolla::Client.new(:id => "CLIENT_ID", :secret => "CLIENT_SECRET") do |config|
+      config.on_grant {|token| on_grant_spy.call(token) }
+    end
+  }
   let!(:token_hash) {{:access_token  => "ACCESS_TOKEN"}}
   let!(:error_hash) {{:error => "error_code"}}
+
+  it ".client (success) with no client.on_grant" do
+    client_with_no_on_grant = Dwolla::Client.new(:id => "CLIENT_ID", :secret => "CLIENT_SECRET")
+    stub_token_request client_with_no_on_grant,
+                       {:grant_type => "client_credentials"},
+                       {:status => 200, :body => token_hash}
+    token = Dwolla::Auth.client client_with_no_on_grant
+    expect(token).to be_a Dwolla::Token
+    expect(token.client).to be client_with_no_on_grant
+    expect(token.access_token).to eq token_hash[:access_token]
+  end
 
   it ".client (success)" do
     stub_token_request client,
@@ -13,6 +29,7 @@ describe Dwolla::Auth do
     expect(token).to be_a Dwolla::Token
     expect(token.client).to be client
     expect(token.access_token).to eq token_hash[:access_token]
+    expect(on_grant_spy).to have_received(:call).with(token)
   end
 
   it ".client (error)" do
@@ -36,6 +53,7 @@ describe Dwolla::Auth do
     expect(token).to be_a Dwolla::Token
     expect(token.client).to be client
     expect(token.access_token).to eq token_hash[:access_token]
+    expect(on_grant_spy).to have_received(:call).with(token)
   end
 
   it ".client with params (error)" do
@@ -79,6 +97,7 @@ describe Dwolla::Auth do
     expect(token).to be_a Dwolla::Token
     expect(token.client).to be client
     expect(token.access_token).to eq token_hash[:access_token]
+    expect(on_grant_spy).to have_received(:call).with(token)
   end
 
   it ".refresh (error)" do
@@ -104,6 +123,7 @@ describe Dwolla::Auth do
     expect(token).to be_a Dwolla::Token
     expect(token.client).to be client
     expect(token.access_token).to eq token_hash[:access_token]
+    expect(on_grant_spy).to have_received(:call).with(token)
   end
 
   it ".refresh with params (error)" do
@@ -190,6 +210,7 @@ describe Dwolla::Auth do
     expect(token).to be_a Dwolla::Token
     expect(token.client).to be client
     expect(token.access_token).to eq token_hash[:access_token]
+    expect(on_grant_spy).to have_received(:call).with(token)
   end
 
   it "#callback (error)" do
@@ -216,6 +237,7 @@ describe Dwolla::Auth do
     expect(token).to be_a Dwolla::Token
     expect(token.client).to be client
     expect(token.access_token).to eq token_hash[:access_token]
+    expect(on_grant_spy).to have_received(:call).with(token)
   end
 
   it "#callback with redirect_uri (error)" do
