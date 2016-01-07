@@ -3,13 +3,10 @@ require "spec_helper"
 describe Dwolla::Client do
   let!(:id) { "id" }
   let!(:secret) { "secret" }
-  let!(:auth_url) { "auth_url" }
-  let!(:token_url) { "token_url" }
-  let!(:api_url) { "api_url" }
 
-  it "::PRESETS" do
-    expect(Dwolla::Client::PRESETS).to eq({
-      :prod => {
+  it "::ENVIRONMENTS" do
+    expect(Dwolla::Client::ENVIRONMENTS).to eq({
+      :default => {
         :auth_url  => "https://www.dwolla.com/authorize",
         :token_url => "https://www.dwolla.com/rest/token",
         :api_url   => "https://api.dwolla.com"
@@ -50,65 +47,53 @@ describe Dwolla::Client do
     expect(client.secret).to eq secret
   end
 
-  it "#initialize sets auth_url" do
-    client = Dwolla::Client.new :id => id, :secret => secret, :auth_url => auth_url
-    expect(client.auth_url).to eq auth_url
+  it "#initialize yields block" do
+    james_bond = spy "007"
+    block = Proc.new {|c| james_bond.call(c) }
+    client = Dwolla::Client.new :id => id, :secret => secret, &block
+    expect(james_bond).to have_received(:call).with(client)
   end
 
-  it "#initialize sets token_url" do
-    client = Dwolla::Client.new :id => id, :secret => secret, :token_url => token_url
-    expect(client.token_url).to eq token_url
-  end
-
-  it "#initialize sets api_url" do
-    client = Dwolla::Client.new :id => id, :secret => secret, :api_url => api_url
-    expect(client.api_url).to eq api_url
-  end
-
-  it "#initialize sets auth_url if none provided" do
+  it "#initialize freezes client" do
     client = Dwolla::Client.new :id => id, :secret => secret
-    expect(client.auth_url).to eq Dwolla::Client::PRESETS[:prod][:auth_url]
+    expect(client.frozen?).to be true
   end
 
-  it "#initialize sets token_url if none provided" do
-    client = Dwolla::Client.new :id => id, :secret => secret
-    expect(client.token_url).to eq Dwolla::Client::PRESETS[:prod][:token_url]
+  it "#environment=" do
+    client = Dwolla::Client.new(:id => id, :secret => secret) {|c| c.environment = :sandbox }
+    expect(client.environment).to eq :sandbox
   end
 
-  it "#initialize sets api_url if none provided" do
-    client = Dwolla::Client.new :id => id, :secret => secret
-    expect(client.api_url).to eq Dwolla::Client::PRESETS[:prod][:api_url]
-  end
-
-  it "#configure" do
-    client = Dwolla::Client.new :id => id, :secret => secret
-    client.configure(:sandbox)
-    expect(client.api_url).to eq Dwolla::Client::PRESETS[:sandbox][:api_url]
-    expect(client.auth_url).to eq Dwolla::Client::PRESETS[:sandbox][:auth_url]
-    expect(client.token_url).to eq Dwolla::Client::PRESETS[:sandbox][:token_url]
-  end
-
-  it "#configure raises ArgumentError" do
-    client = Dwolla::Client.new :id => id, :secret => secret
-    not_found_preset = :not_found
+  it "#environment= raises ArgumentError if invalid environment" do
     expect {
-      client.configure(not_found_preset)
+      Dwolla::Client.new(:id => id, :secret => secret) {|c| c.environment = :invalid }
     }.to raise_error {|e|
       expect(e).to be_a ArgumentError
-      expect(e.message).to eq "#{not_found_preset} is not a valid config"
+      expect(e.message).to eq "invalid environment"
     }
+  end
+
+  it "#environment" do
+    client = Dwolla::Client.new :id => id, :secret => secret
+    expect(client.environment).to eq :default
+  end
+
+  it "#on_grant with block" do
+    callback = Proc.new {}
+    client = Dwolla::Client.new(:id => id, :secret => secret) {|c| c.on_grant &callback }
+    expect(client.on_grant).to eq callback
   end
 
   it "#on_grant" do
     client = Dwolla::Client.new :id => id, :secret => secret
-    expect(client.on_grant).to eq []
+    expect(client.on_grant).to be nil
   end
 
-  it "#on_grant(&block) adds callback" do
-    client = Dwolla::Client.new :id => id, :secret => secret
-    callback = Proc.new {}
-    client.on_grant &callback
-    expect(client.on_grant).to eq [callback]
+  it "#conn with block" do
+    james_bond = spy "007"
+    block = Proc.new {|c| james_bond.call(c) }
+    client = Dwolla::Client.new(:id => id, :secret => secret) {|c| c.conn &block }
+    expect(james_bond).to have_received(:call).with(client.conn)
   end
 
   it "#conn" do
@@ -117,23 +102,18 @@ describe Dwolla::Client do
     expect(client.conn).to be client.conn
   end
 
-  it "#conn passes block to Faraday.new" do
+  it "#auth_url" do
     client = Dwolla::Client.new :id => id, :secret => secret
-    james_bond = spy "007"
-    block = Proc.new {|b| james_bond.call }
-    client.conn &block
-    expect(james_bond).to have_received(:call)
+    expect(client.auth_url).to eq Dwolla::Client::ENVIRONMENTS[client.environment][:auth_url]
   end
 
-  it "#conn raises ArgumentError if block passed second time" do
+  it "#token_url" do
     client = Dwolla::Client.new :id => id, :secret => secret
-    block = Proc.new {}
-    client.conn &block
-    expect {
-      client.conn &block
-    }.to raise_error {|e|
-      expect(e).to be_a ArgumentError
-      expect(e.message).to eq "config block has already been passed to conn"
-    }
+    expect(client.token_url).to eq Dwolla::Client::ENVIRONMENTS[client.environment][:token_url]
+  end
+
+  it "#api_url" do
+    client = Dwolla::Client.new :id => id, :secret => secret
+    expect(client.api_url).to eq Dwolla::Client::ENVIRONMENTS[client.environment][:api_url]
   end
 end

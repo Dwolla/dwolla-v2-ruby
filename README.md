@@ -25,31 +25,15 @@ Or install it yourself as:
 #### Creating a client
 
 ```ruby
-$dwolla = Dwolla::Client.new :id => "CLIENT_ID", :secret => "CLIENT_SECRET"
-```
-
-#### Configuration (optional)
-
-Use the sandbox environment:
-
-```ruby
-$dwolla.configure :sandbox
-```
-
-Register an `on_grant` callback:
-
-```ruby
-$dwolla.on_grant do |token|
-  YourDwollaTokenData.create! token
-end
-```
-
-Configure [Faraday](https://github.com/lostisland/faraday):
-
-```ruby
-$dwolla.conn do |faraday|
-  faraday.response :logger
-  faraday.adapter  Faraday.default_adapter
+$dwolla = Dwolla::Client.new(:id => "CLIENT_ID", :secret => "CLIENT_SECRET") do |config|
+  config.environment = :sandbox
+  config.on_grant do |token|
+    YourDwollaTokenData.create! token
+  end
+  config.conn do |faraday|
+    faraday.response :logger
+    faraday.adapter  Faraday.default_adapter
+  end
 end
 ```
 

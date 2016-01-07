@@ -1,7 +1,7 @@
 module Dwolla
   class Client
-    PRESETS = {
-      :prod => {
+    ENVIRONMENTS = {
+      :default => {
         :auth_url  => "https://www.dwolla.com/authorize",
         :token_url => "https://www.dwolla.com/rest/token",
         :api_url   => "https://api.dwolla.com"
@@ -13,33 +13,46 @@ module Dwolla
       }
     }
 
-    attr_reader :id, :secret, :auth_url, :token_url, :api_url
+    attr_reader :id, :secret
 
     def initialize opts
       raise ArgumentError.new "id is required" unless opts[:id].is_a? String
       raise ArgumentError.new "secret is required" unless opts[:secret].is_a? String
       @id = opts[:id]
       @secret = opts[:secret]
-      configure :prod
-      @auth_url = opts[:auth_url] if opts[:auth_url]
-      @token_url = opts[:token_url] if opts[:token_url]
-      @api_url = opts[:api_url] if opts[:api_url]
+      yield self if block_given?
+      conn
+      freeze
     end
 
-    def configure preset
-      raise ArgumentError.new "#{preset} is not a valid config" unless PRESETS.has_key? preset
-      PRESETS[preset].each {|k,v| instance_variable_set :"@#{k}", v }
+    def environment= env
+      raise ArgumentError.new "invalid environment" unless ENVIRONMENTS.has_key? env
+      @environment = env
+    end
+
+    def environment
+      @environment || :default
     end
 
     def on_grant &callback
-      @on_grant ||= []
-      @on_grant.push callback if callback
+      @on_grant = callback if callback
       @on_grant
     end
 
     def conn &block
-      raise ArgumentError.new "config block has already been passed to conn" if block && @conn
       @conn ||= Faraday.new &block
+    end
+
+    def auth_url
+      ENVIRONMENTS[environment][:auth_url]
+    end
+
+    def token_url
+      ENVIRONMENTS[environment][:token_url]
+    end
+
+    def api_url
+      ENVIRONMENTS[environment][:api_url]
     end
   end
 end
