@@ -320,4 +320,34 @@ describe Dwolla::Token do
       expect(e.error).to eq res_body[:error]
     }
   end
+
+  it "#delete (success)" do
+    token = Dwolla::Token.new client, params
+    path = "/foo"
+    res_body = {:hello => "world"}
+    stub_request(:delete, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
+      .to_return(:status => 200,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => JSON.generate(res_body))
+    expect(token.delete path).to eq res_body
+  end
+
+  it "#delete (error)" do
+    token = Dwolla::Token.new client, params
+    path = "/foo"
+    res_body = {:error => "hello"}
+    stub_request(:delete, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
+      .to_return(:status => 400,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => JSON.generate(res_body))
+    expect {
+      token.delete path
+    }.to raise_error {|e|
+      expect(e).to be_a Dwolla::Error
+      expect(e.error).to eq res_body[:error]
+    }
+  end
+
 end
