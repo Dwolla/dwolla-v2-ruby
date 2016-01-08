@@ -9,5 +9,11 @@ module Dwolla
         obj
       end
     end
+
+    def self.classify str
+      str.split("_").map do |i|
+        i.sub(/^(.)/) { $1.capitalize }
+      end.join
+    end
   end
 end
