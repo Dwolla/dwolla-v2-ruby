@@ -1,6 +1,7 @@
 require "base64"
 require "uri"
 require "json"
+require "forwardable"
 
 require "faraday"
 require "faraday_middleware"
@@ -10,6 +11,7 @@ require "dwolla/client"
 require "dwolla/portal"
 require "dwolla/auth"
 require "dwolla/token"
+require "dwolla/response"
 require "dwolla/error"
 require "dwolla/util"
 

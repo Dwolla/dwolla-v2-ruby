@@ -1,8 +1,12 @@
 module Dwolla
   class Token
+    extend Forwardable
+
     HTTP_METHODS = [:get, :post, :put, :patch, :delete]
 
     attr_reader :client, :access_token, :refresh_token, :expires_in, :scope, :account_id
+
+    delegate [:in_parallel] => :@conn
 
     def initialize client, params
       @client = client

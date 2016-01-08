@@ -67,6 +67,12 @@ describe Dwolla::Token do
     })
   end
 
+  it "#in_parallel" do
+    token = Dwolla::Token.new client, params
+    expect(token.instance_variable_get :@conn).to receive(:in_parallel)
+    token.in_parallel
+  end
+
   it "#get (success)" do
     token = Dwolla::Token.new client, params
     path = "/foo"

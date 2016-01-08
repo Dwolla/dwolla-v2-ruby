@@ -82,7 +82,7 @@ token_data = YourDwollaTokenData.find_by :account_id => "ACCOUNT_ID"
 token = $dwolla.tokens.new token_data
 ```
 
-## Making requests
+#### Making requests
 
 ```ruby
 token.get "/resource", foo: "bar"
@@ -91,6 +91,18 @@ token.post "/resource", foo: Faraday.UploadIO.new("/path/to/bar.png", "image/png
 token.put "/resource", foo: "bar"
 token.put "/resource", foo: Faraday.UploadIO.new("/path/to/bar.png", "image/png")
 token.delete "/resource"
+```
+
+#### Making requests in parallel
+
+```ruby
+token.in_parallel do
+  foo = token.get "/foo" # => nil
+  bar = token.get "/bar" # => nil
+end
+
+foo # => { ... }
+bar # => { ... }
 ```
 
 ## Development
