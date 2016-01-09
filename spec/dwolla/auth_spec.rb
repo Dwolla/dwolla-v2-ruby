@@ -190,6 +190,17 @@ describe Dwolla::Auth do
     }
   end
 
+  it "#callback raises Dwolla::Error if error" do
+    error = "ERROR"
+    auth = Dwolla::Auth.new client, :state => "STATE"
+    expect {
+      auth.callback :state => auth.state, :error => error
+    }.to raise_error {|e|
+      expect(e).to be_a Dwolla::Error
+      expect(e.error).to eq error
+    }
+  end
+
   it "#callback raises ArgumentError if no code" do
     auth = Dwolla::Auth.new client, :state => "STATE"
     expect {

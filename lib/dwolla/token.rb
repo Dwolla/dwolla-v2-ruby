@@ -41,7 +41,7 @@ module Dwolla
     def conn
       @conn ||= Faraday.new do |f|
         f.authorization :Bearer, access_token if access_token
-        f.headers["Accept"] = "application/vnd.dwolla.v1.hal+json"
+        f.headers[:accept] = "application/vnd.dwolla.v1.hal+json"
         f.request :multipart
         f.request :json
         f.use HandleErrors
