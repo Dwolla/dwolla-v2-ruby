@@ -85,17 +85,19 @@ token = $dwolla.tokens.new token_data
 #### Making requests
 
 ```ruby
-token.get "/resource", foo: "bar"
-token.post "/resource", foo: "bar"
-token.post "/resource", foo: Faraday.UploadIO.new("/path/to/bar.png", "image/png")
-token.put "/resource", foo: "bar"
-token.put "/resource", foo: Faraday.UploadIO.new("/path/to/bar.png", "image/png")
+token.get "/resource", :foo => "bar"
+token.post "/resource", :foo => "bar"
+token.post "/resource", :foo => Faraday.UploadIO.new("/path/to/bar.png", "image/png")
+token.put "/resource", :foo => "bar"
+token.put "/resource", :foo => Faraday.UploadIO.new("/path/to/bar.png", "image/png")
 token.delete "/resource"
 ```
 
-#### Making requests in parallel
+In parallel:
 
 ```ruby
+foo, bar = nil
+
 token.in_parallel do
   foo = token.get "/foo" # => nil
   bar = token.get "/bar" # => nil

@@ -32,13 +32,7 @@ module Dwolla
     HTTP_METHODS.each do |method|
       define_method(method) do |path, params = nil|
         full_url = self.class.full_url client, path
-        res = conn.public_send method, full_url, params
-        res_body = Util.deep_symbolize_keys res.body
-        if res.status < 400
-          res_body
-        else
-          Error.raise! res_body
-        end
+        Response.new conn.public_send(method, full_url, params)
       end
     end
 
@@ -50,6 +44,8 @@ module Dwolla
         f.headers["Accept"] = "application/vnd.dwolla.v1.hal+json"
         f.request :multipart
         f.request :json
+        f.use HandleErrors
+        f.use SymbolizeResponseBody
         f.response :json, :content_type => /\bjson$/
         client.faraday.call(f) if client.faraday
         f.adapter Faraday.default_adapter unless client.faraday

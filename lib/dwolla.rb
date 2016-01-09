@@ -15,6 +15,9 @@ require "dwolla/response"
 require "dwolla/error"
 require "dwolla/util"
 
+require "dwolla/middleware/symbolize_response_body"
+require "dwolla/middleware/handle_errors"
+
 # OAuth errors https://tools.ietf.org/html/rfc6749
 require "dwolla/errors/invalid_request_error"
 require "dwolla/errors/invalid_client_error"
