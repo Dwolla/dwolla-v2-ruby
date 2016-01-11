@@ -25,12 +25,12 @@ Or install it yourself as:
 #### Creating a client
 
 ```ruby
-$dwolla = Dwolla::Client.new(:id => "CLIENT_ID", :secret => "CLIENT_SECRET") do |config|
-  config.environment = :sandbox
-  config.on_grant do |token|
+$dwolla = Dwolla::Client.new(:id => "CLIENT_ID", :secret => "CLIENT_SECRET") do |optional_config|
+  optional_config.environment = :sandbox
+  optional_config.on_grant do |token|
     YourDwollaTokenData.create! token
   end
-  config.faraday do |faraday|
+  optional_config.faraday do |faraday|
     faraday.response :logger
     faraday.adapter Faraday.default_adapter
   end
@@ -42,7 +42,7 @@ end
 Get an application token:
 
 ```ruby
-$dwolla.auths.client :scope => "a,b,c"
+$dwolla.auths.client :scope => "ManagerCustomers|Funding"
 ```
 
 Get an account token:
@@ -54,8 +54,7 @@ class YourDwollaAuthController < ApplicationController
   end
 
   def callback
-    token = auth.callback :code => params[:code],
-                          :state => params[:state]
+    token = auth.callback params
     session[:dwolla_account_id] = token.account_id
   end
 
@@ -63,8 +62,7 @@ class YourDwollaAuthController < ApplicationController
 
   def auth
     $dwolla.auths.new :redirect_uri => "https://yoursite.com/callback",
-                      :scope => "a,b,c",
-                      :state => (session[:dwolla_auth_state] ||= SecureRandom.hex)
+                      :scope => "ManagerCustomers|Funding"
   end
 end
 ```
@@ -106,6 +104,48 @@ end
 foo # => { ... }
 bar # => { ... }
 ```
+
+Accessing response headers:
+
+```ruby
+customer = token.post "/customers", customer_params
+customer = token.get customer.headers[:location]
+```
+
+#### Errors
+
+All errors inherit from `Dwolla::Error`
+
+OAuth errors have `error`, `error_description`, and `error_uri` attributes.
+
+Dwolla API errors have `code`, `message`, `_links`, and `_embedded` attributes.
+
+**Error list:**
+
+- AccessDeniedError
+- InvalidCredentialsError
+- NotFoundError
+- BadRequestError
+- InvalidGrantError
+- RequestTimeoutError
+- ExpiredAccessTokenError
+- InvalidRequestError
+- ServerError
+- ForbiddenError
+- InvalidResourceStateError
+- TemporarilyUnavailableError
+- InvalidAccessTokenError
+- InvalidScopeError
+- UnauthorizedClientError
+- InvalidAccount_statusError
+- InvalidScopesError
+- UnsupportedGrantTypeError
+- InvalidApplicationStatusError
+- InvalidVersionError
+- UnsupportedResponseTypeError
+- InvalidClientError
+- MethodNotAllowedError
+- ValidationError
 
 ## Development
 

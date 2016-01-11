@@ -45,12 +45,12 @@ module Dwolla
     def self.request_token client, params
       res = client.conn.post client.token_url, params
       res_body = Util.deep_symbolize_keys res.body
-      if res.status == 200
+      if res_body[:error]
+        Error.raise! res_body
+      else
         token = Token.new client, res_body
         client.on_grant.call token unless client.on_grant.nil?
         token
-      else
-        Error.raise! res_body
       end
     end
   end
