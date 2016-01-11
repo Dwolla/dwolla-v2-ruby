@@ -169,15 +169,17 @@ describe DwollaV2::Auth do
   end
 
   it "#url" do
-    params = {:scope => "a,b,c", :state => "STATE"}
-    auth = DwollaV2::Auth.new client, params
-    expect(auth.url).to eq uri_with_query(client.auth_url, params)
+    required_params = {:response_type => "code", :client_id => client.id}
+    optional_params = {:scope => "a,b,c", :state => "STATE"}
+    auth = DwollaV2::Auth.new client, optional_params
+    expect(auth.url).to eq uri_with_query(client.auth_url, required_params.merge(optional_params))
   end
 
   it "#url with redirect_uri" do
-    params = {:redirect_uri => "REDIRECT_URI", :scope => "a,b,c", :state => "STATE"}
-    auth = DwollaV2::Auth.new client, params
-    expect(auth.url).to eq uri_with_query(client.auth_url, params)
+    required_params = {:response_type => "code", :client_id => client.id}
+    optional_params = {:redirect_uri => "REDIRECT_URI", :scope => "a,b,c", :state => "STATE"}
+    auth = DwollaV2::Auth.new client, optional_params
+    expect(auth.url).to eq uri_with_query(client.auth_url, required_params.merge(optional_params))
   end
 
   it "#callback raises ArgumentError if state does not match" do

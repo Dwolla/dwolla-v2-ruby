@@ -36,6 +36,8 @@ module DwollaV2
 
     def query
       {
+        :response_type => :code,
+        :client_id => client.id,
         :redirect_uri => redirect_uri,
         :scope => scope,
         :state => state
