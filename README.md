@@ -122,30 +122,30 @@ Dwolla API errors have `code`, `message`, `_links`, and `_embedded` attributes.
 
 **Error list:**
 
-- AccessDeniedError
-- InvalidCredentialsError
-- NotFoundError
-- BadRequestError
-- InvalidGrantError
-- RequestTimeoutError
-- ExpiredAccessTokenError
-- InvalidRequestError
-- ServerError
-- ForbiddenError
-- InvalidResourceStateError
-- TemporarilyUnavailableError
-- InvalidAccessTokenError
-- InvalidScopeError
-- UnauthorizedClientError
-- InvalidAccount_statusError
-- InvalidScopesError
-- UnsupportedGrantTypeError
-- InvalidApplicationStatusError
-- InvalidVersionError
-- UnsupportedResponseTypeError
-- InvalidClientError
-- MethodNotAllowedError
-- ValidationError
+- `Dwolla::AccessDeniedError`
+- `Dwolla::InvalidCredentialsError`
+- `Dwolla::NotFoundError`
+- `Dwolla::BadRequestError`
+- `Dwolla::InvalidGrantError`
+- `Dwolla::RequestTimeoutError`
+- `Dwolla::ExpiredAccessTokenError`
+- `Dwolla::InvalidRequestError`
+- `Dwolla::ServerError`
+- `Dwolla::ForbiddenError`
+- `Dwolla::InvalidResourceStateError`
+- `Dwolla::TemporarilyUnavailableError`
+- `Dwolla::InvalidAccessTokenError`
+- `Dwolla::InvalidScopeError`
+- `Dwolla::UnauthorizedClientError`
+- `Dwolla::InvalidAccount_statusError`
+- `Dwolla::InvalidScopesError`
+- `Dwolla::UnsupportedGrantTypeError`
+- `Dwolla::InvalidApplicationStatusError`
+- `Dwolla::InvalidVersionError`
+- `Dwolla::UnsupportedResponseTypeError`
+- `Dwolla::InvalidClientError`
+- `Dwolla::MethodNotAllowedError`
+- `Dwolla::ValidationError`
 
 ## Development
 
