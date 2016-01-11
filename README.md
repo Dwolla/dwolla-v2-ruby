@@ -1,6 +1,6 @@
-# Dwolla
+# DwollaV2
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/dwolla`. To experiment with that code, run `bin/console` for an interactive prompt.
+Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/dwolla_v2`. To experiment with that code, run `bin/console` for an interactive prompt.
 
 TODO: Delete this and the text above, and describe your gem
 
@@ -9,7 +9,7 @@ TODO: Delete this and the text above, and describe your gem
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dwolla'
+gem 'dwolla_v2'
 ```
 
 And then execute:
@@ -18,17 +18,17 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install dwolla
+    $ gem install dwolla_v2
 
 ## Usage
 
 #### Creating a client
 
 ```ruby
-$dwolla = Dwolla::Client.new(:id => "CLIENT_ID", :secret => "CLIENT_SECRET") do |optional_config|
+$dwolla = DwollaV2::Client.new(:id => "CLIENT_ID", :secret => "CLIENT_SECRET") do |optional_config|
   optional_config.environment = :sandbox
   optional_config.on_grant do |token|
-    YourDwollaTokenData.create! token
+    YourTokenData.create! token
   end
   optional_config.faraday do |faraday|
     faraday.response :logger
@@ -48,14 +48,14 @@ $dwolla.auths.client :scope => "ManagerCustomers|Funding"
 Get an account token:
 
 ```ruby
-class YourDwollaAuthController < ApplicationController
+class YourAuthController < ApplicationController
   def authorize
     redirect_to auth.url
   end
 
   def callback
     token = auth.callback params
-    session[:dwolla_account_id] = token.account_id
+    session[:account_id] = token.account_id
   end
 
   private
@@ -76,7 +76,7 @@ token = $dwolla.auths.refresh expired_token
 Initialize a token:
 
 ```ruby
-token_data = YourDwollaTokenData.find_by :account_id => "ACCOUNT_ID"
+token_data = YourTokenData.find_by :account_id => "ACCOUNT_ID"
 token = $dwolla.tokens.new token_data
 ```
 
@@ -114,7 +114,7 @@ customer = token.get customer.headers[:location]
 
 #### Errors
 
-All errors inherit from `Dwolla::Error`
+All errors inherit from `DwollaV2::Error`
 
 OAuth errors have `error`, `error_description`, and `error_uri` attributes.
 
@@ -122,30 +122,30 @@ Dwolla API errors have `code`, `message`, `_links`, and `_embedded` attributes.
 
 **Error list:**
 
-- `Dwolla::AccessDeniedError`
-- `Dwolla::InvalidCredentialsError`
-- `Dwolla::NotFoundError`
-- `Dwolla::BadRequestError`
-- `Dwolla::InvalidGrantError`
-- `Dwolla::RequestTimeoutError`
-- `Dwolla::ExpiredAccessTokenError`
-- `Dwolla::InvalidRequestError`
-- `Dwolla::ServerError`
-- `Dwolla::ForbiddenError`
-- `Dwolla::InvalidResourceStateError`
-- `Dwolla::TemporarilyUnavailableError`
-- `Dwolla::InvalidAccessTokenError`
-- `Dwolla::InvalidScopeError`
-- `Dwolla::UnauthorizedClientError`
-- `Dwolla::InvalidAccount_statusError`
-- `Dwolla::InvalidScopesError`
-- `Dwolla::UnsupportedGrantTypeError`
-- `Dwolla::InvalidApplicationStatusError`
-- `Dwolla::InvalidVersionError`
-- `Dwolla::UnsupportedResponseTypeError`
-- `Dwolla::InvalidClientError`
-- `Dwolla::MethodNotAllowedError`
-- `Dwolla::ValidationError`
+- `DwollaV2::AccessDeniedError`
+- `DwollaV2::InvalidCredentialsError`
+- `DwollaV2::NotFoundError`
+- `DwollaV2::BadRequestError`
+- `DwollaV2::InvalidGrantError`
+- `DwollaV2::RequestTimeoutError`
+- `DwollaV2::ExpiredAccessTokenError`
+- `DwollaV2::InvalidRequestError`
+- `DwollaV2::ServerError`
+- `DwollaV2::ForbiddenError`
+- `DwollaV2::InvalidResourceStateError`
+- `DwollaV2::TemporarilyUnavailableError`
+- `DwollaV2::InvalidAccessTokenError`
+- `DwollaV2::InvalidScopeError`
+- `DwollaV2::UnauthorizedClientError`
+- `DwollaV2::InvalidAccount_statusError`
+- `DwollaV2::InvalidScopesError`
+- `DwollaV2::UnsupportedGrantTypeError`
+- `DwollaV2::InvalidApplicationStatusError`
+- `DwollaV2::InvalidVersionError`
+- `DwollaV2::UnsupportedResponseTypeError`
+- `DwollaV2::InvalidClientError`
+- `DwollaV2::MethodNotAllowedError`
+- `DwollaV2::ValidationError`
 
 ## Development
 
@@ -155,7 +155,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/dwolla.
+Bug reports and pull requests are welcome on GitHub at https://github.com/dwolla/dwolla-v2-ruby.
 
 ## License
 
