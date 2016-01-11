@@ -4,7 +4,7 @@ module DwollaV2
 
     HTTP_METHODS = [:get, :post, :put, :patch, :delete]
 
-    attr_reader :client, :access_token, :refresh_token, :expires_in, :scope, :account_id
+    attr_reader :client, :access_token, :refresh_token, :expires_in, :scope, :app_id, :account_id
 
     delegate [:in_parallel] => :@conn
 
@@ -14,6 +14,7 @@ module DwollaV2
       @refresh_token = params[:refresh_token]
       @expires_in = params[:expires_in]
       @scope = params[:scope]
+      @app_id = params[:app_id]
       @account_id = params[:account_id]
       conn
       freeze
@@ -25,6 +26,7 @@ module DwollaV2
         "refresh_token" => refresh_token,
         "expires_in"    => expires_in,
         "scope"         => scope,
+        "app_id"        => app_id,
         "account_id"    => account_id
       }.reject {|k,v| v.nil? }
     end

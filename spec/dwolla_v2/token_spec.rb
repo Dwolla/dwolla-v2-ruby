@@ -7,6 +7,7 @@ describe DwollaV2::Token do
     :refresh_token => "REFRESH_TOKEN",
     :expires_in    => 123,
     :scope         => "a,b,c",
+    :app_id        => "9a711db1-72bc-43a4-8d09-3288e8dd0a8b",
     :account_id    => "92e19aa4-93d4-49e7-b3e6-32f6d7a2a64d",
     :unknown_param => "?"
   }}
@@ -36,6 +37,11 @@ describe DwollaV2::Token do
     expect(token.scope).to eq params[:scope]
   end
 
+  it "#initialize sets app_id" do
+    token = DwollaV2::Token.new client, params
+    expect(token.app_id).to eq params[:app_id]
+  end
+
   it "#initialize sets account_id" do
     token = DwollaV2::Token.new client, params
     expect(token.account_id).to eq params[:account_id]
@@ -53,6 +59,7 @@ describe DwollaV2::Token do
       "refresh_token" => params[:refresh_token],
       "expires_in"    => params[:expires_in],
       "scope"         => params[:scope],
+      "app_id"        => params[:app_id],
       "account_id"    => params[:account_id]
     })
   end
@@ -63,7 +70,8 @@ describe DwollaV2::Token do
       "access_token"  => params[:access_token],
       "refresh_token" => params[:refresh_token],
       "expires_in"    => params[:expires_in],
-      "scope"         => params[:scope]
+      "scope"         => params[:scope],
+      "app_id"        => params[:app_id]
     })
   end
 
