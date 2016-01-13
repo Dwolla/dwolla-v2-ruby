@@ -20,6 +20,10 @@ module DwollaV2
       freeze
     end
 
+    def [] key
+      instance_variable_get :"@#{key}"
+    end
+
     def stringify_keys
       {
         "access_token"  => access_token,

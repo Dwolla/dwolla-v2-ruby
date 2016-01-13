@@ -69,17 +69,8 @@ describe DwollaV2::Auth do
     }
   end
 
-  it ".refresh raises ArgumentError if second arg isn't DwollaV2::Token" do
-    expect {
-      DwollaV2::Auth.refresh client, "not a DwollaV2::Token"
-    }.to raise_error {|e|
-      expect(e).to be_a ArgumentError
-      expect(e.message).to eq "DwollaV2::Token required"
-    }
-  end
-
-  it ".refresh raises ArgumentError if token has no refresh_token" do
-    token = DwollaV2::Token.new client, {}
+  it ".refresh raises ArgumentError if no refresh_token" do
+    token = {}
     expect {
       DwollaV2::Auth.refresh client, token
     }.to raise_error {|e|
@@ -89,9 +80,9 @@ describe DwollaV2::Auth do
   end
 
   it ".refresh (success)" do
-    old_token = DwollaV2::Token.new client, :refresh_token => "REFRESH_TOKEN"
+    old_token = {:refresh_token => "REFRESH_TOKEN"}
     stub_token_request client,
-                       {:grant_type => "refresh_token", :refresh_token => old_token.refresh_token},
+                       {:grant_type => "refresh_token", :refresh_token => old_token[:refresh_token]},
                        {:status => 200, :body => token_hash}
     token = DwollaV2::Auth.refresh client, old_token
     expect(token).to be_a DwollaV2::Token
@@ -101,9 +92,9 @@ describe DwollaV2::Auth do
   end
 
   it ".refresh (error)" do
-    old_token = DwollaV2::Token.new client, :refresh_token => "REFRESH_TOKEN"
+    old_token = {:refresh_token => "REFRESH_TOKEN"}
     stub_token_request client,
-                       {:grant_type => "refresh_token", :refresh_token => old_token.refresh_token},
+                       {:grant_type => "refresh_token", :refresh_token => old_token[:refresh_token]},
                        {:status => 401, :body => error_hash}
     expect {
       DwollaV2::Auth.refresh client, old_token
@@ -114,10 +105,10 @@ describe DwollaV2::Auth do
   end
 
   it ".refresh with params (success)" do
-    old_token = DwollaV2::Token.new client, :refresh_token => "REFRESH_TOKEN"
+    old_token = {:refresh_token => "REFRESH_TOKEN"}
     params = {:scope => "a,b,c"}
     stub_token_request client,
-                       {:grant_type => "refresh_token", :refresh_token => old_token.refresh_token}.merge(params),
+                       {:grant_type => "refresh_token", :refresh_token => old_token[:refresh_token]}.merge(params),
                        {:status => 200, :body => token_hash}
     token = DwollaV2::Auth.refresh client, old_token, params
     expect(token).to be_a DwollaV2::Token
@@ -127,10 +118,10 @@ describe DwollaV2::Auth do
   end
 
   it ".refresh with params (error)" do
-    old_token = DwollaV2::Token.new client, :refresh_token => "REFRESH_TOKEN"
+    old_token = {:refresh_token => "REFRESH_TOKEN"}
     params = {:scope => "a,b,c"}
     stub_token_request client,
-                       {:grant_type => "refresh_token", :refresh_token => old_token.refresh_token}.merge(params),
+                       {:grant_type => "refresh_token", :refresh_token => old_token[:refresh_token]}.merge(params),
                        {:status => 401, :body => error_hash}
     expect {
       DwollaV2::Auth.refresh client, old_token, params

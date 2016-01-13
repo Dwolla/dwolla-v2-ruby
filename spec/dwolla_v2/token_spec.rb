@@ -52,6 +52,11 @@ describe DwollaV2::Token do
     expect(token.frozen?).to be true
   end
 
+  it "#[]" do
+    token = DwollaV2::Token.new client, params
+    expect(token[:access_token]).to be token.access_token
+  end
+
   it "#stringify_keys" do
     token = DwollaV2::Token.new client, params
     expect(token.stringify_keys).to eq({
