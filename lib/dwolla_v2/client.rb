@@ -2,13 +2,13 @@ module DwollaV2
   class Client
     ENVIRONMENTS = {
       :default => {
-        :auth_url  => "https://www.dwolla.com/authorize",
-        :token_url => "https://www.dwolla.com/rest/token",
+        :auth_url  => "https://www.dwolla.com/oauth/v2/authenticate",
+        :token_url => "https://www.dwolla.com/oauth/v2/token",
         :api_url   => "https://api.dwolla.com"
       },
       :sandbox => {
-        :auth_url  => "https://uat.dwolla.com/authorize",
-        :token_url => "https://uat.dwolla.com/rest/token",
+        :auth_url  => "https://uat.dwolla.com/oauth/v2/authenticate",
+        :token_url => "https://uat.dwolla.com/oauth/v2/token",
         :api_url   => "https://api-uat.dwolla.com"
       }
     }
