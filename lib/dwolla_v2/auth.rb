@@ -3,12 +3,12 @@ module DwollaV2
     attr_reader :client, :redirect_uri, :scope, :state
 
     def self.client client, params = {}
-      request_token client, {:grant_type => "client_credentials"}.merge(params)
+      request_token client, {:grant_type => :client_credentials}.merge(params)
     end
 
     def self.refresh client, token, params = {}
       raise ArgumentError.new "invalid refresh_token" unless token[:refresh_token].is_a? String
-      request_token client, {:grant_type => "refresh_token", :refresh_token => token[:refresh_token]}.merge(params)
+      request_token client, {:grant_type => :refresh_token, :refresh_token => token[:refresh_token]}.merge(params)
     end
 
     def initialize client, params = {}
@@ -28,7 +28,7 @@ module DwollaV2
       Error.raise! params if params[:error]
       raise ArgumentError.new "code is required" unless params[:code].is_a? String
       params = {:code => params[:code], :redirect_uri => redirect_uri}.reject {|k,v| v.nil? }
-      self.class.request_token client, {:grant_type => "authorization_code"}.merge(params)
+      self.class.request_token client, {:grant_type => :authorization_code}.merge(params)
     end
 
     private
