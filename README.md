@@ -1,8 +1,8 @@
 # DwollaV2
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/dwolla_v2`. To experiment with that code, run `bin/console` for an interactive prompt.
+![Build Status](https://travis-ci.org/dwolla/dwolla-v2-ruby.svg)
 
-TODO: Delete this and the text above, and describe your gem
+Dwolla V2 Ruby client. For the V1 Ruby client see [dwolla/dwolla-ruby](https://github.com/Dwolla/dwolla-ruby).
 
 ## Installation
 
@@ -25,7 +25,7 @@ Or install it yourself as:
 #### Creating a client
 
 ```ruby
-$dwolla = DwollaV2::Client.new(:id => "CLIENT_ID", :secret => "CLIENT_SECRET") do |optional_config|
+$dwolla = DwollaV2::Client.new(id: "CLIENT_ID", secret: "CLIENT_SECRET") do |optional_config|
   optional_config.environment = :sandbox
   optional_config.on_grant do |token|
     YourTokenData.create! token
@@ -42,7 +42,7 @@ end
 Get an application token:
 
 ```ruby
-$dwolla.auths.client :scope => "ManagerCustomers|Funding"
+$dwolla.auths.client scope: "ManagerCustomers|Funding"
 ```
 
 Get an account token:
@@ -61,8 +61,8 @@ class YourAuthController < ApplicationController
   private
 
   def auth
-    $dwolla.auths.new :redirect_uri => "https://yoursite.com/callback",
-                      :scope => "ManagerCustomers|Funding"
+    $dwolla.auths.new redirect_uri: "https://yoursite.com/callback",
+                      scope: "ManagerCustomers|Funding"
   end
 end
 ```
@@ -76,18 +76,18 @@ token = $dwolla.auths.refresh expired_token
 Initialize a token:
 
 ```ruby
-token_data = YourTokenData.find_by :account_id => "ACCOUNT_ID"
+token_data = YourTokenData.find_by account_id: "ACCOUNT_ID"
 token = $dwolla.tokens.new token_data
 ```
 
 #### Making requests
 
 ```ruby
-token.get "/resource", :foo => "bar"
-token.post "/resource", :foo => "bar"
-token.post "/resource", :foo => Faraday.UploadIO.new("/path/to/bar.png", "image/png")
-token.put "/resource", :foo => "bar"
-token.put "/resource", :foo => Faraday.UploadIO.new("/path/to/bar.png", "image/png")
+token.get "/resource", foo: "bar"
+token.post "/resource", foo: "bar"
+token.post "/resource", foo: Faraday.UploadIO.new("/path/to/bar.png", "image/png")
+token.put "/resource", foo: "bar"
+token.put "/resource", foo: Faraday.UploadIO.new("/path/to/bar.png", "image/png")
 token.delete "/resource"
 ```
 
