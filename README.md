@@ -1,8 +1,8 @@
 # DwollaV2
 
-![Build Status](https://travis-ci.org/dwolla/dwolla-v2-ruby.svg)
+![Build Status](https://travis-ci.org/Dwolla/dwolla-v2-ruby.svg)
 
-Dwolla V2 Ruby client. For the V1 Ruby client see [dwolla/dwolla-ruby](https://github.com/Dwolla/dwolla-ruby).
+Dwolla V2 Ruby client. For the V1 Ruby client see [Dwolla/dwolla-ruby](https://github.com/Dwolla/dwolla-ruby).
 
 ## Installation
 
@@ -155,8 +155,8 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/dwolla/dwolla-v2-ruby.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Dwolla/dwolla-v2-ruby.
 
 ## License
 
-The gem is available as open source under the terms of the [Unlicense License](http://unlicense.org/).
+The gem is available as open source under the terms of the [MIT License](https://github.com/Dwolla/dwolla-v2-ruby).

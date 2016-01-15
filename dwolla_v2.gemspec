@@ -11,8 +11,8 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "Dwolla V2 Ruby client"
   spec.description   = "Dwolla V2 Ruby client"
-  spec.homepage      = "https://github.com/dwolla/dwolla-v2-ruby"
-  spec.license       = "Unlicense"
+  spec.homepage      = "https://github.com/Dwolla/dwolla-v2-ruby"
+  spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
