@@ -4,6 +4,8 @@
 
 Dwolla V2 Ruby client. For the V1 Ruby client see [Dwolla/dwolla-ruby](https://github.com/Dwolla/dwolla-ruby).
 
+[API Documentation](https://docsv2.dwolla.com)
+
 ## Installation
 
 Add this line to your application's Gemfile:
