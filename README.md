@@ -11,7 +11,7 @@ Dwolla V2 Ruby client. For the V1 Ruby client see [Dwolla/dwolla-ruby](https://g
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dwolla_v2'
+gem 'dwolla_v2', '~> 0.1'
 ```
 
 And then execute:
