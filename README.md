@@ -162,3 +162,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/Dwolla
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://github.com/Dwolla/dwolla-v2-ruby).
+
+## Changelog
+
+- **0.1.1** - Handle 500 errors with HTML response bodies when requesting tokens
