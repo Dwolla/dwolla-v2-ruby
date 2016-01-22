@@ -7,15 +7,16 @@ module DwollaV2
     attr_reader :client, :access_token, :refresh_token, :expires_in, :scope, :app_id, :account_id
 
     delegate [:in_parallel] => :@conn
+    delegate [:reject] => :stringify_keys
 
     def initialize client, params
       @client = client
-      @access_token = params[:access_token]
-      @refresh_token = params[:refresh_token]
-      @expires_in = params[:expires_in]
-      @scope = params[:scope]
-      @app_id = params[:app_id]
-      @account_id = params[:account_id]
+      @access_token  = get_param params, :access_token
+      @refresh_token = get_param params, :refresh_token
+      @expires_in    = get_param params, :expires_in
+      @scope         = get_param params, :scope
+      @app_id        = get_param params, :app_id
+      @account_id    = get_param params, :account_id
       conn
       freeze
     end
@@ -55,6 +56,14 @@ module DwollaV2
         f.response :json, :content_type => /\bjson$/
         client.faraday.call(f) if client.faraday
         f.adapter Faraday.default_adapter unless client.faraday
+      end
+    end
+
+    def get_param params, key
+      if params.respond_to? key
+        params.public_send key
+      else
+        params[key]
       end
     end
 
