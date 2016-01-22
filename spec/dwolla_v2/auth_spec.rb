@@ -79,6 +79,21 @@ describe DwollaV2::Auth do
     }
   end
 
+  it ".refresh uses refresh_token method before key" do
+    old_token = Class.new do
+      def [](key); raise "should try method before key"; end
+      def refresh_token; "REFRESH_TOKEN"; end
+    end.new
+    stub_token_request client,
+                       {:grant_type => "refresh_token", :refresh_token => old_token.refresh_token},
+                       {:status => 200, :body => token_hash}
+    token = DwollaV2::Auth.refresh client, old_token
+    expect(token).to be_a DwollaV2::Token
+    expect(token.client).to be client
+    expect(token.access_token).to eq token_hash[:access_token]
+    expect(on_grant_spy).to have_received(:call).with(token)
+  end
+
   it ".refresh (success)" do
     old_token = {:refresh_token => "REFRESH_TOKEN"}
     stub_token_request client,

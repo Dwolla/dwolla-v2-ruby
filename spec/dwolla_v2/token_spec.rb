@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe DwollaV2::Token do
   let!(:client) { DwollaV2::Client.new :id => "CLIENT_ID", :secret => "CLIENT_SECRET" }
-  let!(:params) {{
+  let!(:hash_params) {{
     :access_token  => "ACCESS_TOKEN",
     :refresh_token => "REFRESH_TOKEN",
     :expires_in    => 123,
@@ -11,83 +11,134 @@ describe DwollaV2::Token do
     :account_id    => "92e19aa4-93d4-49e7-b3e6-32f6d7a2a64d",
     :unknown_param => "?"
   }}
+  let!(:method_params) {
+    Class.new do
+      def [](key);       raise "should use method not hash key :#{key}"; end
+      def access_token;  "ACCESS_TOKEN"; end
+      def refresh_token; "REFRESH_TOKEN"; end
+      def expires_in;    123; end
+      def scope;         "a,b,c"; end
+      def app_id;        "9a711db1-72bc-43a4-8d09-3288e8dd0a8b"; end
+      def account_id;    "92e19aa4-93d4-49e7-b3e6-32f6d7a2a64d"; end
+      def unknown_param; "?"; end
+    end.new
+  }
 
   it "#initialize sets client" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     expect(token.client).to be client
   end
 
-  it "#initialize sets access_token" do
-    token = DwollaV2::Token.new client, params
-    expect(token.access_token).to eq params[:access_token]
+  it "#initialize sets access_token (hash params)" do
+    token = DwollaV2::Token.new client, hash_params
+    expect(token.access_token).to eq hash_params[:access_token]
   end
 
-  it "#initialize sets refresh_token" do
-    token = DwollaV2::Token.new client, params
-    expect(token.refresh_token).to eq params[:refresh_token]
+  it "#initialize sets access_token (method params)" do
+    token = DwollaV2::Token.new client, method_params
+    expect(token.access_token).to eq method_params.access_token
   end
 
-  it "#initialize sets expires_in" do
-    token = DwollaV2::Token.new client, params
-    expect(token.expires_in).to eq params[:expires_in]
+  it "#initialize sets refresh_token (hash params)" do
+    token = DwollaV2::Token.new client, hash_params
+    expect(token.refresh_token).to eq hash_params[:refresh_token]
   end
 
-  it "#initialize sets scope" do
-    token = DwollaV2::Token.new client, params
-    expect(token.scope).to eq params[:scope]
+  it "#initialize sets refresh_token (method params)" do
+    token = DwollaV2::Token.new client, method_params
+    expect(token.refresh_token).to eq method_params.refresh_token
   end
 
-  it "#initialize sets app_id" do
-    token = DwollaV2::Token.new client, params
-    expect(token.app_id).to eq params[:app_id]
+  it "#initialize sets expires_in (hash params)" do
+    token = DwollaV2::Token.new client, hash_params
+    expect(token.expires_in).to eq hash_params[:expires_in]
   end
 
-  it "#initialize sets account_id" do
-    token = DwollaV2::Token.new client, params
-    expect(token.account_id).to eq params[:account_id]
+  it "#initialize sets expires_in (method params)" do
+    token = DwollaV2::Token.new client, method_params
+    expect(token.expires_in).to eq method_params.expires_in
+  end
+
+  it "#initialize sets scope (hash params)" do
+    token = DwollaV2::Token.new client, hash_params
+    expect(token.scope).to eq hash_params[:scope]
+  end
+
+  it "#initialize sets scope (method params)" do
+    token = DwollaV2::Token.new client, method_params
+    expect(token.scope).to eq method_params.scope
+  end
+
+  it "#initialize sets app_id (hash params)" do
+    token = DwollaV2::Token.new client, hash_params
+    expect(token.app_id).to eq hash_params[:app_id]
+  end
+
+  it "#initialize sets app_id (method params)" do
+    token = DwollaV2::Token.new client, method_params
+    expect(token.app_id).to eq method_params.app_id
+  end
+
+  it "#initialize sets account_id (hash params)" do
+    token = DwollaV2::Token.new client, hash_params
+    expect(token.account_id).to eq hash_params[:account_id]
+  end
+
+  it "#initialize sets account_id (method params)" do
+    token = DwollaV2::Token.new client, method_params
+    expect(token.account_id).to eq method_params.account_id
   end
 
   it "#initialize freezes token" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     expect(token.frozen?).to be true
   end
 
   it "#[]" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     expect(token[:access_token]).to be token.access_token
   end
 
   it "#stringify_keys" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     expect(token.stringify_keys).to eq({
-      "access_token"  => params[:access_token],
-      "refresh_token" => params[:refresh_token],
-      "expires_in"    => params[:expires_in],
-      "scope"         => params[:scope],
-      "app_id"        => params[:app_id],
-      "account_id"    => params[:account_id]
+      "access_token"  => hash_params[:access_token],
+      "refresh_token" => hash_params[:refresh_token],
+      "expires_in"    => hash_params[:expires_in],
+      "scope"         => hash_params[:scope],
+      "app_id"        => hash_params[:app_id],
+      "account_id"    => hash_params[:account_id]
     })
   end
 
   it "#stringify_keys rejects nil values" do
-    token = DwollaV2::Token.new client, params.merge(:account_id => nil)
+    token = DwollaV2::Token.new client, hash_params.merge(:account_id => nil)
     expect(token.stringify_keys).to eq({
-      "access_token"  => params[:access_token],
-      "refresh_token" => params[:refresh_token],
-      "expires_in"    => params[:expires_in],
-      "scope"         => params[:scope],
-      "app_id"        => params[:app_id]
+      "access_token"  => hash_params[:access_token],
+      "refresh_token" => hash_params[:refresh_token],
+      "expires_in"    => hash_params[:expires_in],
+      "scope"         => hash_params[:scope],
+      "app_id"        => hash_params[:app_id]
     })
   end
 
+  it "#reject gets forwarded to #stringify_keys" do
+    token = DwollaV2::Token.new client, hash_params
+    expect(
+      token.reject {|_,_| false }
+    ).to eq(
+      token.stringify_keys.reject {|_,_| false }
+    )
+  end
+
   it "#in_parallel" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     expect(token.instance_variable_get :@conn).to receive(:in_parallel)
     token.in_parallel
   end
 
   it "#get (success)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     res_body = {:hello => "world"}
     stub_request(:get, "#{token.client.api_url}#{path}")
@@ -101,7 +152,7 @@ describe DwollaV2::Token do
   end
 
   it "#get (error)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     res_body = {:error => "hello"}
     stub_request(:get, "#{token.client.api_url}#{path}")
@@ -120,7 +171,7 @@ describe DwollaV2::Token do
   end
 
   it "#get with params (success)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     query = {:foo => "bar"}
     res_body = {:hello => "world"}
@@ -136,7 +187,7 @@ describe DwollaV2::Token do
   end
 
   it "#get with params (error)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     query = {:foo => "bar"}
     res_body = {:error => "hello"}
@@ -157,7 +208,7 @@ describe DwollaV2::Token do
   end
 
   it "#post (success)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     res_body = {:hello => "world"}
     stub_request(:post, "#{token.client.api_url}#{path}")
@@ -171,7 +222,7 @@ describe DwollaV2::Token do
   end
 
   it "#post (error)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     res_body = {:error => "hello"}
     stub_request(:post, "#{token.client.api_url}#{path}")
@@ -190,7 +241,7 @@ describe DwollaV2::Token do
   end
 
   it "#post with params (success)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     body = {:foo => "bar"}
     res_body = {:hello => "world"}
@@ -207,7 +258,7 @@ describe DwollaV2::Token do
   end
 
   it "#post with params (error)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     body = {:foo => "bar"}
     res_body = {:error => "hello"}
@@ -229,7 +280,7 @@ describe DwollaV2::Token do
   end
 
   it "#put (success)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     res_body = {:hello => "world"}
     stub_request(:put, "#{token.client.api_url}#{path}")
@@ -243,7 +294,7 @@ describe DwollaV2::Token do
   end
 
   it "#put (error)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     res_body = {:error => "hello"}
     stub_request(:put, "#{token.client.api_url}#{path}")
@@ -262,7 +313,7 @@ describe DwollaV2::Token do
   end
 
   it "#put with params (success)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     body = {:foo => "bar"}
     res_body = {:hello => "world"}
@@ -279,7 +330,7 @@ describe DwollaV2::Token do
   end
 
   it "#put with params (error)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     body = {:foo => "bar"}
     res_body = {:error => "hello"}
@@ -301,7 +352,7 @@ describe DwollaV2::Token do
   end
 
   it "#patch (success)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     res_body = {:hello => "world"}
     stub_request(:patch, "#{token.client.api_url}#{path}")
@@ -315,7 +366,7 @@ describe DwollaV2::Token do
   end
 
   it "#patch (error)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     res_body = {:error => "hello"}
     stub_request(:patch, "#{token.client.api_url}#{path}")
@@ -334,7 +385,7 @@ describe DwollaV2::Token do
   end
 
   it "#patch with params (success)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     body = {:foo => "bar"}
     res_body = {:hello => "world"}
@@ -351,7 +402,7 @@ describe DwollaV2::Token do
   end
 
   it "#patch with params (error)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     body = {:foo => "bar"}
     res_body = {:error => "hello"}
@@ -373,7 +424,7 @@ describe DwollaV2::Token do
   end
 
   it "#delete (success)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     res_body = {:hello => "world"}
     stub_request(:delete, "#{token.client.api_url}#{path}")
@@ -387,7 +438,7 @@ describe DwollaV2::Token do
   end
 
   it "#delete (error)" do
-    token = DwollaV2::Token.new client, params
+    token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     res_body = {:error => "hello"}
     stub_request(:delete, "#{token.client.api_url}#{path}")

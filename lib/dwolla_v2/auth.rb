@@ -7,8 +7,9 @@ module DwollaV2
     end
 
     def self.refresh client, token, params = {}
-      raise ArgumentError.new "invalid refresh_token" unless token[:refresh_token].is_a? String
-      request_token client, {:grant_type => :refresh_token, :refresh_token => token[:refresh_token]}.merge(params)
+      refresh_token = token.respond_to?(:refresh_token) ? token.refresh_token : token[:refresh_token]
+      raise ArgumentError.new "invalid refresh_token" unless refresh_token.is_a? String
+      request_token client, {:grant_type => :refresh_token, :refresh_token => refresh_token}.merge(params)
     end
 
     def initialize client, params = {}
