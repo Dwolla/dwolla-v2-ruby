@@ -87,9 +87,9 @@ token = $dwolla.tokens.new token_data
 ```ruby
 token.get "/resource", foo: "bar"
 token.post "/resource", foo: "bar"
-token.post "/resource", foo: Faraday.UploadIO.new("/path/to/bar.png", "image/png")
+token.post "/resource", foo: Faraday::UploadIO.new("/path/to/bar.png", "image/png")
 token.put "/resource", foo: "bar"
-token.put "/resource", foo: Faraday.UploadIO.new("/path/to/bar.png", "image/png")
+token.put "/resource", foo: Faraday::UploadIO.new("/path/to/bar.png", "image/png")
 token.delete "/resource"
 ```
 
