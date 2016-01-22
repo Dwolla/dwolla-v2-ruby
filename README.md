@@ -11,7 +11,7 @@ Dwolla V2 Ruby client. For the V1 Ruby client see [Dwolla/dwolla-ruby](https://g
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dwolla_v2', '~> 0.1'
+gem 'dwolla_v2', '~> 0.2'
 ```
 
 And then execute:
@@ -165,4 +165,5 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
-- **0.1.1** - Handle 500 errors with HTML response bodies when requesting tokens
+- **0.2.0** - Works with `attr_encrypted`
+- **0.1.1** - Handle 500 error with HTML response body when requesting a token
