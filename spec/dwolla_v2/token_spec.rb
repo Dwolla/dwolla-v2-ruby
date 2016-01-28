@@ -140,12 +140,12 @@ describe DwollaV2::Token do
   it "#get (success)" do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
-    res_body = {:hello => "world"}
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
     stub_request(:get, "#{token.client.api_url}#{path}")
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect(token.get path_variant).to eq res_body
     end
@@ -159,7 +159,7 @@ describe DwollaV2::Token do
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect {
         token.get path_variant
@@ -174,13 +174,13 @@ describe DwollaV2::Token do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     query = {:foo => "bar"}
-    res_body = {:hello => "world"}
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
     stub_request(:get, "#{token.client.api_url}#{path}")
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"},
             :query => query)
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect(token.get path, query).to eq res_body
     end
@@ -196,7 +196,7 @@ describe DwollaV2::Token do
             :query => query)
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect {
         token.get path_variant, query
@@ -210,12 +210,12 @@ describe DwollaV2::Token do
   it "#post (success)" do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
-    res_body = {:hello => "world"}
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
     stub_request(:post, "#{token.client.api_url}#{path}")
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect(token.post path_variant).to eq res_body
     end
@@ -229,7 +229,7 @@ describe DwollaV2::Token do
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect {
         token.post path_variant
@@ -244,14 +244,14 @@ describe DwollaV2::Token do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     body = {:foo => "bar"}
-    res_body = {:hello => "world"}
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
     stub_request(:post, "#{token.client.api_url}#{path}")
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json",
                          "Content-Type" => "application/json"},
             :body => body)
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect(token.post path_variant, body).to eq res_body
     end
@@ -268,7 +268,7 @@ describe DwollaV2::Token do
             :body => body)
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect {
         token.post path_variant, body
@@ -282,12 +282,12 @@ describe DwollaV2::Token do
   it "#put (success)" do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
-    res_body = {:hello => "world"}
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
     stub_request(:put, "#{token.client.api_url}#{path}")
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect(token.put path_variant).to eq res_body
     end
@@ -301,7 +301,7 @@ describe DwollaV2::Token do
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect {
         token.put path_variant
@@ -316,14 +316,14 @@ describe DwollaV2::Token do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     body = {:foo => "bar"}
-    res_body = {:hello => "world"}
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
     stub_request(:put, "#{token.client.api_url}#{path}")
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json",
                          "Content-Type" => "application/json"},
             :body => body)
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect(token.put path_variant, body).to eq res_body
     end
@@ -340,7 +340,7 @@ describe DwollaV2::Token do
             :body => body)
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect {
         token.put path, body
@@ -354,12 +354,12 @@ describe DwollaV2::Token do
   it "#patch (success)" do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
-    res_body = {:hello => "world"}
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
     stub_request(:patch, "#{token.client.api_url}#{path}")
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect(token.patch path).to eq res_body
     end
@@ -373,7 +373,7 @@ describe DwollaV2::Token do
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect {
         token.patch path
@@ -388,14 +388,14 @@ describe DwollaV2::Token do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
     body = {:foo => "bar"}
-    res_body = {:hello => "world"}
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
     stub_request(:patch, "#{token.client.api_url}#{path}")
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json",
                          "Content-Type" => "application/json"},
             :body => body)
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect(token.patch path_variant, body).to eq res_body
     end
@@ -412,7 +412,7 @@ describe DwollaV2::Token do
             :body => body)
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect {
         token.patch path_variant, body
@@ -426,12 +426,12 @@ describe DwollaV2::Token do
   it "#delete (success)" do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
-    res_body = {:hello => "world"}
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
     stub_request(:delete, "#{token.client.api_url}#{path}")
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
       .to_return(:status => 200,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect(token.delete path_variant).to eq res_body
     end
@@ -445,7 +445,7 @@ describe DwollaV2::Token do
       .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
       .to_return(:status => 400,
                  :headers => {"Content-Type" => "application/json"},
-                 :body => JSON.generate(res_body))
+                 :body => generate_json(res_body))
     path_variants(path).each do |path_variant|
       expect {
         token.delete path_variant
@@ -464,5 +464,9 @@ describe DwollaV2::Token do
       client.api_url + path,
       path[1..-1]
     ].map {|pv| [pv, {:_links => {:self => {:href => pv}}}] }.flatten
+  end
+
+  def generate_json obj
+    JSON.generate obj.inject({}) { |h, (k, v)| h[k] = v.is_a?(Time) ? v.iso8601(3) : v; h }
   end
 end

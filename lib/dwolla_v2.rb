@@ -16,6 +16,7 @@ require "dwolla_v2/error"
 require "dwolla_v2/util"
 
 require "dwolla_v2/middleware/symbolize_response_body"
+require "dwolla_v2/middleware/parse_iso8601_response_body"
 require "dwolla_v2/middleware/handle_errors"
 
 # OAuth errors https://tools.ietf.org/html/rfc6749
