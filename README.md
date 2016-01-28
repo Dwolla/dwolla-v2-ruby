@@ -165,5 +165,6 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **0.3.0** - ISO8601 values in response body are converted to `Time` objects
 - **0.2.0** - Works with `attr_encrypted`
 - **0.1.1** - Handle 500 error with HTML response body when requesting a token

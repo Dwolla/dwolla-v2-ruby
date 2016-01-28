@@ -52,6 +52,7 @@ module DwollaV2
         f.request :multipart
         f.request :json
         f.use HandleErrors
+        f.use ParseIso8601ResponseBody
         f.use SymbolizeResponseBody
         f.response :json, :content_type => /\bjson$/
         client.faraday.call(f) if client.faraday
