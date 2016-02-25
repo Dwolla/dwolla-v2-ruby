@@ -44,7 +44,7 @@ end
 Get an application token:
 
 ```ruby
-$dwolla.auths.client scope: "ManagerCustomers|Funding"
+$dwolla.auths.client scope: "ManageCustomers|Funding"
 ```
 
 Get an account token:
@@ -64,7 +64,7 @@ class YourAuthController < ApplicationController
 
   def auth
     $dwolla.auths.new redirect_uri: "https://yoursite.com/callback",
-                      scope: "ManagerCustomers|Funding"
+                      scope: "ManageCustomers|Funding"
   end
 end
 ```
