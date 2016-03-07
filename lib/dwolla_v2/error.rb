@@ -1,7 +1,5 @@
 module DwollaV2
   class Error < StandardError
-    attr_reader :error, :error_description, :error_uri, :code, :message, :_links, :_embedded
-
     def self.raise! error
       raise self.new unless error.is_a? Hash
       if klass = error_class(error[:error] || error[:code])
@@ -11,21 +9,24 @@ module DwollaV2
       end
     end
 
-    def initialize params = {}
-      @error = params[:error]
-      @error_description = params[:error_description]
-      @error_uri = params[:error_uri]
-      @code = params[:code]
-      @message = params[:message]
-      @_links = params[:_links]
-      @_embedded = params[:_embedded]
+    def initialize error = nil
+      @error = error
+    end
+
+    def message
+      @error[:message]
+    end
+
+    def [] key
+      @error[key] rescue nil
+    end
+
+    def method_missing method
+      @error[method] rescue nil
     end
 
     def to_s
-      [:error, :error_description, :error_uri, :code, :message, :_links, :_embedded]
-        .map {|a| "#{a}: \"#{public_send(a)}\"" if public_send(a) }
-        .compact
-        .join ", "
+      @error.to_s
     end
 
     private

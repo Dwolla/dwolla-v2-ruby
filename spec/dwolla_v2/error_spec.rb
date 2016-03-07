@@ -225,45 +225,37 @@ describe DwollaV2::Error do
     }
   end
 
-  it "#initialize sets error" do
-    error = "error"
-    e = DwollaV2::Error.new :error => error
-    expect(e.error).to eq error
-  end
-
-  it "#initialize sets error_description" do
-    error_description = "error_description"
-    e = DwollaV2::Error.new :error_description => error_description
-    expect(e.error_description).to eq error_description
-  end
-
-  it "#initialize sets error_uri" do
-    error_uri = "error_uri"
-    e = DwollaV2::Error.new :error_uri => error_uri
-    expect(e.error_uri).to eq error_uri
-  end
-
-  it "#initialize sets code" do
-    code = "code"
-    e = DwollaV2::Error.new :code => code
-    expect(e.code).to eq code
-  end
-
-  it "#initialize sets message" do
+  it "#message" do
     message = "message"
     e = DwollaV2::Error.new :message => message
     expect(e.message).to eq message
   end
 
-  it "#initialize sets _links" do
-    _links = "_links"
-    e = DwollaV2::Error.new :_links => _links
-    expect(e._links).to eq _links
+  it "#[] passes key to error" do
+    error = "error"
+    e = DwollaV2::Error.new :error => error
+    expect(e[:error]).to eq error
   end
 
-  it "#initialize sets _embedded" do
-    _embedded = "_embedded"
-    e = DwollaV2::Error.new :_embedded => _embedded
-    expect(e._embedded).to eq _embedded
+  it "#[] returns nil if error is HTML" do
+    e = DwollaV2::Error.new "string"
+    expect(e[:foo]).to be nil
+  end
+
+  it "#method_missing passes method to error" do
+    error = "error"
+    e = DwollaV2::Error.new :error => error
+    expect(e.error).to eq error
+  end
+
+  it "#method_missing returns nil if error is HTML" do
+    e = DwollaV2::Error.new "string"
+    expect(e[:foo]).to be nil
+  end
+
+  it "#to_s" do
+    message = "message"
+    e = DwollaV2::Error.new :message => message
+    expect(e.to_s).to eq "{:message=>\"message\"}"
   end
 end
