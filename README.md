@@ -11,7 +11,7 @@ Dwolla V2 Ruby client. For the V1 Ruby client see [Dwolla/dwolla-ruby](https://g
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dwolla_v2', '~> 0.2'
+gem 'dwolla_v2', '~> 0.4'
 ```
 
 And then execute:
@@ -64,7 +64,8 @@ class YourAuthController < ApplicationController
 
   def auth
     $dwolla.auths.new redirect_uri: "https://yoursite.com/callback",
-                      scope: "ManageCustomers|Funding"
+                      scope: "ManageCustomers|Funding",
+                      state: session[:state] ||= SecureRandom.hex(8)
   end
 end
 ```
@@ -97,21 +98,47 @@ In parallel:
 
 ```ruby
 foo, bar = nil
-
 token.in_parallel do
-  foo = token.get "/foo" # => nil
-  bar = token.get "/bar" # => nil
+  foo = token.get "/foo"
+  bar = token.get "/bar"
 end
-
-foo # => { ... }
-bar # => { ... }
+puts foo # only ready after `in_parallel` block has executed
+puts bar # only ready after `in_parallel` block has executed
 ```
 
-Accessing response headers:
+#### Responses
+
+Requests return a `DwollaV2::Response`.
+
+**Response status**:
+
+```ruby
+res = token.post "/customers", customer_params
+res.status # => 201
+```
+
+**Response headers**:
 
 ```ruby
 customer = token.post "/customers", customer_params
-customer = token.get customer.headers[:location]
+customer.headers[:location] # => "https://api.dwolla.com/customers/aa76ca27-1920-4a0a-9bbe-a22085c0010e"
+```
+
+**Response body**:
+
+[Enumerable methods](http://ruby-doc.org/core-2.3.0/Enumerable.html), `#==`, and `#[]` are
+forwarded to a response's body. For example:
+
+```ruby
+customer = token.get "/customers/aa76ca27-1920-4a0a-9bbe-a22085c0010e"
+
+customer.collect {|k,v| k }      # => [:_links, :id, ...]
+customer.body.collect {|k,v| k } # => [:_links, :id, ...]
+
+customer == customer.body # => true
+
+customer[:name]      # => John Doe
+customer.body[:name] # => John Doe
 ```
 
 #### Errors
@@ -165,6 +192,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **0.4.0** - Refactor and document how `DwollaV2::Response` works
 - **0.3.1** - better `DwollaV2::Error` error messages
 - **0.3.0** - ISO8601 values in response body are converted to `Time` objects
 - **0.2.0** - Works with `attr_encrypted`
