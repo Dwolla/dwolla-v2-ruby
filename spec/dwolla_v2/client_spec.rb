@@ -78,6 +78,11 @@ describe DwollaV2::Client do
     expect(client.environment).to eq :sandbox
   end
 
+  it "#environment= accepts string" do
+    client = DwollaV2::Client.new(:id => id, :secret => secret) {|c| c.environment = "sandbox" }
+    expect(client.environment).to eq :sandbox
+  end
+
   it "#environment= raises ArgumentError if invalid environment" do
     expect {
       DwollaV2::Client.new(:id => id, :secret => secret) {|c| c.environment = :invalid }

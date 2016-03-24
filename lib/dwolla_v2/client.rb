@@ -28,6 +28,7 @@ module DwollaV2
     end
 
     def environment= env
+      env = :"#{env}"
       raise ArgumentError.new "invalid environment" unless ENVIRONMENTS.has_key? env
       @environment = env
     end
