@@ -1,7 +1,7 @@
 module DwollaV2
   class Client
     ENVIRONMENTS = {
-      :default => {
+      :production => {
         :auth_url  => "https://www.dwolla.com/oauth/v2/authenticate",
         :token_url => "https://www.dwolla.com/oauth/v2/token",
         :api_url   => "https://api.dwolla.com"
@@ -35,7 +35,7 @@ module DwollaV2
 
     def environment env = nil
       self.environment = env unless env.nil?
-      @environment || :default
+      @environment || :production
     end
 
     def on_grant &callback
@@ -74,7 +74,7 @@ module DwollaV2
     end
 
     def inspect
-      Util.pretty_inspect self.class.name, id: id, secret: secret
+      Util.pretty_inspect self.class.name, id: id, secret: secret, environment: environment
     end
   end
 end

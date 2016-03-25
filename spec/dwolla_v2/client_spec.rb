@@ -6,7 +6,7 @@ describe DwollaV2::Client do
 
   it "::ENVIRONMENTS" do
     expect(DwollaV2::Client::ENVIRONMENTS).to eq({
-      :default => {
+      :production => {
         :auth_url  => "https://www.dwolla.com/oauth/v2/authenticate",
         :token_url => "https://www.dwolla.com/oauth/v2/token",
         :api_url   => "https://api.dwolla.com"
@@ -99,7 +99,7 @@ describe DwollaV2::Client do
 
   it "#environment" do
     client = DwollaV2::Client.new :id => id, :secret => secret
-    expect(client.environment).to eq :default
+    expect(client.environment).to eq :production
   end
 
   it "#on_grant with block" do
