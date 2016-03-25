@@ -2,7 +2,7 @@ module DwollaV2
   class Error < StandardError
     extend Forwardable
 
-    delegate [:status, :headers] => :@response
+    delegate [:status] => :@response
     delegate [:to_s, :to_json] => :response_body
 
     def self.raise! response
@@ -18,6 +18,10 @@ module DwollaV2
 
     def initialize response
       @response = response
+    end
+
+    def headers
+      @response.response_headers
     end
 
     def respond_to? method, include_private = false
@@ -59,7 +63,9 @@ module DwollaV2
     private
 
     def self.turn_into_response response
-      OpenStruct.new body: Util.deep_super_hasherize(Util.deep_parse_iso8601_values response)
+      OpenStruct.new status: nil,
+                     response_headers: nil,
+                     body: Util.deep_super_hasherize(Util.deep_parse_iso8601_values response)
     end
 
     def self.error_class error_code

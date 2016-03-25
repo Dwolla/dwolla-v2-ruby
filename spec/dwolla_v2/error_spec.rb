@@ -247,11 +247,11 @@ describe DwollaV2::Error do
   end
 
   it "#headers" do
-    headers = { foo: "bar" }
+    response_headers = { foo: "bar" }
     expect {
-      DwollaV2::Error.raise! OpenStruct.new(headers: headers, body: nil)
+      DwollaV2::Error.raise! OpenStruct.new(response_headers: response_headers, body: nil)
     }.to raise_error {|e|
-      expect(e.headers).to eq headers
+      expect(e.headers).to eq response_headers
     }
   end
 

@@ -4,7 +4,7 @@ require "ostruct"
 describe DwollaV2::Response do
   let!(:raw_response) {
     OpenStruct.new status: 200,
-                   headers: { location: "https://foo.bar" },
+                   response_headers: { location: "https://foo.bar" },
                    body: DwollaV2::SuperHash[foo: "bar"]
   }
 
@@ -15,7 +15,7 @@ describe DwollaV2::Response do
 
   it "#headers" do
     response = DwollaV2::Response.new raw_response
-    expect(response.headers).to eq raw_response.headers
+    expect(response.headers).to eq raw_response.response_headers
   end
 
   it "#respond_to?" do
