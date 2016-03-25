@@ -2,15 +2,11 @@ module DwollaV2
   class Response
     extend Forwardable
 
-    delegate [:status] => :@response
+    delegate [:status, :headers] => :@response
     delegate [:to_s, :to_json] => :response_body
 
     def initialize response
       @response = response
-    end
-
-    def headers
-      @response.response_headers
     end
 
     def respond_to? method, include_private = false
