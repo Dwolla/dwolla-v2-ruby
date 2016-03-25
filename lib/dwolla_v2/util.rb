@@ -4,7 +4,7 @@ module DwollaV2
       if obj.is_a? Hash
         SuperHash[obj.map{|k,v| [k, deep_super_hasherize(v)] }]
       elsif obj.is_a? Array
-        obj.map {|i| super_hasherize(i) }
+        obj.map {|i| deep_super_hasherize(i) }
       else
         obj
       end

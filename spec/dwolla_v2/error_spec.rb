@@ -247,11 +247,28 @@ describe DwollaV2::Error do
   end
 
   it "#headers" do
+    headers = { foo: "bar" }
+    expect {
+      DwollaV2::Error.raise! OpenStruct.new(headers: headers, body: nil)
+    }.to raise_error {|e|
+      expect(e.headers).to eq headers
+    }
+  end
+
+  it "#headers uses @response.response_headers if no @response.headers" do
     response_headers = { foo: "bar" }
     expect {
-      DwollaV2::Error.raise! OpenStruct.new(response_headers: response_headers, body: nil)
+      DwollaV2::Error.raise! Struct.new(:response_headers, :body).new(response_headers, nil)
     }.to raise_error {|e|
       expect(e.headers).to eq response_headers
+    }
+  end
+
+  it "#headers returns nil if no @response.headers or @response.response_headers" do
+    expect {
+      DwollaV2::Error.raise! Struct.new(:body).new
+    }.to raise_error {|e|
+      expect(e.headers).to be nil
     }
   end
 

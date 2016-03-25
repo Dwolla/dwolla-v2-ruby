@@ -18,6 +18,20 @@ describe DwollaV2::Response do
     expect(response.headers).to eq raw_response.headers
   end
 
+  it "#headers uses @response.response_headers if no @response.headers" do
+    raw_response_no_headers = Struct.new(:status, :response_headers, :body)
+      .new(raw_response.status, raw_response.headers, raw_response.body)
+    response = DwollaV2::Response.new raw_response_no_headers
+    expect(response.headers).to eq raw_response.headers
+  end
+
+  it "#headers returns nil if no @response.headers or @response.response_headers" do
+    raw_response_no_headers_or_response_headers = Struct.new(:status, :body)
+      .new(raw_response.status, raw_response.body)
+    response = DwollaV2::Response.new raw_response_no_headers_or_response_headers
+    expect(response.headers).to be nil
+  end
+
   it "#respond_to?" do
     response = DwollaV2::Response.new raw_response
     expect(response.respond_to? :foo).to be true

@@ -21,7 +21,11 @@ module DwollaV2
     end
 
     def headers
-      @response.response_headers
+      if @response.respond_to? :response_headers
+        @response.response_headers
+      elsif @response.respond_to? :headers
+        @response.headers
+      end
     end
 
     def respond_to? method, include_private = false
@@ -64,7 +68,7 @@ module DwollaV2
 
     def self.turn_into_response response
       OpenStruct.new status: nil,
-                     response_headers: nil,
+                     headers: nil,
                      body: Util.deep_super_hasherize(Util.deep_parse_iso8601_values response)
     end
 
