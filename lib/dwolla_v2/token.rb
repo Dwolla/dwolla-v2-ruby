@@ -43,6 +43,12 @@ module DwollaV2
       end
     end
 
+    def inspect
+      Util.pretty_inspect self.class.name,
+        client: client, access_token: access_token, refresh_token: refresh_token,
+        expires_in: expires_in, scope: scope, app_id: app_id, account_id: account_id
+    end
+
     private
 
     def conn
@@ -52,8 +58,8 @@ module DwollaV2
         f.request :multipart
         f.request :json
         f.use HandleErrors
-        f.use ParseIso8601ResponseBody
-        f.use SymbolizeResponseBody
+        f.use DeepSuperHasherizeResponseBody
+        f.use DeepParseIso8601ResponseBody
         f.response :json, :content_type => /\bjson$/
         client.faraday.call(f) if client.faraday
         f.adapter Faraday.default_adapter unless client.faraday

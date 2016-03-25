@@ -2,6 +2,7 @@ require "base64"
 require "uri"
 require "json"
 require "forwardable"
+require "ostruct"
 
 require "hashie"
 
@@ -18,8 +19,8 @@ require "dwolla_v2/error"
 require "dwolla_v2/util"
 require "dwolla_v2/super_hash"
 
-require "dwolla_v2/middleware/symbolize_response_body"
-require "dwolla_v2/middleware/parse_iso8601_response_body"
+require "dwolla_v2/middleware/deep_parse_iso8601_response_body"
+require "dwolla_v2/middleware/deep_super_hasherize_response_body"
 require "dwolla_v2/middleware/handle_errors"
 
 # OAuth errors https://tools.ietf.org/html/rfc6749

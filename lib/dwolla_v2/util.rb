@@ -1,10 +1,10 @@
 module DwollaV2
   module Util
-    def self.deep_symbolize_keys obj
+    def self.deep_super_hasherize obj
       if obj.is_a? Hash
-        Hash[obj.map{|k,v| [k.to_sym, deep_symbolize_keys(v)] }]
+        SuperHash[obj.map{|k,v| [k, deep_super_hasherize(v)] }]
       elsif obj.is_a? Array
-        obj.map {|i| deep_symbolize_keys(i) }
+        obj.map {|i| super_hasherize(i) }
       else
         obj
       end
@@ -26,6 +26,15 @@ module DwollaV2
       str.split("_").map do |i|
         i.sub(/^(.)/) { $1.capitalize }
       end.join
+    end
+
+    def self.pretty_inspect klass_name, attrs, append = nil
+      [
+        "#<#{klass_name}",
+        attrs.map {|k,v| " #{k}=#{v.inspect}" unless v.nil? },
+        (" #{append.is_a?(String) ? append.inspect : append}" unless append.nil?),
+        ">"
+      ].flatten.join
     end
   end
 end

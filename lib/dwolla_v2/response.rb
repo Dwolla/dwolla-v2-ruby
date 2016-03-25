@@ -2,21 +2,39 @@ module DwollaV2
   class Response
     extend Forwardable
 
-    # http://ruby-doc.org/core-2.3.0/Enumerable.html
-    ENUMERABLE = \
-      [:all?, :any?, :chunk, :chunk_while, :collect, :collect_concat, :count, :cycle,
-       :detect, :drop, :drop_while, :each_cons, :each_entry, :each_slice, :each_with_index,
-       :each_with_object, :entries, :find, :find_all, :find_index, :first, :flat_map, :grep,
-       :grep_v, :group_by, :include?, :inject, :lazy, :map, :max, :max_by, :member?, :min,
-       :min_by, :minmax, :minmax_by, :none?, :one?, :partition, :reduce, :reject,
-       :reverse_each, :select, :slice_after, :slice_before, :slice_when, :sort, :sort_by,
-       :take, :take_while, :to_a, :to_h, :zip]
-
-    delegate [:status, :headers, :body] => :@response
-    delegate [*ENUMERABLE, :==, :[]] => :response_body
+    delegate [:status, :headers] => :@response
+    delegate [:to_s, :to_json] => :response_body
 
     def initialize response
       @response = response
+    end
+
+    def respond_to? method, include_private = false
+      super || response_body.respond_to?(method)
+    end
+
+    def is_a? klass
+      super || response_body.is_a?(klass)
+    end
+
+    def kind_of? klass
+      super || response_body.kind_of?(klass)
+    end
+
+    def == other
+      super || response_body == other
+    end
+
+    def method_missing method, *args, &block
+      if response_body.respond_to? method
+        response_body.public_send method, *args, &block
+      else
+        super
+      end
+    end
+
+    def inspect
+      Util.pretty_inspect self.class.name, { status: status, headers: headers }, response_body
     end
 
     private
