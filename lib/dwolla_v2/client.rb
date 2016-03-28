@@ -1,7 +1,7 @@
 module DwollaV2
   class Client
     ENVIRONMENTS = {
-      :default => {
+      :production => {
         :auth_url  => "https://www.dwolla.com/oauth/v2/authenticate",
         :token_url => "https://www.dwolla.com/oauth/v2/token",
         :api_url   => "https://api.dwolla.com"
@@ -28,13 +28,14 @@ module DwollaV2
     end
 
     def environment= env
+      env = :"#{env}"
       raise ArgumentError.new "invalid environment" unless ENVIRONMENTS.has_key? env
       @environment = env
     end
 
     def environment env = nil
       self.environment = env unless env.nil?
-      @environment || :default
+      @environment || :production
     end
 
     def on_grant &callback
@@ -51,6 +52,9 @@ module DwollaV2
       @conn ||= Faraday.new do |f|
         f.request :basic_auth, id, secret
         f.request :url_encoded
+        f.use HandleErrors
+        f.use DeepSuperHasherizeResponseBody
+        f.use DeepParseIso8601ResponseBody
         f.response :json, :content_type => /\bjson$/
         faraday.call(f) if faraday
         f.adapter Faraday.default_adapter unless faraday
@@ -67,6 +71,10 @@ module DwollaV2
 
     def api_url
       ENVIRONMENTS[environment][:api_url]
+    end
+
+    def inspect
+      Util.pretty_inspect self.class.name, id: id, secret: secret, environment: environment
     end
   end
 end

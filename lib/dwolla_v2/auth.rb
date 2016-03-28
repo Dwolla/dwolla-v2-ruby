@@ -46,11 +46,10 @@ module DwollaV2
 
     def self.request_token client, params
       res = client.conn.post client.token_url, params
-      res_body = Util.deep_symbolize_keys res.body
-      if res.status >= 400 || (res_body.is_a?(Hash) && res_body.has_key?(:error))
-        Error.raise! res_body
+      if !res.body.is_a?(Hash) || res.body.has_key?(:error)
+        Error.raise! res
       else
-        token = Token.new client, res_body
+        token = Token.new client, res.body
         client.on_grant.call token unless client.on_grant.nil?
         token
       end

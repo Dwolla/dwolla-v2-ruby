@@ -1,5 +1,5 @@
 module DwollaV2
-  class ParseIso8601ResponseBody
+  class DeepParseIso8601ResponseBody
     def initialize app
       @app = app
     end
