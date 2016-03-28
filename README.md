@@ -40,14 +40,14 @@ $dwolla = DwollaV2::Client.new(id: ENV["DWOLLA_ID"], secret: ENV["DWOLLA_SECRET"
 end
 ```
 
-`environment=` defaults to `:production`, and accepts either a String or a Symbol.
+`environment=` defaults to `:production` and accepts either a String or a Symbol.
 
 ### Configure an `on_grant` callback (optional)
 
 An `on_grant` callback is useful for storing new tokens when they are granted. For example, you
-may have a `TokenData` ActiveRecord model that you use to store your tokens. The `on_grant` callback
-is called with the `DwollaV2::Token` that was just granted by the server. You can pass this to the
-`create!` method of an ActiveRecord model to create a record using the token's data.
+may have a `YourTokenData` ActiveRecord model that you use to store your tokens. The `on_grant`
+callback is called with the `DwollaV2::Token` that was just granted by the server. You can pass
+this to the `create!` method of an ActiveRecord model to create a record using the token's data.
 
 ```ruby
 # config/initializers/dwolla.rb
@@ -85,11 +85,9 @@ end
 
 ## `DwollaV2::Token`
 
-### Basics
-
 Tokens can be used to make requests to the Dwolla V2 API. There are two types of tokens:
 
-#### Application tokens
+### Application tokens
 
 Application tokens are used to access the API on behalf of a consumer application. API resources that
 belong to an application include: `webhook-subscriptions`, `events`, and `webhooks`. Application
@@ -105,7 +103,7 @@ application_token = $dwolla.auths.client
 *Application tokens do not include a `refresh_token`. When an application token expires, generate
 a new one using `$dwolla.auths.client`.*
 
-#### Account tokens
+### Account tokens
 
 Account tokens are used to access the API on behalf of a Dwolla account. API resources that belong
 to an account include `customers`, `funding-sources`, `documents`, `mass-payments`, `mass-payment-items`,
@@ -153,7 +151,7 @@ class YourAuthController < ApplicationController
 end
 ```
 
-#### Refreshing tokens
+### Refreshing tokens
 
 Tokens with `refresh_token`s can be refreshed using `$dwolla.auths.refresh`, which takes a
 `DwollaV2::Token` as its first argument and returns a new token.
@@ -163,7 +161,7 @@ refreshed_token = $dwolla.auths.refresh(expired_token)
 # => #<DwollaV2::Token client=#<DwollaV2::Client id="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=3600 scope="ManageCustomers|Funding" account_id="...">
 ```
 
-#### Initializing tokens:
+### Initializing tokens:
 
 `DwollaV2::Token`s can be initialized with the following attributes:
 
@@ -252,9 +250,9 @@ rescue DwollaV2::Error => e
 end
 ```
 
-**`DwollaV2::Error` subclasses:**
+### `DwollaV2::Error` subclasses:
 
-See https://docsv2.dwolla.com/#errors for more.
+*See https://docsv2.dwolla.com/#errors for more info.*
 
 - `DwollaV2::AccessDeniedError`
 - `DwollaV2::InvalidCredentialsError`
