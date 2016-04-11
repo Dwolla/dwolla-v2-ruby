@@ -52,6 +52,7 @@ module DwollaV2
       @conn ||= Faraday.new do |f|
         f.request :basic_auth, id, secret
         f.request :url_encoded
+        f.use SetUserAgent
         f.use HandleErrors
         f.use DeepSuperHasherizeResponseBody
         f.use DeepParseIso8601ResponseBody
