@@ -57,6 +57,7 @@ module DwollaV2
         f.headers[:accept] = "application/vnd.dwolla.v1.hal+json"
         f.request :multipart
         f.request :json
+        f.use SetUserAgent
         f.use HandleErrors
         f.use DeepSuperHasherizeResponseBody
         f.use DeepParseIso8601ResponseBody

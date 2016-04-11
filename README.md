@@ -26,6 +26,12 @@ Or install it yourself as:
 
 ### Basic usage
 
+Create a client using your application's consumer key and secret found on the applications page
+([UAT][apuat], [Production][approd]).
+
+[apuat]: https://uat.dwolla.com/applications
+[approd]: https://www.dwolla.com/applications
+
 ```ruby
 # config/initializers/dwolla.rb
 $dwolla = DwollaV2::Client.new(id: ENV["DWOLLA_ID"], secret: ENV["DWOLLA_SECRET"])
@@ -304,6 +310,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **1.0.1** - Set user agent header.
 - **1.0.0** - Refactor `Error` class to be more like response, add ability to access keys using methods.
 - **0.4.0** - Refactor and document how `DwollaV2::Response` works
 - **0.3.1** - better `DwollaV2::Error` error messages

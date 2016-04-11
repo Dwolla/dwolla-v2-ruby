@@ -19,6 +19,7 @@ require "dwolla_v2/error"
 require "dwolla_v2/util"
 require "dwolla_v2/super_hash"
 
+require "dwolla_v2/middleware/set_user_agent"
 require "dwolla_v2/middleware/deep_parse_iso8601_response_body"
 require "dwolla_v2/middleware/deep_super_hasherize_response_body"
 require "dwolla_v2/middleware/handle_errors"
