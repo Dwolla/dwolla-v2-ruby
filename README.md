@@ -275,7 +275,7 @@ end
 - `DwollaV2::InvalidAccessTokenError`
 - `DwollaV2::InvalidScopeError`
 - `DwollaV2::UnauthorizedClientError`
-- `DwollaV2::InvalidAccount_statusError`
+- `DwollaV2::InvalidAccountStatusError`
 - `DwollaV2::InvalidScopesError`
 - `DwollaV2::UnsupportedGrantTypeError`
 - `DwollaV2::InvalidApplicationStatusError`
