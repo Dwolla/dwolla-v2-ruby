@@ -213,6 +213,17 @@ puts foo # only ready after `in_parallel` block has executed
 puts bar # only ready after `in_parallel` block has executed
 ```
 
+#### Setting headers
+
+To set additional headers on a request you can pass a `Hash` of headers as the 3rd argument.
+
+For example:
+
+```ruby
+token.post "customers", { firstName: "John", lastName: "Doe", email: "jd@doe.com" },
+                        { 'Idempotency-Key': 'a52fcf63-0730-41c3-96e8-7147b5d1fb01' }
+```
+
 ## Responses
 
 Requests return a `DwollaV2::Response`.
@@ -310,6 +321,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **1.1.0** - Support setting headers on a per-request basis.
 - **1.0.1** - Set user agent header.
 - **1.0.0** - Refactor `Error` class to be more like response, add ability to access keys using methods.
 - **0.4.0** - Refactor and document how `DwollaV2::Response` works
