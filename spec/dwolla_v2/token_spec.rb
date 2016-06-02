@@ -23,6 +23,9 @@ describe DwollaV2::Token do
       def unknown_param; "?"; end
     end.new
   }
+  let!(:headers) {{
+    :foo => 'bar'
+  }}
 
   it "#initialize sets client" do
     token = DwollaV2::Token.new client, hash_params
@@ -207,6 +210,43 @@ describe DwollaV2::Token do
     end
   end
 
+  it "#get with headers (success)" do
+    token = DwollaV2::Token.new client, hash_params
+    path = "/foo"
+    query = {:foo => "bar"}
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
+    stub_request(:get, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"}.merge(headers),
+            :query => query)
+      .to_return(:status => 200,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => generate_json(res_body))
+    path_variants(path).each do |path_variant|
+      expect(token.get path, query, headers).to eq res_body
+    end
+  end
+
+  it "#get with headers (error)" do
+    token = DwollaV2::Token.new client, hash_params
+    path = "/foo"
+    query = {:foo => "bar"}
+    res_body = {:error => "hello"}
+    stub_request(:get, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"}.merge(headers),
+            :query => query)
+      .to_return(:status => 400,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => generate_json(res_body))
+    path_variants(path).each do |path_variant|
+      expect {
+        token.get path_variant, query, headers
+      }.to raise_error {|e|
+        expect(e).to be_a DwollaV2::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
+  end
+
   it "#post (success)" do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
@@ -272,6 +312,42 @@ describe DwollaV2::Token do
     path_variants(path).each do |path_variant|
       expect {
         token.post path_variant, body
+      }.to raise_error {|e|
+        expect(e).to be_a DwollaV2::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
+  end
+
+  it "#post with headers (success)" do
+    token = DwollaV2::Token.new client, hash_params
+    path = "/foo"
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
+    stub_request(:post, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"}.merge(headers))
+      .to_return(:status => 200,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => generate_json(res_body))
+    path_variants(path).each do |path_variant|
+      expect(token.post path_variant, nil, headers).to eq res_body
+    end
+  end
+
+  it "#post with headers (error)" do
+    token = DwollaV2::Token.new client, hash_params
+    path = "/foo"
+    body = {:foo => "bar"}
+    res_body = {:error => "hello"}
+    stub_request(:post, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json",
+                         "Content-Type" => "application/json"}.merge(headers),
+            :body => body)
+      .to_return(:status => 400,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => generate_json(res_body))
+    path_variants(path).each do |path_variant|
+      expect {
+        token.post path_variant, body, headers
       }.to raise_error {|e|
         expect(e).to be_a DwollaV2::Error
         expect(e.error).to eq res_body[:error]
@@ -351,6 +427,42 @@ describe DwollaV2::Token do
     end
   end
 
+  it "#put with headers (success)" do
+    token = DwollaV2::Token.new client, hash_params
+    path = "/foo"
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
+    stub_request(:put, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"}.merge(headers))
+      .to_return(:status => 200,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => generate_json(res_body))
+    path_variants(path).each do |path_variant|
+      expect(token.put path_variant, nil, headers).to eq res_body
+    end
+  end
+
+  it "#put with headers (error)" do
+    token = DwollaV2::Token.new client, hash_params
+    path = "/foo"
+    body = {:foo => "bar"}
+    res_body = {:error => "hello"}
+    stub_request(:put, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json",
+                         "Content-Type" => "application/json"}.merge(headers),
+            :body => body)
+      .to_return(:status => 400,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => generate_json(res_body))
+    path_variants(path).each do |path_variant|
+      expect {
+        token.put path_variant, body, headers
+      }.to raise_error {|e|
+        expect(e).to be_a DwollaV2::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
+  end
+
   it "#patch (success)" do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
@@ -423,6 +535,42 @@ describe DwollaV2::Token do
     end
   end
 
+  it "#patch with headers (success)" do
+    token = DwollaV2::Token.new client, hash_params
+    path = "/foo"
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
+    stub_request(:patch, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"}.merge(headers))
+      .to_return(:status => 200,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => generate_json(res_body))
+    path_variants(path).each do |path_variant|
+      expect(token.patch path_variant, nil, headers).to eq res_body
+    end
+  end
+
+  it "#patch with headers (error)" do
+    token = DwollaV2::Token.new client, hash_params
+    path = "/foo"
+    body = {:foo => "bar"}
+    res_body = {:error => "hello"}
+    stub_request(:patch, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json",
+                         "Content-Type" => "application/json"}.merge(headers),
+            :body => body)
+      .to_return(:status => 400,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => generate_json(res_body))
+    path_variants(path).each do |path_variant|
+      expect {
+        token.patch path_variant, body, headers
+      }.to raise_error {|e|
+        expect(e).to be_a DwollaV2::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
+  end
+
   it "#delete (success)" do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
@@ -449,6 +597,39 @@ describe DwollaV2::Token do
     path_variants(path).each do |path_variant|
       expect {
         token.delete path_variant
+      }.to raise_error {|e|
+        expect(e).to be_a DwollaV2::Error
+        expect(e.error).to eq res_body[:error]
+      }
+    end
+  end
+
+  it "#delete with headers (success)" do
+    token = DwollaV2::Token.new client, hash_params
+    path = "/foo"
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
+    stub_request(:delete, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"}.merge(headers))
+      .to_return(:status => 200,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => generate_json(res_body))
+    path_variants(path).each do |path_variant|
+      expect(token.delete path_variant, nil, headers).to eq res_body
+    end
+  end
+
+  it "#delete with headers (error)" do
+    token = DwollaV2::Token.new client, hash_params
+    path = "/foo"
+    res_body = {:error => "hello"}
+    stub_request(:delete, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"}.merge(headers))
+      .to_return(:status => 400,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => generate_json(res_body))
+    path_variants(path).each do |path_variant|
+      expect {
+        token.delete path_variant, nil, headers
       }.to raise_error {|e|
         expect(e).to be_a DwollaV2::Error
         expect(e.error).to eq res_body[:error]

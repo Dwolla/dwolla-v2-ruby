@@ -37,9 +37,9 @@ module DwollaV2
     end
 
     HTTP_METHODS.each do |method|
-      define_method(method) do |path, params = nil|
+      define_method(method) do |path, params = nil, headers = nil|
         full_url = self.class.full_url client, path
-        Response.new conn.public_send(method, full_url, params)
+        Response.new conn.public_send(method, full_url, params, headers)
       end
     end
 
