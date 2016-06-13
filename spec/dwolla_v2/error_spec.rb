@@ -226,6 +226,22 @@ describe DwollaV2::Error do
     }
   end
 
+  it ".raise! code: TooManyRequests" do
+    expect {
+      DwollaV2::Error.raise! code: "TooManyRequests"
+    }.to raise_error {|e|
+      expect(e).to be_a DwollaV2::TooManyRequestsError
+    }
+  end
+
+  it ".raise! code: Conflict" do
+    expect {
+      DwollaV2::Error.raise! code: "Conflict"
+    }.to raise_error {|e|
+      expect(e).to be_a DwollaV2::ConflictError
+    }
+  end
+
   it ".raise! Struct(status, headers, body)" do
     status = 400
     headers = { foo: "bar" }
