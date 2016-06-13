@@ -51,6 +51,8 @@ require "dwolla_v2/errors/not_found_error"
 require "dwolla_v2/errors/method_not_allowed_error"
 require "dwolla_v2/errors/invalid_version_error"
 require "dwolla_v2/errors/request_timeout_error"
+require "dwolla_v2/errors/too_many_requests_error"
+require "dwolla_v2/errors/conflict_error"
 
 module DwollaV2
 end

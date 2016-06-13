@@ -295,6 +295,8 @@ end
 - `DwollaV2::InvalidClientError`
 - `DwollaV2::MethodNotAllowedError`
 - `DwollaV2::ValidationError`
+- `DwollaV2::TooManyRequestsError`
+- `DwollaV2::ConflictError`
 
 ## Sample code
 
@@ -321,6 +323,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **1.1.1** - Add `TooManyRequestsError` and `ConflictError` classes.
 - **1.1.0** - Support setting headers on a per-request basis.
 - **1.0.1** - Set user agent header.
 - **1.0.0** - Refactor `Error` class to be more like response, add ability to access keys using methods.
