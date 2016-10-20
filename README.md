@@ -99,6 +99,8 @@ Application tokens are used to access the API on behalf of a consumer applicatio
 belong to an application include: `webhook-subscriptions`, `events`, and `webhooks`. Application
 tokens can be created using the [`client_credentials`][client_credentials] OAuth grant type:
 
+**Note:** If an application has the `ManageCustomers` scope enabled, it can also be used to access the API for White Label Customer related endpoints. Keep in mind, the application must belong to same Dwolla account that will be used when creating and managing White Label Customers in the API.
+
 [client_credentials]: https://tools.ietf.org/html/rfc6749#section-4.4
 
 ```ruby
@@ -139,7 +141,7 @@ class YourAuthController < ApplicationController
     redirect_to auth.url
   end
 
-  # https://yoursite.com/callback
+  # https://yoursite.com/callback?code=...&state=...
   def callback
     # exchange the code for a token
     token = auth.callback(params)
@@ -167,7 +169,7 @@ refreshed_token = $dwolla.auths.refresh(expired_token)
 # => #<DwollaV2::Token client=#<DwollaV2::Client id="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=3600 scope="ManageCustomers|Funding" account_id="...">
 ```
 
-### Initializing tokens:
+### Initializing pre-existing tokens:
 
 `DwollaV2::Token`s can be initialized with the following attributes:
 
@@ -178,6 +180,11 @@ $dwolla.tokens.new access_token: "...",
                    scope: "...",
                    account_id: "..."
 #<DwollaV2::Token client=#<DwollaV2::Client id="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=123 scope="..." account_id="...">
+```
+
+```ruby
+token_data = YourTokenData.first
+$dwolla.tokens.new(token_data)
 ```
 
 ## Requests
