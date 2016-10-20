@@ -99,7 +99,9 @@ Application tokens are used to access the API on behalf of a consumer applicatio
 belong to an application include: `webhook-subscriptions`, `events`, and `webhooks`. Application
 tokens can be created using the [`client_credentials`][client_credentials] OAuth grant type:
 
-**Note:** If an application has the `ManageCustomers` scope enabled, it can also be used to access the API for White Label Customer related endpoints. Keep in mind, the application must belong to same Dwolla account that will be used when creating and managing White Label Customers in the API.
+**Note:** If an application has the `ManageCustomers` scope enabled, it can also be used to access
+the API for White Label Customer related endpoints. Keep in mind, the application must belong to
+same Dwolla account that will be used when creating and managing White Label Customers in the API.
 
 [client_credentials]: https://tools.ietf.org/html/rfc6749#section-4.4
 
