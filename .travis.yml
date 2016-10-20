@@ -1,4 +1,5 @@
 language: ruby
+
 rvm:
   - 1.9.3
   - 2.0.0
@@ -7,4 +8,10 @@ rvm:
   - ruby-head
   - rbx-2
   - jruby
+
 before_install: gem install bundler -v 1.11.2
+
+matrix:
+  allow_failures:
+  - rvm: rbx-2
+  fast_finish: true
