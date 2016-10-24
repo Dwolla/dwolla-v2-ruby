@@ -1,6 +1,6 @@
 module DwollaV2
   class Auth
-    attr_reader :client, :redirect_uri, :scope, :state
+    attr_reader :client, :redirect_uri, :scope, :state, :verified_account, :dwolla_landing
 
     def self.client client, params = {}
       request_token client, {:grant_type => :client_credentials}.merge(params)
@@ -17,6 +17,8 @@ module DwollaV2
       @redirect_uri = params[:redirect_uri]
       @scope = params[:scope]
       @state = params[:state]
+      @verified_account = params[:verified_account]
+      @dwolla_landing = params[:dwolla_landing]
       freeze
     end
 
@@ -40,7 +42,9 @@ module DwollaV2
         :client_id => client.id,
         :redirect_uri => redirect_uri,
         :scope => scope,
-        :state => state
+        :state => state,
+        :verified_account => verified_account,
+        :dwolla_landing => dwolla_landing
       }.reject {|k,v| v.nil? }
     end
 

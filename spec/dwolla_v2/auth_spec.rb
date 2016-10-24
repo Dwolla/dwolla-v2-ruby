@@ -169,6 +169,18 @@ describe DwollaV2::Auth do
     expect(auth.state).to eq state
   end
 
+  it "#initialize sets verified_account" do
+    verified_account = true
+    auth = DwollaV2::Auth.new client, :verified_account => verified_account
+    expect(auth.verified_account).to eq verified_account
+  end
+
+  it "#initialize sets dwolla_landing" do
+    dwolla_landing = "register"
+    auth = DwollaV2::Auth.new client, :dwolla_landing => dwolla_landing
+    expect(auth.dwolla_landing).to eq dwolla_landing
+  end
+
   it "#initialize freezes auth" do
     auth = DwollaV2::Auth.new client
     expect(auth.frozen?).to be true
@@ -176,14 +188,14 @@ describe DwollaV2::Auth do
 
   it "#url" do
     required_params = {:response_type => "code", :client_id => client.id}
-    optional_params = {:scope => "a,b,c", :state => "STATE"}
+    optional_params = {:scope => "a,b,c", :state => "STATE", :verified_account => true, :dwolla_landing => "register"}
     auth = DwollaV2::Auth.new client, optional_params
     expect(auth.url).to eq uri_with_query(client.auth_url, required_params.merge(optional_params))
   end
 
   it "#url with redirect_uri" do
     required_params = {:response_type => "code", :client_id => client.id}
-    optional_params = {:redirect_uri => "REDIRECT_URI", :scope => "a,b,c", :state => "STATE"}
+    optional_params = {:redirect_uri => "REDIRECT_URI", :scope => "a,b,c", :state => "STATE", :verified_account => true, :dwolla_landing => "register"}
     auth = DwollaV2::Auth.new client, optional_params
     expect(auth.url).to eq uri_with_query(client.auth_url, required_params.merge(optional_params))
   end

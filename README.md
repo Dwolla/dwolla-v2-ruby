@@ -156,7 +156,9 @@ class YourAuthController < ApplicationController
   def auth
     $dwolla.auths.new redirect_uri: "https://yoursite.com/callback",
                       scope: "ManageCustomers|Funding",
-                      state: session[:state] ||= SecureRandom.hex(8)
+                      state: session[:state] ||= SecureRandom.hex(8), # optional
+                      verified_account: true, # optional
+                      dwolla_landing: "register" # optional
   end
 end
 ```
@@ -332,6 +334,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **1.1.2** - Add support for `verified_account` and `dwolla_landing` auth flags.
 - **1.1.1** - Add `TooManyRequestsError` and `ConflictError` classes.
 - **1.1.0** - Support setting headers on a per-request basis.
 - **1.0.1** - Set user agent header.
