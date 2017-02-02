@@ -44,6 +44,7 @@ describe DwollaV2::Client do
 
   it "#initialize sets id if key provided" do
     client = DwollaV2::Client.new :key => id, :secret => secret
+    expect(client.id).to eq id
   end
 
   it "#initialize sets secret" do

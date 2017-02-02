@@ -334,6 +334,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **1.2.0** - Refer to Client :id as :key in docs/public APIs for consistency.
 - **1.1.2** - Add support for `verified_account` and `dwolla_landing` auth flags.
 - **1.1.1** - Add `TooManyRequestsError` and `ConflictError` classes.
 - **1.1.0** - Support setting headers on a per-request basis.
