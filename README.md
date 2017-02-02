@@ -34,14 +34,14 @@ Create a client using your application's consumer key and secret found on the ap
 
 ```ruby
 # config/initializers/dwolla.rb
-$dwolla = DwollaV2::Client.new(id: ENV["DWOLLA_ID"], secret: ENV["DWOLLA_SECRET"])
+$dwolla = DwollaV2::Client.new(key: ENV["DWOLLA_APP_KEY"], secret: ENV["DWOLLA_APP_SECRET"])
 ```
 
 ### Using the sandbox environment (optional)
 
 ```ruby
 # config/initializers/dwolla.rb
-$dwolla = DwollaV2::Client.new(id: ENV["DWOLLA_ID"], secret: ENV["DWOLLA_SECRET"]) do |config|
+$dwolla = DwollaV2::Client.new(key: ENV["DWOLLA_APP_KEY"], secret: ENV["DWOLLA_APP_SECRET"]) do |config|
   config.environment = :sandbox
 end
 ```
@@ -57,7 +57,7 @@ this to the `create!` method of an ActiveRecord model to create a record using t
 
 ```ruby
 # config/initializers/dwolla.rb
-$dwolla = DwollaV2::Client.new(id: ENV["DWOLLA_ID"], secret: ENV["DWOLLA_SECRET"]) do |config|
+$dwolla = DwollaV2::Client.new(key: ENV["DWOLLA_APP_KEY"], secret: ENV["DWOLLA_APP_SECRET"]) do |config|
   config.on_grant {|t| YourTokenData.create!(t) }
 end
 ```
@@ -81,7 +81,7 @@ always include an adapter last, even if you want to use the default adapter.
 
 ```ruby
 # config/initializers/dwolla.rb
-$dwolla = DwollaV2::Client.new(id: ENV["DWOLLA_ID"], secret: ENV["DWOLLA_SECRET"]) do |config|
+$dwolla = DwollaV2::Client.new(key: ENV["DWOLLA_APP_KEY"], secret: ENV["DWOLLA_APP_SECRET"]) do |config|
   config.faraday do |faraday|
     faraday.response :logger
     faraday.adapter Faraday.default_adapter
@@ -107,7 +107,7 @@ same Dwolla account that will be used when creating and managing White Label Cus
 
 ```ruby
 application_token = $dwolla.auths.client
-# => #<DwollaV2::Token client=#<DwollaV2::Client id="..." secret="..." environment=:sandbox> access_token="..." expires_in=3600 scope="...">
+# => #<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." expires_in=3600 scope="...">
 ```
 
 *Application tokens do not include a `refresh_token`. When an application token expires, generate
@@ -126,7 +126,7 @@ You can instantiate a generated token by doing the following:
 
 ```ruby
 account_token = $dwolla.tokens.new access_token: "...", refresh_token: "..."
-# => #<DwollaV2::Token client=#<DwollaV2::Client id="..." secret="..." environment=:sandbox> access_token="..." refresh_token="...">
+# => #<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." refresh_token="...">
 ```
 
 The other way to get an account token is using the [`authorization_code`][authorization_code]
@@ -147,7 +147,7 @@ class YourAuthController < ApplicationController
   def callback
     # exchange the code for a token
     token = auth.callback(params)
-    # => #<DwollaV2::Token client=#<DwollaV2::Client id="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=3600 scope="ManageCustomers|Funding" account_id="...">
+    # => #<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=3600 scope="ManageCustomers|Funding" account_id="...">
     session[:account_id] = token.account_id
   end
 
@@ -170,7 +170,7 @@ Tokens with `refresh_token`s can be refreshed using `$dwolla.auths.refresh`, whi
 
 ```ruby
 refreshed_token = $dwolla.auths.refresh(expired_token)
-# => #<DwollaV2::Token client=#<DwollaV2::Client id="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=3600 scope="ManageCustomers|Funding" account_id="...">
+# => #<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=3600 scope="ManageCustomers|Funding" account_id="...">
 ```
 
 ### Initializing pre-existing tokens:
@@ -183,7 +183,7 @@ $dwolla.tokens.new access_token: "...",
                    expires_in: 123,
                    scope: "...",
                    account_id: "..."
-#<DwollaV2::Token client=#<DwollaV2::Client id="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=123 scope="..." account_id="...">
+#<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=123 scope="..." account_id="...">
 ```
 
 ```ruby
