@@ -14,10 +14,12 @@ module DwollaV2
     }
 
     attr_reader :id, :secret, :auths, :tokens
+    alias_method :key, :id
 
     def initialize opts
-      raise ArgumentError.new "id is required" unless opts[:id].is_a? String
-      raise ArgumentError.new "secret is required" unless opts[:secret].is_a? String
+      opts[:id] ||= opts[:key]
+      raise ArgumentError.new ":key is required" unless opts[:id].is_a? String
+      raise ArgumentError.new ":secret is required" unless opts[:secret].is_a? String
       @id = opts[:id]
       @secret = opts[:secret]
       yield self if block_given?
@@ -75,7 +77,7 @@ module DwollaV2
     end
 
     def inspect
-      Util.pretty_inspect self.class.name, id: id, secret: secret, environment: environment
+      Util.pretty_inspect self.class.name, key: id, secret: secret, environment: environment
     end
   end
 end

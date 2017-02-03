@@ -24,7 +24,7 @@ describe DwollaV2::Client do
       DwollaV2::Client.new :secret => secret
     }.to raise_error {|e|
       expect(e).to be_a ArgumentError
-      expect(e.message).to eq "id is required"
+      expect(e.message).to eq ":key is required"
     }
   end
 
@@ -33,12 +33,17 @@ describe DwollaV2::Client do
       DwollaV2::Client.new :id => id
     }.to raise_error {|e|
       expect(e).to be_a ArgumentError
-      expect(e.message).to eq "secret is required"
+      expect(e.message).to eq ":secret is required"
     }
   end
 
   it "#initialize sets id" do
     client = DwollaV2::Client.new :id => id, :secret => secret
+    expect(client.id).to eq id
+  end
+
+  it "#initialize sets id if key provided" do
+    client = DwollaV2::Client.new :key => id, :secret => secret
     expect(client.id).to eq id
   end
 
@@ -135,6 +140,21 @@ describe DwollaV2::Client do
     block = Proc.new {|a| james_bond.call(a) }
     client = DwollaV2::Client.new(:id => id, :secret => secret) {|c| c.faraday &block }
     expect(james_bond).to have_received(:call).with(client.conn)
+  end
+
+  it "#id" do
+    client = DwollaV2::Client.new :id => id, :secret => secret
+    expect(client.id).to be id
+  end
+
+  it "#key" do
+    client = DwollaV2::Client.new :id => id, :secret => secret
+    expect(client.key).to be id
+  end
+
+  it "#secret" do
+    client = DwollaV2::Client.new :id => id, :secret => secret
+    expect(client.secret).to be secret
   end
 
   it "#auth_url" do
