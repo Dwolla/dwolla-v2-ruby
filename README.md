@@ -11,7 +11,7 @@ Dwolla V2 Ruby client. For the V1 Ruby client see [Dwolla/dwolla-ruby](https://g
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dwolla_v2', '~> 1.2'
+gem 'dwolla_v2', '~> 2.0'
 ```
 
 And then execute:
@@ -241,12 +241,12 @@ Requests return a `DwollaV2::Response`.
 
 ```ruby
 res = token.get "/"
-# => #<DwollaV2::Response status=200 headers={"server"=>"cloudflare-nginx", "date"=>"Mon, 28 Mar 2016 15:30:23 GMT", "content-type"=>"application/vnd.dwolla.v1.hal+json; charset=UTF-8", "content-length"=>"150", "connection"=>"close", "set-cookie"=>"__cfduid=d9dcd0f586c166d36cbd45b992bdaa11b1459179023; expires=Tue, 28-Mar-17 15:30:23 GMT; path=/; domain=.dwolla.com; HttpOnly", "x-request-id"=>"69a4e612-5dae-4c52-a6a0-2f921e34a88a", "cf-ray"=>"28ac1f81875941e3-MSP"} {"_links"=>{"events"=>{"href"=>"https://api-sandbox.dwolla.com/events"}, "webhook-subscriptions"=>{"href"=>"https://api-sandbox.dwolla.com/webhook-subscriptions"}}}>
+# => #<DwollaV2::Response response_status=200 response_headers={"server"=>"cloudflare-nginx", "date"=>"Mon, 28 Mar 2016 15:30:23 GMT", "content-type"=>"application/vnd.dwolla.v1.hal+json; charset=UTF-8", "content-length"=>"150", "connection"=>"close", "set-cookie"=>"__cfduid=d9dcd0f586c166d36cbd45b992bdaa11b1459179023; expires=Tue, 28-Mar-17 15:30:23 GMT; path=/; domain=.dwolla.com; HttpOnly", "x-request-id"=>"69a4e612-5dae-4c52-a6a0-2f921e34a88a", "cf-ray"=>"28ac1f81875941e3-MSP"} {"_links"=>{"events"=>{"href"=>"https://api-sandbox.dwolla.com/events"}, "webhook-subscriptions"=>{"href"=>"https://api-sandbox.dwolla.com/webhook-subscriptions"}}}>
 
-res.status
+res.response_status
 # => 200
 
-res.headers
+res.response_headers
 # => {"server"=>"cloudflare-nginx", "date"=>"Mon, 28 Mar 2016 15:30:23 GMT", "content-type"=>"application/vnd.dwolla.v1.hal+json; charset=UTF-8", "content-length"=>"150", "connection"=>"close", "set-cookie"=>"__cfduid=d9dcd0f586c166d36cbd45b992bdaa11b1459179023; expires=Tue, 28-Mar-17 15:30:23 GMT; path=/; domain=.dwolla.com; HttpOnly", "x-request-id"=>"69a4e612-5dae-4c52-a6a0-2f921e34a88a", "cf-ray"=>"28ac1f81875941e3-MSP"}
 
 res._links.events.href
@@ -263,12 +263,12 @@ begin
   token.get "/not-found"
 rescue DwollaV2::NotFoundError => e
   e
-  # => #<DwollaV2::NotFoundError status=404 headers={"server"=>"cloudflare-nginx", "date"=>"Mon, 28 Mar 2016 15:35:32 GMT", "content-type"=>"application/vnd.dwolla.v1.hal+json; profile=\"http://nocarrier.co.uk/profiles/vnd.error/\"; charset=UTF-8", "content-length"=>"69", "connection"=>"close", "set-cookie"=>"__cfduid=da1478bfdf3e56275cd8a6a741866ccce1459179332; expires=Tue, 28-Mar-17 15:35:32 GMT; path=/; domain=.dwolla.com; HttpOnly", "access-control-allow-origin"=>"*", "x-request-id"=>"667fca74-b53d-43db-bddd-50426a011881", "cf-ray"=>"28ac270abca64207-MSP"} {"code"=>"NotFound", "message"=>"The requested resource was not found."}>
+  # => #<DwollaV2::NotFoundError response_status=404 response_headers={"server"=>"cloudflare-nginx", "date"=>"Mon, 28 Mar 2016 15:35:32 GMT", "content-type"=>"application/vnd.dwolla.v1.hal+json; profile=\"http://nocarrier.co.uk/profiles/vnd.error/\"; charset=UTF-8", "content-length"=>"69", "connection"=>"close", "set-cookie"=>"__cfduid=da1478bfdf3e56275cd8a6a741866ccce1459179332; expires=Tue, 28-Mar-17 15:35:32 GMT; path=/; domain=.dwolla.com; HttpOnly", "access-control-allow-origin"=>"*", "x-request-id"=>"667fca74-b53d-43db-bddd-50426a011881", "cf-ray"=>"28ac270abca64207-MSP"} {"code"=>"NotFound", "message"=>"The requested resource was not found."}>
 
-  e.status
+  e.response_status
   # => 404
 
-  e.headers
+  e.response_headers
   # => {"server"=>"cloudflare-nginx", "date"=>"Mon, 28 Mar 2016 15:35:32 GMT", "content-type"=>"application/vnd.dwolla.v1.hal+json; profile=\"http://nocarrier.co.uk/profiles/vnd.error/\"; charset=UTF-8", "content-length"=>"69", "connection"=>"close", "set-cookie"=>"__cfduid=da1478bfdf3e56275cd8a6a741866ccce1459179332; expires=Tue, 28-Mar-17 15:35:32 GMT; path=/; domain=.dwolla.com; HttpOnly", "access-control-allow-origin"=>"*", "x-request-id"=>"667fca74-b53d-43db-bddd-50426a011881", "cf-ray"=>"28ac270abca64207-MSP"}
 
   e.code
@@ -334,6 +334,10 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **2.0.0**
+- Rename `DwollaV2::Response` `#status` => `#response_status`, `#headers` => `#response_headers` to prevent
+  [conflicts with response body properties][response-conflicts].
+- Remove support for Ruby versions < 2 ([Bump public_suffix dependency version][public-suffix]).
 - **1.2.3** - Implement `#empty?` on `DwollaV2::Token` to allow it to be passed to ActiveRecord constructor.
 - **1.2.2** - Strip domain from URLs provided to `token.*` methods.
 - **1.2.1** - Update sandbox URLs from uat => sandbox.
@@ -348,3 +352,6 @@ The gem is available as open source under the terms of the [MIT License](https:/
 - **0.3.0** - ISO8601 values in response body are converted to `Time` objects
 - **0.2.0** - Works with `attr_encrypted`
 - **0.1.1** - Handle 500 error with HTML response body when requesting a token
+
+[response-conflicts]: https://discuss.dwolla.com/t/document-change-or-more-clarifiation/3964
+[public-suffix]: https://github.com/Dwolla/dwolla-v2-ruby/pull/18#discussion_r108028135
