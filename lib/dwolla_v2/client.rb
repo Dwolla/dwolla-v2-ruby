@@ -7,9 +7,9 @@ module DwollaV2
         :api_url   => "https://api.dwolla.com"
       },
       :sandbox => {
-        :auth_url  => "https://uat.dwolla.com/oauth/v2/authenticate",
-        :token_url => "https://uat.dwolla.com/oauth/v2/token",
-        :api_url   => "https://api-uat.dwolla.com"
+        :auth_url  => "https://sandbox.dwolla.com/oauth/v2/authenticate",
+        :token_url => "https://sandbox.dwolla.com/oauth/v2/token",
+        :api_url   => "https://api-sandbox.dwolla.com"
       }
     }
 
