@@ -27,9 +27,9 @@ Or install it yourself as:
 ### Basic usage
 
 Create a client using your application's consumer key and secret found on the applications page
-([UAT][apuat], [Production][approd]).
+([Sandbox][apsandbox], [Production][approd]).
 
-[apuat]: https://uat.dwolla.com/applications
+[apsandbox]: https://sandbox.dwolla.com/applications
 [approd]: https://www.dwolla.com/applications
 
 ```ruby
@@ -120,7 +120,7 @@ to an account include `customers`, `funding-sources`, `documents`, `mass-payment
 `transfers`, and `on-demand-authorizations`.
 
 There are two ways to get an account token. One is by generating a token at
-https://uat.dwolla.com/applications (sandbox) or https://www.dwolla.com/applications (production).
+https://sandbox.dwolla.com/applications (Sandbox) or https://www.dwolla.com/applications (Production).
 
 You can instantiate a generated token by doing the following:
 
@@ -241,7 +241,7 @@ Requests return a `DwollaV2::Response`.
 
 ```ruby
 res = token.get "/"
-# => #<DwollaV2::Response status=200 headers={"server"=>"cloudflare-nginx", "date"=>"Mon, 28 Mar 2016 15:30:23 GMT", "content-type"=>"application/vnd.dwolla.v1.hal+json; charset=UTF-8", "content-length"=>"150", "connection"=>"close", "set-cookie"=>"__cfduid=d9dcd0f586c166d36cbd45b992bdaa11b1459179023; expires=Tue, 28-Mar-17 15:30:23 GMT; path=/; domain=.dwolla.com; HttpOnly", "x-request-id"=>"69a4e612-5dae-4c52-a6a0-2f921e34a88a", "cf-ray"=>"28ac1f81875941e3-MSP"} {"_links"=>{"events"=>{"href"=>"https://api-uat.dwolla.com/events"}, "webhook-subscriptions"=>{"href"=>"https://api-uat.dwolla.com/webhook-subscriptions"}}}>
+# => #<DwollaV2::Response status=200 headers={"server"=>"cloudflare-nginx", "date"=>"Mon, 28 Mar 2016 15:30:23 GMT", "content-type"=>"application/vnd.dwolla.v1.hal+json; charset=UTF-8", "content-length"=>"150", "connection"=>"close", "set-cookie"=>"__cfduid=d9dcd0f586c166d36cbd45b992bdaa11b1459179023; expires=Tue, 28-Mar-17 15:30:23 GMT; path=/; domain=.dwolla.com; HttpOnly", "x-request-id"=>"69a4e612-5dae-4c52-a6a0-2f921e34a88a", "cf-ray"=>"28ac1f81875941e3-MSP"} {"_links"=>{"events"=>{"href"=>"https://api-sandbox.dwolla.com/events"}, "webhook-subscriptions"=>{"href"=>"https://api-sandbox.dwolla.com/webhook-subscriptions"}}}>
 
 res.status
 # => 200
@@ -250,7 +250,7 @@ res.headers
 # => {"server"=>"cloudflare-nginx", "date"=>"Mon, 28 Mar 2016 15:30:23 GMT", "content-type"=>"application/vnd.dwolla.v1.hal+json; charset=UTF-8", "content-length"=>"150", "connection"=>"close", "set-cookie"=>"__cfduid=d9dcd0f586c166d36cbd45b992bdaa11b1459179023; expires=Tue, 28-Mar-17 15:30:23 GMT; path=/; domain=.dwolla.com; HttpOnly", "x-request-id"=>"69a4e612-5dae-4c52-a6a0-2f921e34a88a", "cf-ray"=>"28ac1f81875941e3-MSP"}
 
 res._links.events.href
-# => "https://api-uat.dwolla.com/events"
+# => "https://api-sandbox.dwolla.com/events"
 ```
 
 ## Errors
@@ -334,7 +334,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
-- **1.2.1** - Update sandbox URLs from uat => sandbox.
+- **1.2.1** - Update sandbox URLs from sandbox => sandbox.
 - **1.2.0** - Refer to Client :id as :key in docs/public APIs for consistency.
 - **1.1.2** - Add support for `verified_account` and `dwolla_landing` auth flags.
 - **1.1.1** - Add `TooManyRequestsError` and `ConflictError` classes.
