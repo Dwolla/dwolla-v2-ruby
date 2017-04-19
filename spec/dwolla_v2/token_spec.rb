@@ -642,7 +642,8 @@ describe DwollaV2::Token do
   def path_variants path
     [
       path,
-      client.api_url + path,
+      "https://foo-bar.com#{path}",
+      "#{client.api_url}#{path}",
       path[1..-1]
     ].map {|pv| [pv, {:_links => {:self => {:href => pv}}}] }.flatten
   end

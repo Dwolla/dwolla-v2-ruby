@@ -77,6 +77,7 @@ module DwollaV2
 
     def self.full_url client, path
       path = path[:_links][:self][:href] if path.is_a? Hash
+      path.sub! /^https?:\/\/[^\/]*/, ""
       if path.start_with? client.api_url
         path
       elsif path.start_with? "/"
