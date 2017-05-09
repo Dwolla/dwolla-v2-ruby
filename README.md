@@ -334,6 +334,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **1.2.3** - Implement `#empty?` on `DwollaV2::Token` to allow it to be passed to ActiveRecord constructor.
 - **1.2.2** - Strip domain from URLs provided to `token.*` methods.
 - **1.2.1** - Update sandbox URLs from uat => sandbox.
 - **1.2.0** - Refer to Client :id as :key in docs/public APIs for consistency.

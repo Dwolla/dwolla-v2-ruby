@@ -7,7 +7,7 @@ module DwollaV2
     attr_reader :client, :access_token, :refresh_token, :expires_in, :scope, :app_id, :account_id
 
     delegate [:in_parallel] => :@conn
-    delegate [:reject] => :stringify_keys
+    delegate [:reject, :empty?] => :stringify_keys
 
     def initialize client, params
       @client = client
