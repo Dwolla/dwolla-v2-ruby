@@ -125,6 +125,16 @@ describe DwollaV2::Token do
     })
   end
 
+  it "#empty? forwards to stringify_keys" do
+    token = DwollaV2::Token.new client, {}
+    expect(token.empty?).to be true
+  end
+
+  it "#empty? forwards to stringify_keys" do
+    token = DwollaV2::Token.new client, hash_params
+    expect(token.empty?).to be false
+  end
+
   it "#reject gets forwarded to #stringify_keys" do
     token = DwollaV2::Token.new client, hash_params
     expect(
