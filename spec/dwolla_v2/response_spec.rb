@@ -10,26 +10,26 @@ describe DwollaV2::Response do
 
   it "#status" do
     response = DwollaV2::Response.new raw_response
-    expect(response.status).to be raw_response.status
+    expect(response.response_status).to be raw_response.status
   end
 
-  it "#headers" do
+  it "#response_headers" do
     response = DwollaV2::Response.new raw_response
-    expect(response.headers).to eq raw_response.headers
+    expect(response.response_headers).to eq raw_response.headers
   end
 
   it "#headers uses @response.response_headers if no @response.headers" do
     raw_response_no_headers = Struct.new(:status, :response_headers, :body)
       .new(raw_response.status, raw_response.headers, raw_response.body)
     response = DwollaV2::Response.new raw_response_no_headers
-    expect(response.headers).to eq raw_response.headers
+    expect(response.response_headers).to eq raw_response.headers
   end
 
   it "#headers returns nil if no @response.headers or @response.response_headers" do
     raw_response_no_headers_or_response_headers = Struct.new(:status, :body)
       .new(raw_response.status, raw_response.body)
     response = DwollaV2::Response.new raw_response_no_headers_or_response_headers
-    expect(response.headers).to be nil
+    expect(response.response_headers).to be nil
   end
 
   it "#respond_to?" do
