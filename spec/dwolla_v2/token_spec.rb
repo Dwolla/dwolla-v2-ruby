@@ -271,6 +271,22 @@ describe DwollaV2::Token do
     end
   end
 
+  it "#post (do not mutate path)" do
+    token = DwollaV2::Token.new client, hash_params
+    path = "/foo"
+    res_body = {:hello => "world", :timestamp => Time.now.utc.round(3)}
+    stub_request(:post, "#{token.client.api_url}#{path}")
+      .with(:headers => {"Accept" => "application/vnd.dwolla.v1.hal+json"})
+      .to_return(:status => 200,
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => generate_json(res_body))
+    path_variants(path).each do |path_variant|
+      path_variant_copy = path_variant.clone
+      expect(token.post path_variant).to eq res_body
+      expect(path_variant).to eq path_variant_copy
+    end
+  end
+
   it "#post (error)" do
     token = DwollaV2::Token.new client, hash_params
     path = "/foo"
