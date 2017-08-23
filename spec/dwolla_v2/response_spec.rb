@@ -8,6 +8,11 @@ describe DwollaV2::Response do
                    body: DwollaV2::SuperHash[foo: "bar"]
   }
 
+  it "#inspect" do
+    response = DwollaV2::Response.new raw_response
+    expect(response.inspect).to eq '#<DwollaV2::Response response_status=200 response_headers={:location=>"https://foo.bar"} {"foo"=>"bar"}>'
+  end
+
   it "#status" do
     response = DwollaV2::Response.new raw_response
     expect(response.response_status).to be raw_response.status

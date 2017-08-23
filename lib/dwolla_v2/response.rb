@@ -47,7 +47,7 @@ module DwollaV2
     def inspect
       Util.pretty_inspect(
         self.class.name,
-        { response_status: status, response_headers: headers },
+        { response_status: response_status, response_headers: response_headers },
         response_body
       )
     end
