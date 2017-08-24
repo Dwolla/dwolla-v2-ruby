@@ -334,6 +334,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **2.0.1** - Fix bugs in [#27](https://github.com/Dwolla/dwolla-v2-ruby/pull/27) + [#28](https://github.com/Dwolla/dwolla-v2-ruby/pull/28) (Thanks @sobrinho!)
 - **2.0.0**
 - Rename `DwollaV2::Response` `#status` => `#response_status`, `#headers` => `#response_headers` to prevent
   [conflicts with response body properties][response-conflicts].
