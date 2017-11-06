@@ -6,7 +6,7 @@ module DwollaV2
     include Hashie::Extensions::DeepFetch
 
     def == other
-      super(other) || super(self.class[other])
+      super(other) || other && super(self.class[other])
     end
   end
 end

@@ -22,4 +22,10 @@ describe DwollaV2::SuperHash do
     super_hash = DwollaV2::Util.deep_super_hasherize(hash)
     expect(super_hash).to eq hash
   end
+
+  it "== works with nil values" do
+    hash = { a: { b: { c: "d" } } }
+    super_hash = DwollaV2::Util.deep_super_hasherize(hash)
+    expect(super_hash).not_to eq nil
+  end
 end
