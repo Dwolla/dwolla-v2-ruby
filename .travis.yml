@@ -14,6 +14,7 @@ before_install: gem install bundler -v 1.11.2
 matrix:
   allow_failures:
   - rvm: 1.9.3
+  - rvm: 2.0.0
   - rvm: rbx-2
   - rvm: jruby
   fast_finish: true
