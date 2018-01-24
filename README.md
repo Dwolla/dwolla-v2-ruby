@@ -2,7 +2,7 @@
 
 ![Build Status](https://travis-ci.org/Dwolla/dwolla-v2-ruby.svg)
 
-Dwolla V2 Ruby client. For the V1 Ruby client see [Dwolla/dwolla-ruby](https://github.com/Dwolla/dwolla-ruby).
+Dwolla V2 Ruby client.
 
 [API Documentation](https://docsv2.dwolla.com)
 
@@ -29,8 +29,8 @@ Or install it yourself as:
 Create a client using your application's consumer key and secret found on the applications page
 ([Sandbox][apsandbox], [Production][approd]).
 
-[apsandbox]: https://sandbox.dwolla.com/applications
-[approd]: https://www.dwolla.com/applications
+[apsandbox]: https://dashboard-sandbox.dwolla.com/applications
+[approd]: https://dashboard.dwolla.com/applications
 
 ```ruby
 # config/initializers/dwolla.rb
@@ -91,17 +91,12 @@ end
 
 ## `DwollaV2::Token`
 
-Tokens can be used to make requests to the Dwolla V2 API. There are two types of tokens:
+Tokens can be used to make requests to the Dwolla V2 API.
 
 ### Application tokens
 
-Application tokens are used to access the API on behalf of a consumer application. API resources that
-belong to an application include: `webhook-subscriptions`, `events`, and `webhooks`. Application
-tokens can be created using the [`client_credentials`][client_credentials] OAuth grant type:
-
-**Note:** If an application has the `ManageCustomers` scope enabled, it can also be used to access
-the API for White Label Customer related endpoints. Keep in mind, the application must belong to
-same Dwolla account that will be used when creating and managing White Label Customers in the API.
+Application access tokens are used to authenticate against the API on behalf of a consumer application. Application tokens can be used to access resources in the API that either belong to the application itself (`webhooks`, `events`, `webhook-subscriptions`) or the partner Account that owns the consumer application (`accounts`, `customers`, `funding-sources`, etc.). Application
+tokens are obtained by using the [`client_credentials`][client_credentials] OAuth grant type:
 
 [client_credentials]: https://tools.ietf.org/html/rfc6749#section-4.4
 
@@ -113,77 +108,14 @@ application_token = $dwolla.auths.client
 *Application tokens do not include a `refresh_token`. When an application token expires, generate
 a new one using `$dwolla.auths.client`.*
 
-### Account tokens
-
-Account tokens are used to access the API on behalf of a Dwolla account. API resources that belong
-to an account include `customers`, `funding-sources`, `documents`, `mass-payments`, `mass-payment-items`,
-`transfers`, and `on-demand-authorizations`.
-
-There are two ways to get an account token. One is by generating a token at
-https://sandbox.dwolla.com/applications (Sandbox) or https://www.dwolla.com/applications (Production).
-
-You can instantiate a generated token by doing the following:
-
-```ruby
-account_token = $dwolla.tokens.new access_token: "...", refresh_token: "..."
-# => #<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." refresh_token="...">
-```
-
-The other way to get an account token is using the [`authorization_code`][authorization_code]
-OAuth grant type. This flow works by redirecting a user to dwolla.com in order to get authorization
-and sending them back to your website with an authorization code which can be exchanged for a token.
-For example:
-
-[authorization_code]: https://tools.ietf.org/html/rfc6749#section-4.1
-
-```ruby
-class YourAuthController < ApplicationController
-  # redirect the user to dwolla.com for authorization
-  def authorize
-    redirect_to auth.url
-  end
-
-  # https://yoursite.com/callback?code=...&state=...
-  def callback
-    # exchange the code for a token
-    token = auth.callback(params)
-    # => #<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=3600 scope="ManageCustomers|Funding" account_id="...">
-    session[:account_id] = token.account_id
-  end
-
-  private
-
-  def auth
-    $dwolla.auths.new redirect_uri: "https://yoursite.com/callback",
-                      scope: "ManageCustomers|Funding",
-                      state: session[:state] ||= SecureRandom.hex(8), # optional
-                      verified_account: true, # optional
-                      dwolla_landing: "register" # optional
-  end
-end
-```
-
-### Refreshing tokens
-
-Tokens with `refresh_token`s can be refreshed using `$dwolla.auths.refresh`, which takes a
-`DwollaV2::Token` as its first argument and returns a new token.
-
-```ruby
-refreshed_token = $dwolla.auths.refresh(expired_token)
-# => #<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=3600 scope="ManageCustomers|Funding" account_id="...">
-```
-
-### Initializing pre-existing tokens:
+### Initializing a pre-existing access token:
 
 `DwollaV2::Token`s can be initialized with the following attributes:
 
 ```ruby
 $dwolla.tokens.new access_token: "...",
-                   refresh_token: "...",
-                   expires_in: 123,
-                   scope: "...",
-                   account_id: "..."
-#<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." refresh_token="..." expires_in=123 scope="..." account_id="...">
+                   expires_in: 123
+#<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." expires_in=123>
 ```
 
 ```ruby
