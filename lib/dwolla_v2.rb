@@ -53,6 +53,7 @@ require "dwolla_v2/errors/invalid_version_error"
 require "dwolla_v2/errors/request_timeout_error"
 require "dwolla_v2/errors/too_many_requests_error"
 require "dwolla_v2/errors/conflict_error"
+require "dwolla_v2/errors/duplicate_resource_error"
 
 module DwollaV2
 end
