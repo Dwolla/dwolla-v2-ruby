@@ -105,8 +105,8 @@ application_token = $dwolla.auths.client
 # => #<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." expires_in=3600 scope="...">
 ```
 
-*Application tokens do not include a `refresh_token`. When an application token expires, generate
-a new one using `$dwolla.auths.client`.*
+_Application tokens do not include a `refresh_token`. When an application token expires, generate
+a new one using `$dwolla.auths.client`._
 
 ### Initializing a pre-existing access token:
 
@@ -212,34 +212,34 @@ end
 
 ### `DwollaV2::Error` subclasses:
 
-*See https://docsv2.dwolla.com/#errors for more info.*
+_See https://docsv2.dwolla.com/#errors for more info._
 
-- `DwollaV2::AccessDeniedError`
-- `DwollaV2::InvalidCredentialsError`
-- `DwollaV2::NotFoundError`
-- `DwollaV2::BadRequestError`
-- `DwollaV2::InvalidGrantError`
-- `DwollaV2::RequestTimeoutError`
-- `DwollaV2::ExpiredAccessTokenError`
-- `DwollaV2::InvalidRequestError`
-- `DwollaV2::ServerError`
-- `DwollaV2::ForbiddenError`
-- `DwollaV2::InvalidResourceStateError`
-- `DwollaV2::TemporarilyUnavailableError`
-- `DwollaV2::InvalidAccessTokenError`
-- `DwollaV2::InvalidScopeError`
-- `DwollaV2::UnauthorizedClientError`
-- `DwollaV2::InvalidAccountStatusError`
-- `DwollaV2::InvalidScopesError`
-- `DwollaV2::UnsupportedGrantTypeError`
-- `DwollaV2::InvalidApplicationStatusError`
-- `DwollaV2::InvalidVersionError`
-- `DwollaV2::UnsupportedResponseTypeError`
-- `DwollaV2::InvalidClientError`
-- `DwollaV2::MethodNotAllowedError`
-- `DwollaV2::ValidationError`
-- `DwollaV2::TooManyRequestsError`
-- `DwollaV2::ConflictError`
+* `DwollaV2::AccessDeniedError`
+* `DwollaV2::InvalidCredentialsError`
+* `DwollaV2::NotFoundError`
+* `DwollaV2::BadRequestError`
+* `DwollaV2::InvalidGrantError`
+* `DwollaV2::RequestTimeoutError`
+* `DwollaV2::ExpiredAccessTokenError`
+* `DwollaV2::InvalidRequestError`
+* `DwollaV2::ServerError`
+* `DwollaV2::ForbiddenError`
+* `DwollaV2::InvalidResourceStateError`
+* `DwollaV2::TemporarilyUnavailableError`
+* `DwollaV2::InvalidAccessTokenError`
+* `DwollaV2::InvalidScopeError`
+* `DwollaV2::UnauthorizedClientError`
+* `DwollaV2::InvalidAccountStatusError`
+* `DwollaV2::InvalidScopesError`
+* `DwollaV2::UnsupportedGrantTypeError`
+* `DwollaV2::InvalidApplicationStatusError`
+* `DwollaV2::InvalidVersionError`
+* `DwollaV2::UnsupportedResponseTypeError`
+* `DwollaV2::InvalidClientError`
+* `DwollaV2::MethodNotAllowedError`
+* `DwollaV2::ValidationError`
+* `DwollaV2::TooManyRequestsError`
+* `DwollaV2::ConflictError`
 
 ## Sample code
 
@@ -266,26 +266,27 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
-- **2.0.2** - Fix bug in [#30](https://github.com/Dwolla/dwolla-v2-ruby/pull/30) (Thanks again @sobrinho!)
-- **2.0.1** - Fix bugs in [#27](https://github.com/Dwolla/dwolla-v2-ruby/pull/27) + [#28](https://github.com/Dwolla/dwolla-v2-ruby/pull/28) (Thanks @sobrinho!)
-- **2.0.0**
-- Rename `DwollaV2::Response` `#status` => `#response_status`, `#headers` => `#response_headers` to prevent
+* **2.0.3** - Add `DuplicateResourceError` [#34](https://github.com/Dwolla/dwolla-v2-ruby/pull/34) (Thanks @javierjulio!)
+* **2.0.2** - Fix bug in [#30](https://github.com/Dwolla/dwolla-v2-ruby/pull/30) (Thanks again @sobrinho!)
+* **2.0.1** - Fix bugs in [#27](https://github.com/Dwolla/dwolla-v2-ruby/pull/27) + [#28](https://github.com/Dwolla/dwolla-v2-ruby/pull/28) (Thanks @sobrinho!)
+* **2.0.0**
+* Rename `DwollaV2::Response` `#status` => `#response_status`, `#headers` => `#response_headers` to prevent
   [conflicts with response body properties][response-conflicts].
-- Remove support for Ruby versions < 2 ([Bump public_suffix dependency version][public-suffix]).
-- **1.2.3** - Implement `#empty?` on `DwollaV2::Token` to allow it to be passed to ActiveRecord constructor.
-- **1.2.2** - Strip domain from URLs provided to `token.*` methods.
-- **1.2.1** - Update sandbox URLs from uat => sandbox.
-- **1.2.0** - Refer to Client :id as :key in docs/public APIs for consistency.
-- **1.1.2** - Add support for `verified_account` and `dwolla_landing` auth flags.
-- **1.1.1** - Add `TooManyRequestsError` and `ConflictError` classes.
-- **1.1.0** - Support setting headers on a per-request basis.
-- **1.0.1** - Set user agent header.
-- **1.0.0** - Refactor `Error` class to be more like response, add ability to access keys using methods.
-- **0.4.0** - Refactor and document how `DwollaV2::Response` works
-- **0.3.1** - better `DwollaV2::Error` error messages
-- **0.3.0** - ISO8601 values in response body are converted to `Time` objects
-- **0.2.0** - Works with `attr_encrypted`
-- **0.1.1** - Handle 500 error with HTML response body when requesting a token
+* Remove support for Ruby versions < 2 ([Bump public_suffix dependency version][public-suffix]).
+* **1.2.3** - Implement `#empty?` on `DwollaV2::Token` to allow it to be passed to ActiveRecord constructor.
+* **1.2.2** - Strip domain from URLs provided to `token.*` methods.
+* **1.2.1** - Update sandbox URLs from uat => sandbox.
+* **1.2.0** - Refer to Client :id as :key in docs/public APIs for consistency.
+* **1.1.2** - Add support for `verified_account` and `dwolla_landing` auth flags.
+* **1.1.1** - Add `TooManyRequestsError` and `ConflictError` classes.
+* **1.1.0** - Support setting headers on a per-request basis.
+* **1.0.1** - Set user agent header.
+* **1.0.0** - Refactor `Error` class to be more like response, add ability to access keys using methods.
+* **0.4.0** - Refactor and document how `DwollaV2::Response` works
+* **0.3.1** - better `DwollaV2::Error` error messages
+* **0.3.0** - ISO8601 values in response body are converted to `Time` objects
+* **0.2.0** - Works with `attr_encrypted`
+* **0.1.1** - Handle 500 error with HTML response body when requesting a token
 
 [response-conflicts]: https://discuss.dwolla.com/t/document-change-or-more-clarifiation/3964
 [public-suffix]: https://github.com/Dwolla/dwolla-v2-ruby/pull/18#discussion_r108028135
