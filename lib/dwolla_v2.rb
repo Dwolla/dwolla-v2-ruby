@@ -3,6 +3,7 @@ require "uri"
 require "json"
 require "forwardable"
 require "ostruct"
+require "time"
 
 require "hashie"
 
