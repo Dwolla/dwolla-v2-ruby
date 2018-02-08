@@ -266,6 +266,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+* **2.1.0** - Ensure `Time.iso8601` is defined so timestamps get parsed. [#38](https://github.com/Dwolla/dwolla-v2-ruby/pull/38) (Thanks @javierjulio!)
 * **2.0.3** - Add `DuplicateResourceError` [#34](https://github.com/Dwolla/dwolla-v2-ruby/pull/34) (Thanks @javierjulio!)
 * **2.0.2** - Fix bug in [#30](https://github.com/Dwolla/dwolla-v2-ruby/pull/30) (Thanks again @sobrinho!)
 * **2.0.1** - Fix bugs in [#27](https://github.com/Dwolla/dwolla-v2-ruby/pull/27) + [#28](https://github.com/Dwolla/dwolla-v2-ruby/pull/28) (Thanks @sobrinho!)
