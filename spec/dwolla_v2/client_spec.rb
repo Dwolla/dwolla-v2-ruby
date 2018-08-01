@@ -8,12 +8,12 @@ describe DwollaV2::Client do
     expect(DwollaV2::Client::ENVIRONMENTS).to eq({
       :production => {
         :auth_url  => "https://www.dwolla.com/oauth/v2/authenticate",
-        :token_url => "https://www.dwolla.com/oauth/v2/token",
+        :token_url => "https://accounts.dwolla.com/token",
         :api_url   => "https://api.dwolla.com"
       },
       :sandbox => {
         :auth_url  => "https://sandbox.dwolla.com/oauth/v2/authenticate",
-        :token_url => "https://sandbox.dwolla.com/oauth/v2/token",
+        :token_url => "https://accounts-sandbox.dwolla.com/token",
         :api_url   => "https://api-sandbox.dwolla.com"
       }
     })
