@@ -266,6 +266,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+* **2.2.1** - Update dependencies
 * **2.2.0** - Change token url from `www.dwolla.com/oauth/v2/token` to `accounts.dwolla.com/token`
 * **2.1.0** - Ensure `Time.iso8601` is defined so timestamps get parsed. [#38](https://github.com/Dwolla/dwolla-v2-ruby/pull/38) (Thanks @javierjulio!)
 * **2.0.3** - Add `DuplicateResourceError` [#34](https://github.com/Dwolla/dwolla-v2-ruby/pull/34) (Thanks @javierjulio!)
