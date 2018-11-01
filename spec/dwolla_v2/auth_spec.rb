@@ -288,18 +288,13 @@ describe DwollaV2::Auth do
   private
 
   def stub_token_request client, params, response
-    stub_request(:post, token_url(client))
-      .with(:headers => {"Content-Type" => "application/x-www-form-urlencoded"},
+    stub_request(:post, client.token_url)
+      .with(:basic_auth => [client.id, client.secret],
+            :headers => {"Content-Type" => "application/x-www-form-urlencoded"},
             :body => params)
       .to_return(:status => response[:status],
                  :headers => {"Content-Type" => "application/json"},
                  :body => JSON.generate(response[:body]))
-  end
-
-  def token_url client
-    url = client.token_url.split "/"
-    url[2] = "#{client.id}:#{client.secret}@#{url[2]}"
-    url.join "/"
   end
 
   def uri_with_query uri, query
