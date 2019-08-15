@@ -7,13 +7,13 @@ describe DwollaV2::Client do
   it "::ENVIRONMENTS" do
     expect(DwollaV2::Client::ENVIRONMENTS).to eq({
       :production => {
-        :auth_url  => "https://www.dwolla.com/oauth/v2/authenticate",
-        :token_url => "https://accounts.dwolla.com/token",
+        :auth_url  => "https://accounts.dwolla.com/auth",
+        :token_url => "https://api.dwolla.com/token",
         :api_url   => "https://api.dwolla.com"
       },
       :sandbox => {
-        :auth_url  => "https://sandbox.dwolla.com/oauth/v2/authenticate",
-        :token_url => "https://accounts-sandbox.dwolla.com/token",
+        :auth_url  => "https://accounts-sandbox.dwolla.com/auth",
+        :token_url => "https://api-sandbox.dwolla.com/token",
         :api_url   => "https://api-sandbox.dwolla.com"
       }
     })
@@ -71,6 +71,11 @@ describe DwollaV2::Client do
     expect(client.tokens).to be_a DwollaV2::Portal
     expect(client.tokens.instance_variable_get :@parent).to be client
     expect(client.tokens.instance_variable_get :@klass).to be DwollaV2::Token
+  end
+
+  it '#initialize sets environment' do
+    client = DwollaV2::Client.new :id => id, :secret => secret, :environment => :sandbox
+    expect(client.environment).to be :sandbox
   end
 
   it "#initialize freezes client" do
@@ -170,5 +175,54 @@ describe DwollaV2::Client do
   it "#api_url" do
     client = DwollaV2::Client.new :id => id, :secret => secret
     expect(client.api_url).to eq DwollaV2::Client::ENVIRONMENTS[client.environment][:api_url]
+  end
+
+  describe "delegated Token methods" do
+    let!(:access_token) { "access_token" }
+    let!(:client) { DwollaV2::Client.new(key: "key", secret: "secret") }
+    let!(:res_body) { '{"foo":"bar"}' }
+
+    before(:each) do
+      stub_request(:post, client.token_url)
+          .with(:basic_auth => [client.id, client.secret],
+                :headers => {"Content-Type" => "application/x-www-form-urlencoded"},
+                :body => {"grant_type" => "client_credentials"})
+          .to_return(:status => 200,
+                     :headers => {"Content-Type" => "application/json"},
+                     :body => JSON.generate({ access_token: access_token, expires_in: 3600 }))
+    end
+
+    it "#get" do
+      stub_request(:get, "https://api.dwolla.com/foo")
+        .with(:headers => {
+       	  "Accept" => "application/vnd.dwolla.v1.hal+json",
+       	  "Authorization" => "Bearer #{access_token}"
+        })
+        .to_return(status: 200, body: res_body, headers: {})
+
+      expect(client.get("foo").send :response_body).to eq res_body
+    end
+
+    it "#post" do
+      stub_request(:post, "https://api.dwolla.com/foo")
+        .with(:headers => {
+          "Accept" => "application/vnd.dwolla.v1.hal+json",
+          "Authorization" => "Bearer #{access_token}"
+        })
+        .to_return(status: 200, body: res_body, headers: {})
+
+      expect(client.post("foo").send :response_body).to eq res_body
+    end
+
+    it "#delete" do
+      stub_request(:delete, "https://api.dwolla.com/foo")
+        .with(:headers => {
+          "Accept" => "application/vnd.dwolla.v1.hal+json",
+          "Authorization" => "Bearer #{access_token}"
+        })
+        .to_return(status: 200, body: res_body, headers: {})
+
+      expect(client.delete("foo").send :response_body).to eq res_body
+    end
   end
 end
