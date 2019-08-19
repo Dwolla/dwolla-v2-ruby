@@ -11,7 +11,7 @@ Dwolla V2 Ruby client.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dwolla_v2', '~> 2.0'
+gem 'dwolla_v2', '3.0.0.beta1'
 ```
 
 And then execute:
@@ -34,41 +34,12 @@ Create a client using your application's consumer key and secret found on the ap
 
 ```ruby
 # config/initializers/dwolla.rb
-$dwolla = DwollaV2::Client.new(key: ENV["DWOLLA_APP_KEY"], secret: ENV["DWOLLA_APP_SECRET"])
+$dwolla = DwollaV2::Client.new(
+  key: ENV["DWOLLA_APP_KEY"],
+  secret: ENV["DWOLLA_APP_SECRET"],
+  environment: :sandbox # defaults to :production
+)
 ```
-
-### Using the sandbox environment (optional)
-
-```ruby
-# config/initializers/dwolla.rb
-$dwolla = DwollaV2::Client.new(key: ENV["DWOLLA_APP_KEY"], secret: ENV["DWOLLA_APP_SECRET"]) do |config|
-  config.environment = :sandbox
-end
-```
-
-`environment=` defaults to `:production` and accepts either a String or a Symbol.
-
-### Configure an `on_grant` callback (optional)
-
-An `on_grant` callback is useful for storing new tokens when they are granted. For example, you
-may have a `YourTokenData` ActiveRecord model that you use to store your tokens. The `on_grant`
-callback is called with the `DwollaV2::Token` that was just granted by the server. You can pass
-this to the `create!` method of an ActiveRecord model to create a record using the token's data.
-
-```ruby
-# config/initializers/dwolla.rb
-$dwolla = DwollaV2::Client.new(key: ENV["DWOLLA_APP_KEY"], secret: ENV["DWOLLA_APP_SECRET"]) do |config|
-  config.on_grant {|t| YourTokenData.create!(t) }
-end
-```
-
-It is highly recommended that you encrypt any token data you store using
-[attr_encrypted][attr_encrypted] or [vault-rails][vault-rails] (if you use [Vault][vault]). These
-are both configured in your ActiveRecord models.
-
-[attr_encrypted]: https://github.com/attr-encrypted/attr_encrypted
-[vault-rails]: https://github.com/hashicorp/vault-rails
-[vault]: https://www.vaultproject.io/
 
 ### Configure Faraday (optional)
 
@@ -81,7 +52,11 @@ always include an adapter last, even if you want to use the default adapter.
 
 ```ruby
 # config/initializers/dwolla.rb
-$dwolla = DwollaV2::Client.new(key: ENV["DWOLLA_APP_KEY"], secret: ENV["DWOLLA_APP_SECRET"]) do |config|
+$dwolla = DwollaV2::Client.new(
+  key: ENV["DWOLLA_APP_KEY"],
+  secret: ENV["DWOLLA_APP_SECRET"]
+) do |config|
+
   config.faraday do |faraday|
     faraday.response :logger
     faraday.adapter Faraday.default_adapter
@@ -89,71 +64,22 @@ $dwolla = DwollaV2::Client.new(key: ENV["DWOLLA_APP_KEY"], secret: ENV["DWOLLA_A
 end
 ```
 
-## `DwollaV2::Token`
-
-Tokens can be used to make requests to the Dwolla V2 API.
-
-### Application tokens
-
-Application access tokens are used to authenticate against the API on behalf of a consumer application. Application tokens can be used to access resources in the API that either belong to the application itself (`webhooks`, `events`, `webhook-subscriptions`) or the partner Account that owns the consumer application (`accounts`, `customers`, `funding-sources`, etc.). Application
-tokens are obtained by using the [`client_credentials`][client_credentials] OAuth grant type:
-
-[client_credentials]: https://tools.ietf.org/html/rfc6749#section-4.4
-
-```ruby
-application_token = $dwolla.auths.client
-# => #<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." expires_in=3600 scope="...">
-```
-
-_Application tokens do not include a `refresh_token`. When an application token expires, generate
-a new one using `$dwolla.auths.client`._
-
-### Initializing a pre-existing access token:
-
-`DwollaV2::Token`s can be initialized with the following attributes:
-
-```ruby
-$dwolla.tokens.new access_token: "...",
-                   expires_in: 123
-#<DwollaV2::Token client=#<DwollaV2::Client key="..." secret="..." environment=:sandbox> access_token="..." expires_in=123>
-```
-
-```ruby
-token_data = YourTokenData.first
-$dwolla.tokens.new(token_data)
-```
-
 ## Requests
 
-`DwollaV2::Token`s can make requests using the `#get`, `#post`, `#put`, and `#delete` methods.
+`DwollaV2::Client`s can make requests using the `#get`, `#post`, and `#delete` methods.
 
 ```ruby
 # GET api.dwolla.com/resource?foo=bar
-token.get "resource", foo: "bar"
+$dwolla.get "resource", foo: "bar"
 
 # POST api.dwolla.com/resource {"foo":"bar"}
-token.post "resource", foo: "bar"
+$dwolla.post "resource", foo: "bar"
 
 # POST api.dwolla.com/resource multipart/form-data foo=...
-token.post "resource", foo: Faraday::UploadIO.new("/path/to/bar.png", "image/png")
-
-# PUT api.dwolla.com/resource {"foo":"bar"}
-token.put "resource", foo: "bar"
+$dwolla.post "resource", foo: Faraday::UploadIO.new("/path/to/bar.png", "image/png")
 
 # DELETE api.dwolla.com/resource
-token.delete "resource"
-```
-
-Requests can also be made in parallel:
-
-```ruby
-foo, bar = nil
-token.in_parallel do
-  foo = token.get "/foo"
-  bar = token.get "/bar"
-end
-puts foo # only ready after `in_parallel` block has executed
-puts bar # only ready after `in_parallel` block has executed
+$dwolla.delete "resource"
 ```
 
 #### Setting headers
@@ -163,8 +89,8 @@ To set additional headers on a request you can pass a `Hash` of headers as the 3
 For example:
 
 ```ruby
-token.post "customers", { firstName: "John", lastName: "Doe", email: "jd@doe.com" },
-                        { 'Idempotency-Key': 'a52fcf63-0730-41c3-96e8-7147b5d1fb01' }
+$dwolla.post "customers", { firstName: "John", lastName: "Doe", email: "jd@doe.com" },
+                          { 'Idempotency-Key': 'a52fcf63-0730-41c3-96e8-7147b5d1fb01' }
 ```
 
 ## Responses
@@ -172,7 +98,7 @@ token.post "customers", { firstName: "John", lastName: "Doe", email: "jd@doe.com
 Requests return a `DwollaV2::Response`.
 
 ```ruby
-res = token.get "/"
+res = $dwolla.get "/"
 # => #<DwollaV2::Response response_status=200 response_headers={"server"=>"cloudflare-nginx", "date"=>"Mon, 28 Mar 2016 15:30:23 GMT", "content-type"=>"application/vnd.dwolla.v1.hal+json; charset=UTF-8", "content-length"=>"150", "connection"=>"close", "set-cookie"=>"__cfduid=d9dcd0f586c166d36cbd45b992bdaa11b1459179023; expires=Tue, 28-Mar-17 15:30:23 GMT; path=/; domain=.dwolla.com; HttpOnly", "x-request-id"=>"69a4e612-5dae-4c52-a6a0-2f921e34a88a", "cf-ray"=>"28ac1f81875941e3-MSP"} {"_links"=>{"events"=>{"href"=>"https://api-sandbox.dwolla.com/events"}, "webhook-subscriptions"=>{"href"=>"https://api-sandbox.dwolla.com/webhook-subscriptions"}}}>
 
 res.response_status
@@ -192,7 +118,7 @@ If the server returns an error, a `DwollaV2::Error` (or one of its subclasses) w
 
 ```ruby
 begin
-  token.get "/not-found"
+  $dwolla.get "/not-found"
 rescue DwollaV2::NotFoundError => e
   e
   # => #<DwollaV2::NotFoundError response_status=404 response_headers={"server"=>"cloudflare-nginx", "date"=>"Mon, 28 Mar 2016 15:35:32 GMT", "content-type"=>"application/vnd.dwolla.v1.hal+json; profile=\"http://nocarrier.co.uk/profiles/vnd.error/\"; charset=UTF-8", "content-length"=>"69", "connection"=>"close", "set-cookie"=>"__cfduid=da1478bfdf3e56275cd8a6a741866ccce1459179332; expires=Tue, 28-Mar-17 15:35:32 GMT; path=/; domain=.dwolla.com; HttpOnly", "access-control-allow-origin"=>"*", "x-request-id"=>"667fca74-b53d-43db-bddd-50426a011881", "cf-ray"=>"28ac270abca64207-MSP"} {"code"=>"NotFound", "message"=>"The requested resource was not found."}>
@@ -214,32 +140,32 @@ end
 
 _See https://docsv2.dwolla.com/#errors for more info._
 
-* `DwollaV2::AccessDeniedError`
-* `DwollaV2::InvalidCredentialsError`
-* `DwollaV2::NotFoundError`
-* `DwollaV2::BadRequestError`
-* `DwollaV2::InvalidGrantError`
-* `DwollaV2::RequestTimeoutError`
-* `DwollaV2::ExpiredAccessTokenError`
-* `DwollaV2::InvalidRequestError`
-* `DwollaV2::ServerError`
-* `DwollaV2::ForbiddenError`
-* `DwollaV2::InvalidResourceStateError`
-* `DwollaV2::TemporarilyUnavailableError`
-* `DwollaV2::InvalidAccessTokenError`
-* `DwollaV2::InvalidScopeError`
-* `DwollaV2::UnauthorizedClientError`
-* `DwollaV2::InvalidAccountStatusError`
-* `DwollaV2::InvalidScopesError`
-* `DwollaV2::UnsupportedGrantTypeError`
-* `DwollaV2::InvalidApplicationStatusError`
-* `DwollaV2::InvalidVersionError`
-* `DwollaV2::UnsupportedResponseTypeError`
-* `DwollaV2::InvalidClientError`
-* `DwollaV2::MethodNotAllowedError`
-* `DwollaV2::ValidationError`
-* `DwollaV2::TooManyRequestsError`
-* `DwollaV2::ConflictError`
+- `DwollaV2::AccessDeniedError`
+- `DwollaV2::InvalidCredentialsError`
+- `DwollaV2::NotFoundError`
+- `DwollaV2::BadRequestError`
+- `DwollaV2::InvalidGrantError`
+- `DwollaV2::RequestTimeoutError`
+- `DwollaV2::ExpiredAccessTokenError`
+- `DwollaV2::InvalidRequestError`
+- `DwollaV2::ServerError`
+- `DwollaV2::ForbiddenError`
+- `DwollaV2::InvalidResourceStateError`
+- `DwollaV2::TemporarilyUnavailableError`
+- `DwollaV2::InvalidAccessTokenError`
+- `DwollaV2::InvalidScopeError`
+- `DwollaV2::UnauthorizedClientError`
+- `DwollaV2::InvalidAccountStatusError`
+- `DwollaV2::InvalidScopesError`
+- `DwollaV2::UnsupportedGrantTypeError`
+- `DwollaV2::InvalidApplicationStatusError`
+- `DwollaV2::InvalidVersionError`
+- `DwollaV2::UnsupportedResponseTypeError`
+- `DwollaV2::InvalidClientError`
+- `DwollaV2::MethodNotAllowedError`
+- `DwollaV2::ValidationError`
+- `DwollaV2::TooManyRequestsError`
+- `DwollaV2::ConflictError`
 
 ## Sample code
 
@@ -266,30 +192,31 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
-* **2.2.1** - Update dependencies
-* **2.2.0** - Change token url from `www.dwolla.com/oauth/v2/token` to `accounts.dwolla.com/token`
-* **2.1.0** - Ensure `Time.iso8601` is defined so timestamps get parsed. [#38](https://github.com/Dwolla/dwolla-v2-ruby/pull/38) (Thanks @javierjulio!)
-* **2.0.3** - Add `DuplicateResourceError` [#34](https://github.com/Dwolla/dwolla-v2-ruby/pull/34) (Thanks @javierjulio!)
-* **2.0.2** - Fix bug in [#30](https://github.com/Dwolla/dwolla-v2-ruby/pull/30) (Thanks again @sobrinho!)
-* **2.0.1** - Fix bugs in [#27](https://github.com/Dwolla/dwolla-v2-ruby/pull/27) + [#28](https://github.com/Dwolla/dwolla-v2-ruby/pull/28) (Thanks @sobrinho!)
-* **2.0.0**
-* Rename `DwollaV2::Response` `#status` => `#response_status`, `#headers` => `#response_headers` to prevent
+- **3.0.0.beta1** - Add token management functionality to `DwollaV2::Client`
+- **2.2.1** - Update dependencies
+- **2.2.0** - Change token url from `www.dwolla.com/oauth/v2/token` to `accounts.dwolla.com/token`
+- **2.1.0** - Ensure `Time.iso8601` is defined so timestamps get parsed. [#38](https://github.com/Dwolla/dwolla-v2-ruby/pull/38) (Thanks @javierjulio!)
+- **2.0.3** - Add `DuplicateResourceError` [#34](https://github.com/Dwolla/dwolla-v2-ruby/pull/34) (Thanks @javierjulio!)
+- **2.0.2** - Fix bug in [#30](https://github.com/Dwolla/dwolla-v2-ruby/pull/30) (Thanks again @sobrinho!)
+- **2.0.1** - Fix bugs in [#27](https://github.com/Dwolla/dwolla-v2-ruby/pull/27) + [#28](https://github.com/Dwolla/dwolla-v2-ruby/pull/28) (Thanks @sobrinho!)
+- **2.0.0**
+- Rename `DwollaV2::Response` `#status` => `#response_status`, `#headers` => `#response_headers` to prevent
   [conflicts with response body properties][response-conflicts].
-* Remove support for Ruby versions < 2 ([Bump public_suffix dependency version][public-suffix]).
-* **1.2.3** - Implement `#empty?` on `DwollaV2::Token` to allow it to be passed to ActiveRecord constructor.
-* **1.2.2** - Strip domain from URLs provided to `token.*` methods.
-* **1.2.1** - Update sandbox URLs from uat => sandbox.
-* **1.2.0** - Refer to Client :id as :key in docs/public APIs for consistency.
-* **1.1.2** - Add support for `verified_account` and `dwolla_landing` auth flags.
-* **1.1.1** - Add `TooManyRequestsError` and `ConflictError` classes.
-* **1.1.0** - Support setting headers on a per-request basis.
-* **1.0.1** - Set user agent header.
-* **1.0.0** - Refactor `Error` class to be more like response, add ability to access keys using methods.
-* **0.4.0** - Refactor and document how `DwollaV2::Response` works
-* **0.3.1** - better `DwollaV2::Error` error messages
-* **0.3.0** - ISO8601 values in response body are converted to `Time` objects
-* **0.2.0** - Works with `attr_encrypted`
-* **0.1.1** - Handle 500 error with HTML response body when requesting a token
+- Remove support for Ruby versions < 2 ([Bump public_suffix dependency version][public-suffix]).
+- **1.2.3** - Implement `#empty?` on `DwollaV2::Token` to allow it to be passed to ActiveRecord constructor.
+- **1.2.2** - Strip domain from URLs provided to `token.*` methods.
+- **1.2.1** - Update sandbox URLs from uat => sandbox.
+- **1.2.0** - Refer to Client :id as :key in docs/public APIs for consistency.
+- **1.1.2** - Add support for `verified_account` and `dwolla_landing` auth flags.
+- **1.1.1** - Add `TooManyRequestsError` and `ConflictError` classes.
+- **1.1.0** - Support setting headers on a per-request basis.
+- **1.0.1** - Set user agent header.
+- **1.0.0** - Refactor `Error` class to be more like response, add ability to access keys using methods.
+- **0.4.0** - Refactor and document how `DwollaV2::Response` works
+- **0.3.1** - better `DwollaV2::Error` error messages
+- **0.3.0** - ISO8601 values in response body are converted to `Time` objects
+- **0.2.0** - Works with `attr_encrypted`
+- **0.1.1** - Handle 500 error with HTML response body when requesting a token
 
 [response-conflicts]: https://discuss.dwolla.com/t/document-change-or-more-clarifiation/3964
 [public-suffix]: https://github.com/Dwolla/dwolla-v2-ruby/pull/18#discussion_r108028135
