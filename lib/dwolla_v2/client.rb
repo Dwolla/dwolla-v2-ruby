@@ -1,14 +1,16 @@
 module DwollaV2
   class Client
+    extend Forwardable
+
     ENVIRONMENTS = {
       :production => {
-        :auth_url  => "https://www.dwolla.com/oauth/v2/authenticate",
-        :token_url => "https://accounts.dwolla.com/token",
+        :auth_url  => "https://accounts.dwolla.com/auth",
+        :token_url => "https://api.dwolla.com/token",
         :api_url   => "https://api.dwolla.com"
       },
       :sandbox => {
-        :auth_url  => "https://sandbox.dwolla.com/oauth/v2/authenticate",
-        :token_url => "https://accounts-sandbox.dwolla.com/token",
+        :auth_url  => "https://accounts-sandbox.dwolla.com/auth",
+        :token_url => "https://api-sandbox.dwolla.com/token",
         :api_url   => "https://api-sandbox.dwolla.com"
       }
     }
@@ -16,16 +18,20 @@ module DwollaV2
     attr_reader :id, :secret, :auths, :tokens
     alias_method :key, :id
 
+    def_delegators :token, :get, :post, :delete
+
     def initialize opts
       opts[:id] ||= opts[:key]
       raise ArgumentError.new ":key is required" unless opts[:id].is_a? String
       raise ArgumentError.new ":secret is required" unless opts[:secret].is_a? String
       @id = opts[:id]
       @secret = opts[:secret]
+      self.environment = opts[:environment] if opts.has_key?(:environment)
       yield self if block_given?
       conn
       @auths = Portal.new self, Auth
       @tokens = Portal.new self, Token
+      @token_manager = TokenManager.new(self)
       freeze
     end
 
@@ -77,7 +83,13 @@ module DwollaV2
     end
 
     def inspect
-      Util.pretty_inspect self.class.name, key: id, secret: secret, environment: environment
+      Util.pretty_inspect self.class.name, key: id, environment: environment
     end
+
+    private
+
+      def token
+        @token_manager.get_token
+      end
   end
 end

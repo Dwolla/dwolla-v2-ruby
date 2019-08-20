@@ -8,16 +8,23 @@ rvm:
   - 2.3.7
   - 2.4.4
   - 2.5.1
+  - 2.6.3
   - ruby-head
   - rbx-2
+  - rbx-3
+  - rbx-4
   - jruby
 
-before_install: gem install bundler -v 1.11.2
+before_install: gem install bundler -v 2.0.2
 
 matrix:
   allow_failures:
-  - rvm: 1.9.3
-  - rvm: 2.0.0
-  - rvm: rbx-2
-  - rvm: jruby
+    - rvm: 1.9.3
+    - rvm: 2.0.0
+    - rvm: 2.1.10
+    - rvm: 2.2.10
+    - rvm: rbx-2
+    - rvm: rbx-3
+    - rvm: rbx-4
+    - rvm: jruby
   fast_finish: true
