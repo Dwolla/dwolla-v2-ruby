@@ -167,15 +167,6 @@ _See https://docsv2.dwolla.com/#errors for more info._
 - `DwollaV2::TooManyRequestsError`
 - `DwollaV2::ConflictError`
 
-## Sample code
-
-The following gist contains some sample bootstrapping code:
-
-https://gist.github.com/sausman/df58a196b3bc0381b0e8
-
-If you have any questions regarding your specific implementation we'll do our best to help
-at https://discuss.dwolla.com/.
-
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
