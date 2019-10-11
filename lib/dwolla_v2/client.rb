@@ -18,7 +18,7 @@ module DwollaV2
     attr_reader :id, :secret, :auths, :tokens
     alias_method :key, :id
 
-    def_delegators :token, :get, :post, :delete
+    def_delegators :current_token, :get, :post, :delete
 
     def initialize opts
       opts[:id] ||= opts[:key]
@@ -70,6 +70,21 @@ module DwollaV2
       end
     end
 
+    def auth(params = {})
+      DwollaV2::Auth.new(self, params)
+    end
+
+    def refresh_token(params = {})
+      unless params.is_a?(Hash) && params.has_key?(:refresh_token)
+        raise ArgumentError.new(":refresh_token is required")
+      end
+      auths.refresh(params, params)
+    end
+
+    def token(params = {})
+      tokens.new(params)
+    end
+
     def auth_url
       ENVIRONMENTS[environment][:auth_url]
     end
@@ -88,7 +103,7 @@ module DwollaV2
 
     private
 
-      def token
+      def current_token
         @token_manager.get_token
       end
   end
