@@ -228,13 +228,17 @@ describe DwollaV2::Client do
 
   describe "openid methods" do
     let!(:client) { DwollaV2::Client.new(id: id, secret: secret) }
-    let!(:redirect_uri) { "redirect-uri" }
+    let!(:redirect_uri) { "https://redirect.uri/dwolla/callback" }
 
     it "#auth returns DwollaV2::Auth" do
       auth = client.auth(redirect_uri: redirect_uri)
       
       expect(auth).to be_a DwollaV2::Auth
-      expect(auth.redirect_uri).to eq redirect_uri
+      expect(auth.url).to eq "#{client.auth_url}?#{URI.encode_www_form(
+        response_type: "code",
+        client_id: client.id,
+        redirect_uri: redirect_uri
+      )}"
     end
 
     it "#refresh_token returns ArgumentError" do
