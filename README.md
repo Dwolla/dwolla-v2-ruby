@@ -41,6 +41,10 @@ $dwolla = DwollaV2::Client.new(
 )
 ```
 
+### Integrations Authorization
+
+Check out our [Integrations Authorization Guide](https://developers.dwolla.com/integrations/authorization).
+
 ### Configure Faraday (optional)
 
 DwollaV2 uses [Faraday][faraday] to make HTTP requests. You can configure your own
@@ -183,6 +187,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **3.0.0** - Add integrations auth functions
 - **3.0.0.beta1** - Add token management functionality to `DwollaV2::Client`
 - **2.2.1** - Update dependencies
 - **2.2.0** - Change token url from `www.dwolla.com/oauth/v2/token` to `accounts.dwolla.com/token`

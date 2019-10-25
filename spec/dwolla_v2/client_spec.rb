@@ -225,4 +225,65 @@ describe DwollaV2::Client do
       expect(client.delete("foo").send :response_body).to eq res_body
     end
   end
+
+  describe "openid methods" do
+    let!(:client) { DwollaV2::Client.new(id: id, secret: secret) }
+    let!(:redirect_uri) { "https://redirect.uri/dwolla/callback" }
+
+    it "#auth returns DwollaV2::Auth" do
+      auth = client.auth(redirect_uri: redirect_uri)
+      
+      expect(auth).to be_a DwollaV2::Auth
+      expect(auth.url).to eq "#{client.auth_url}?#{URI.encode_www_form(
+        response_type: "code",
+        client_id: client.id,
+        redirect_uri: redirect_uri
+      )}"
+    end
+
+    it "#refresh_token returns ArgumentError" do
+      expect {
+        client.refresh_token()
+      }.to raise_error {|e|
+        expect(e).to be_a ArgumentError
+        expect(e.message).to eq ":refresh_token is required"
+      }
+    end
+
+    it "#refresh_token refreshes token" do
+      refresh_token = "refresh-token"
+      foo = "bar"
+      token_hash = {:access_token => "access-token"}
+      stub_token_request client,
+                         {:grant_type => "refresh_token", :refresh_token => refresh_token, :foo => foo},
+                         {:status => 200, :body => token_hash}
+      
+      token = client.refresh_token(refresh_token: refresh_token, foo: foo)
+      
+      expect(token).to be_a DwollaV2::Token
+      expect(token.client).to be client
+      expect(token.access_token).to eq token_hash[:access_token]
+    end
+
+    it "#token returns DwollaV2::Token" do
+      access_token = "access-token"
+
+      token = client.token(access_token: access_token)
+
+      expect(token).to be_a DwollaV2::Token
+      expect(token.access_token).to eq access_token
+    end
+  end
+
+  private
+
+  def stub_token_request client, params, response
+    stub_request(:post, client.token_url)
+      .with(:basic_auth => [client.id, client.secret],
+            :headers => {"Content-Type" => "application/x-www-form-urlencoded"},
+            :body => params)
+      .to_return(:status => response[:status],
+                 :headers => {"Content-Type" => "application/json"},
+                 :body => JSON.generate(response[:body]))
+  end
 end
