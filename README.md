@@ -11,7 +11,7 @@ Dwolla V2 Ruby client.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dwolla_v2', '3.0.0.beta1'
+gem 'dwolla_v2', '3.0.0'
 ```
 
 And then execute:
