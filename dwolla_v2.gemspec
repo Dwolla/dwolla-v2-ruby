@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.8"
   spec.add_development_dependency "webmock", "~> 3.6"
 
-  spec.add_dependency "hashie", "~> 3.6"
-  spec.add_dependency "faraday", "~> 0.15"
-  spec.add_dependency "faraday_middleware", "~> 0.13"
+  spec.add_dependency "hashie", ">= 3.6"
+  spec.add_dependency "faraday", ">= 0.15"
+  spec.add_dependency "faraday_middleware", ">= 0.13"
 end
