@@ -249,6 +249,14 @@ describe DwollaV2::Error do
       expect(e).to be_a DwollaV2::DuplicateResourceError
     }
   end
+
+  it ".raise! code: MaxNumberOfResources" do
+    expect {
+      DwollaV2::Error.raise! code: "MaxNumberOfResources"
+    }.to raise_error {|e|
+      expect(e).to be_a DwollaV2::MaxNumberOfResourcesError
+    }
+  end
   
   it ".raise! Struct(status, headers, body)" do
     status = 400
