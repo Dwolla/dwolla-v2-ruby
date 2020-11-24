@@ -18,17 +18,15 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["2.3", "2.4", "2.5", "2.6", "2.7"]
+        ruby: ["2.4", "2.5", "2.6", "2.7"]
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby
-        # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
-        # change this to (see https://github.com/ruby/setup-ruby#versioning):
-        # uses: ruby/setup-ruby@v1
-        uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
+        # https://github.com/ruby/setup-ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Install dependencies
