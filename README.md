@@ -11,7 +11,7 @@ Dwolla V2 Ruby client.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dwolla_v2', '~> 3.0'
+gem 'dwolla_v2', '~> 3.1'
 ```
 
 And then execute:
@@ -187,6 +187,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **3.1.0** - Added `DwollaV2::MaxNumberOfResourcesError` (Thanks @paulyeo21!). [#54](https://github.com/Dwolla/dwolla-v2-ruby/pull/54)
 - **3.0.1** - Update dependencies (Thanks @sealabcore!). [#48](https://github.com/Dwolla/dwolla-v2-ruby/pull/48)
 - **3.0.0** - Add integrations auth functions
 - **3.0.0.beta1** - Add token management functionality to `DwollaV2::Client`
