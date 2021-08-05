@@ -17,6 +17,7 @@ describe DwollaV2::Token do
       def access_token;  "ACCESS_TOKEN"; end
       def refresh_token; "REFRESH_TOKEN"; end
       def expires_in;    123; end
+      def expires_at;    nil; end
       def scope;         "a,b,c"; end
       def app_id;        "9a711db1-72bc-43a4-8d09-3288e8dd0a8b"; end
       def account_id;    "92e19aa4-93d4-49e7-b3e6-32f6d7a2a64d"; end
@@ -92,11 +93,6 @@ describe DwollaV2::Token do
     expect(token.account_id).to eq method_params.account_id
   end
 
-  it "#initialize freezes token" do
-    token = DwollaV2::Token.new client, hash_params
-    expect(token.frozen?).to be true
-  end
-
   it "#[]" do
     token = DwollaV2::Token.new client, hash_params
     expect(token[:access_token]).to be token.access_token
@@ -148,6 +144,26 @@ describe DwollaV2::Token do
     token = DwollaV2::Token.new client, hash_params
     expect(token.instance_variable_get :@conn).to receive(:in_parallel)
     token.in_parallel
+  end
+
+  context "token expiration" do
+    it "#is_expired? returns false" do
+      token = DwollaV2::Token.new(client, hash_params.merge(expires_in: 3_600))
+
+      expect(token.is_expired?).to be false
+    end
+
+    it "#is_expired? returns true" do
+      token = DwollaV2::Token.new(client, hash_params.merge(expires_in: -3_600))
+
+      expect(token.is_expired?).to be true
+    end
+
+    it "#is_expired? returns true if within leeway period (60 seconds)" do
+    token = DwollaV2::Token.new(client, hash_params.merge(expires_in: 30))
+
+      expect(token.is_expired?).to be true
+    end
   end
 
   it "#get (success)" do

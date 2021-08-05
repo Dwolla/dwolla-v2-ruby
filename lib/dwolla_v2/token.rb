@@ -2,23 +2,35 @@ module DwollaV2
   class Token
     extend Forwardable
 
+    EXPIRES_IN_LEEWAY = 60
     HTTP_METHODS = [:get, :post, :put, :patch, :delete]
 
-    attr_reader :client, :access_token, :refresh_token, :expires_in, :scope, :app_id, :account_id
+    attr_reader :client, :access_token, :refresh_token, :expires_at,
+      :expires_in, :scope, :app_id, :account_id
 
     delegate [:in_parallel] => :@conn
     delegate [:reject, :empty?] => :stringify_keys
 
     def initialize client, params
+      t = Time.now.utc
       @client = client
       @access_token  = get_param params, :access_token
       @refresh_token = get_param params, :refresh_token
       @expires_in    = get_param params, :expires_in
+      @expires_at    = get_param params, :expires_at
       @scope         = get_param params, :scope
       @app_id        = get_param params, :app_id
       @account_id    = get_param params, :account_id
+
+      if !@expires_at && @expires_in
+        @expires_at = t + @expires_in
+      end
+
       conn
-      freeze
+    end
+
+    def is_expired?
+      @expires_at - EXPIRES_IN_LEEWAY < Time.now.utc
     end
 
     def [] key

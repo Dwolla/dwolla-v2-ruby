@@ -27,32 +27,10 @@ describe DwollaV2::TokenManager do
 
   it "#get_token refreshes expired token" do
     token_manager.get_token
-    token_manager.instance_variable_get(:@wrapped_token).instance_variable_set(:@expires_at, Time.now - 1)
-    token_manager.instance_variable_get(:@wrapped_token).instance_variable_set(:@token, client.tokens.new(access_token: "old"))
+    token_manager.instance_variable_get(:@current_token).instance_variable_set(:@expires_at, Time.now - 1)
+    token_manager.instance_variable_get(:@current_token).instance_variable_set(:@token, client.tokens.new(access_token: "old"))
     
     expect(token_manager.get_token).to be_a DwollaV2::Token
     expect(token_manager.get_token.access_token).to eq new_access_token
-  end
-end
-
-describe DwollaV2::TokenWrapper do
-  let!(:client) { DwollaV2::Client.new(key: "key", secret: "secret") }
-  
-  it "#is_expired? returns false" do
-    wrapped_token = DwollaV2::TokenWrapper.new(client.tokens.new(expires_in: 3_600))
-
-    expect(wrapped_token.is_expired?).to be false
-  end
-
-  it "#is_expired? returns true" do
-    wrapped_token = DwollaV2::TokenWrapper.new(client.tokens.new(expires_in: -3_600))
-
-    expect(wrapped_token.is_expired?).to be true
-  end
-
-  it "#is_expired? returns true if within leeway period (60 seconds)" do
-    wrapped_token = DwollaV2::TokenWrapper.new(client.tokens.new(expires_in: 30))
-
-    expect(wrapped_token.is_expired?).to be true
   end
 end
