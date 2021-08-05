@@ -78,11 +78,6 @@ describe DwollaV2::Client do
     expect(client.environment).to be :sandbox
   end
 
-  it "#initialize freezes client" do
-    client = DwollaV2::Client.new :id => id, :secret => secret
-    expect(client.frozen?).to be true
-  end
-
   it "#environment=" do
     client = DwollaV2::Client.new(:id => id, :secret => secret) {|c| c.environment = :sandbox }
     expect(client.environment).to eq :sandbox
@@ -175,6 +170,39 @@ describe DwollaV2::Client do
   it "#api_url" do
     client = DwollaV2::Client.new :id => id, :secret => secret
     expect(client.api_url).to eq DwollaV2::Client::ENVIRONMENTS[client.environment][:api_url]
+  end
+
+  describe "token management" do
+    let!(:client) { DwollaV2::Client.new(key: "key", secret: "secret") }
+    let!(:new_access_token) { "new_access_token" }
+    let!(:expires_in) { 3_600 }
+
+    before(:each) do
+      stub_request(:post, client.token_url)
+          .with(:basic_auth => [client.id, client.secret],
+                :headers => {"Content-Type" => "application/x-www-form-urlencoded"},
+                :body => {"grant_type" => "client_credentials"})
+          .to_return(:status => 200,
+                    :headers => {"Content-Type" => "application/json"},
+                    :body => JSON.generate({ access_token: new_access_token, expires_in: expires_in }))
+    end
+
+    it "#current_token gets initial token" do
+      expect(client.current_token).to be_a DwollaV2::Token
+      expect(client.current_token.access_token).to eq new_access_token
+    end
+
+    it "#current_token re-uses fresh token" do
+      expect(client.current_token).to be client.current_token
+    end
+
+    it "#get_token refreshes expired token" do
+      client.current_token
+      client.instance_variable_get(:@current_token).instance_variable_set(:@expires_at, Time.now - 1)
+
+      expect(client.current_token).to be_a DwollaV2::Token
+      expect(client.current_token.access_token).to eq new_access_token
+    end
   end
 
   describe "delegated Token methods" do

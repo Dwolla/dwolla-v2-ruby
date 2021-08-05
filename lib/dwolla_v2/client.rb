@@ -31,8 +31,7 @@ module DwollaV2
       conn
       @auths = Portal.new self, Auth
       @tokens = Portal.new self, Token
-      @token_manager = TokenManager.new(self)
-      freeze
+      @token_mutex = Mutex.new
     end
 
     def environment= env
@@ -101,10 +100,14 @@ module DwollaV2
       Util.pretty_inspect self.class.name, key: id, environment: environment
     end
 
-    private
-
-      def current_token
-        @token_manager.get_token
+    def current_token
+      @token_mutex.synchronize do
+        if !@current_token || @current_token.is_expired?
+          @current_token = auths.client
+        else
+          @current_token
+        end
       end
+    end
   end
 end
