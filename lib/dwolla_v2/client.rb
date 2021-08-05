@@ -28,7 +28,6 @@ module DwollaV2
       @secret = opts[:secret]
       self.environment = opts[:environment] if opts.has_key?(:environment)
       yield self if block_given?
-      conn
       @auths = Portal.new self, Auth
       @tokens = Portal.new self, Token
       @token_mutex = Mutex.new
