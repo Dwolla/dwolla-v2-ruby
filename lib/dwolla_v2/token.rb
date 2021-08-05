@@ -22,6 +22,12 @@ module DwollaV2
       @app_id        = get_param params, :app_id
       @account_id    = get_param params, :account_id
 
+      # :expires_at passed as a string should be in ISO-8601 format
+      if @expires_at && @expires_at.is_a?(String)
+        @expires_at = Time.iso8601(@expires_at)
+      end
+
+      # If :expires_at not provided, calculate it based on current time
       if !@expires_at && @expires_in
         @expires_at = t + @expires_in
       end
@@ -38,14 +44,19 @@ module DwollaV2
     end
 
     def stringify_keys
+      as_json.reject {|k,v| v.nil? }
+    end
+
+    def as_json
       {
         "access_token"  => access_token,
         "refresh_token" => refresh_token,
         "expires_in"    => expires_in,
+        "expires_at"    => expires_at,
         "scope"         => scope,
         "app_id"        => app_id,
-        "account_id"    => account_id
-      }.reject {|k,v| v.nil? }
+        "account_id"    => account_id,
+      }
     end
 
     HTTP_METHODS.each do |method|

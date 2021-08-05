@@ -63,6 +63,41 @@ describe DwollaV2::Token do
     expect(token.expires_in).to eq method_params.expires_in
   end
 
+  it "#initialize calculates expires_at from expires_in (no param provided)" do
+    t = Time.new(2021, 8, 5, 12, 0, 0, "+00:00")
+    Timecop.freeze(t) do
+      token = DwollaV2::Token.new client, hash_params
+      expect(token.expires_at).to eq(t + hash_params[:expires_in])
+    end
+  end
+
+  context "expires_at value provided" do
+    let(:x) { hash_params.merge({:expires_at => "2021-08-05T12:00:00Z"}) }
+    let(:method_params) {
+      Class.new do
+        def [](key);       raise "should use method not hash key :#{key}"; end
+        def access_token;  "ACCESS_TOKEN"; end
+        def refresh_token; "REFRESH_TOKEN"; end
+        def expires_in;    123; end
+        def expires_at;    "2021-08-05T12:00:00Z"; end
+        def scope;         "a,b,c"; end
+        def app_id;        "9a711db1-72bc-43a4-8d09-3288e8dd0a8b"; end
+        def account_id;    "92e19aa4-93d4-49e7-b3e6-32f6d7a2a64d"; end
+        def unknown_param; "?"; end
+      end.new
+    }
+
+    it "#initialize sets expires_at (hash params)" do
+      token = DwollaV2::Token.new client, x
+      expect(token.expires_at).to eq Time.new(2021, 8, 5, 12, 0, 0, "+00:00")
+    end
+
+    it "#initialize sets expires_at (method params)" do
+      token = DwollaV2::Token.new client, method_params
+      expect(token.expires_at).to eq Time.new(2021, 8, 5, 12, 0, 0, "+00:00")
+    end
+  end
+
   it "#initialize sets scope (hash params)" do
     token = DwollaV2::Token.new client, hash_params
     expect(token.scope).to eq hash_params[:scope]
@@ -98,12 +133,32 @@ describe DwollaV2::Token do
     expect(token[:access_token]).to be token.access_token
   end
 
+  it "#as_json" do
+    t = Time.new(2021, 8, 5, 12, 0, 0, "+00:00")
+    token = Timecop.freeze(t) do
+      DwollaV2::Token.new client, hash_params
+    end
+    expect(token.as_json).to eq({
+      "access_token"  => hash_params[:access_token],
+      "refresh_token" => hash_params[:refresh_token],
+      "expires_in"    => hash_params[:expires_in],
+      "expires_at"    => t + hash_params[:expires_in],
+      "scope"         => hash_params[:scope],
+      "app_id"        => hash_params[:app_id],
+      "account_id"    => hash_params[:account_id]
+    })
+  end
+
   it "#stringify_keys" do
-    token = DwollaV2::Token.new client, hash_params
+    t = Time.new(2021, 8, 5, 12, 0, 0, "+00:00")
+    token = Timecop.freeze(t) do
+      DwollaV2::Token.new client, hash_params
+    end
     expect(token.stringify_keys).to eq({
       "access_token"  => hash_params[:access_token],
       "refresh_token" => hash_params[:refresh_token],
       "expires_in"    => hash_params[:expires_in],
+      "expires_at"    => t + hash_params[:expires_in],
       "scope"         => hash_params[:scope],
       "app_id"        => hash_params[:app_id],
       "account_id"    => hash_params[:account_id]
@@ -111,11 +166,15 @@ describe DwollaV2::Token do
   end
 
   it "#stringify_keys rejects nil values" do
-    token = DwollaV2::Token.new client, hash_params.merge(:account_id => nil)
+    t = Time.new(2021, 8, 5, 12, 0, 0, "+00:00")
+    token = Timecop.freeze(t) do
+      DwollaV2::Token.new client, hash_params.merge(:account_id => nil)
+    end
     expect(token.stringify_keys).to eq({
       "access_token"  => hash_params[:access_token],
       "refresh_token" => hash_params[:refresh_token],
       "expires_in"    => hash_params[:expires_in],
+      "expires_at"    => t + hash_params[:expires_in],
       "scope"         => hash_params[:scope],
       "app_id"        => hash_params[:app_id]
     })
