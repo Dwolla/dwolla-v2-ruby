@@ -3,6 +3,11 @@ require "spec_helper"
 describe DwollaV2::Client do
   let!(:id) { "id" }
   let!(:secret) { "secret" }
+  let(:token) {{
+    :access_token => "9JgZGdKChHhZHcTV7SGSm3bLS3vRpzruZxYA2DQdDSdhgezyKq",
+    :refresh_token => "QfcxbZP4CTxw7gC5aQZgMQnH6zwQpgJr9NtQmXaSv5tk5CYEEp",
+    :expires_at => "2021-08-05T21:00:27Z",
+  }}
 
   it "::ENVIRONMENTS" do
     expect(DwollaV2::Client::ENVIRONMENTS).to eq({
@@ -50,6 +55,20 @@ describe DwollaV2::Client do
   it "#initialize sets secret" do
     client = DwollaV2::Client.new :id => id, :secret => secret
     expect(client.secret).to eq secret
+  end
+
+  it "#initialize sets token if provided" do
+    client = DwollaV2::Client.new(
+      :id => id,
+      :secret => secret,
+      :token => token,
+    )
+    t = Time.new(2021, 8, 5, 12, 0, 0, "+00:00")
+    Timecop.freeze(t) do
+      expect(client.current_token.access_token).to eq token[:access_token]
+      expect(client.current_token.refresh_token).to eq token[:refresh_token]
+      expect(client.current_token.expires_at).to eq Time.iso8601(token[:expires_at])
+    end
   end
 
   it "#initialize yields block" do
