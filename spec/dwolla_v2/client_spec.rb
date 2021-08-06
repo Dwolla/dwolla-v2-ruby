@@ -271,6 +271,62 @@ describe DwollaV2::Client do
 
       expect(client.delete("foo").send :response_body).to eq res_body
     end
+
+    context "with expired token not caught by #is_expired? check" do
+      let(:access_token) { "9JgZGdKChHhZHcTV7SGSm3bLS3vRpzruZxYA2DQdDSdhgezyKq" }
+      let(:refresh_token) { "QfcxbZP4CTxw7gC5aQZgMQnH6zwQpgJr9NtQmXaSv5tk5CYEEp" }
+      let(:client) {
+        DwollaV2::Client.new(
+          key: "key",
+          secret: "secret",
+          token: {
+            access_token: access_token,
+            refresh_token: refresh_token,
+          },
+        )
+      }
+      let(:res_body) { '{"foo":"bar"}' }
+      let(:new_access_token) { "new-access-token" }
+      let(:new_refresh_token) { "new-refresh-token" }
+      let(:token_hash) {{
+        :access_token => new_access_token,
+        :token_type => "Bearer",
+        :refresh_token => new_refresh_token,
+        :expires_in => 3600,
+        :refresh_expires_in => 5184000,
+      }}
+
+      it "#get" do
+        # initial request fails with ExpiredAccessToken
+        stub_request(:get, "https://api.dwolla.com/foo")
+          .with(:headers => {
+            "Accept" => "application/vnd.dwolla.v1.hal+json",
+            "Authorization" => "Bearer #{access_token}"
+          })
+          .to_return(
+            status: 401,
+            body: JSON.generate({
+              "code"=>"ExpiredAccessToken",
+              "message"=>"Generate a new access token using your client credentials.",
+            }),
+            headers: {"Content-Type" => "application/json"},
+          )
+        # refresh token is refreshed
+        stub_token_request(client,
+          {:grant_type => "refresh_token", :refresh_token => refresh_token},
+          {:status => 200, :body => token_hash}
+        )
+        # the original request is retried, and now succeeds
+        stub_request(:get, "https://api.dwolla.com/foo")
+          .with(:headers => {
+             "Accept" => "application/vnd.dwolla.v1.hal+json",
+             "Authorization" => "Bearer #{new_access_token}"
+          })
+          .to_return(status: 200, body: res_body, headers: {})
+
+        expect(client.get("foo").send :response_body).to eq res_body
+      end
+    end
   end
 
   describe "openid methods" do

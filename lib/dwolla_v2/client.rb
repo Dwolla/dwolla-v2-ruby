@@ -18,7 +18,19 @@ module DwollaV2
     attr_reader :id, :secret, :auths, :tokens
     alias_method :key, :id
 
-    def_delegators :current_token, :get, :post, :put, :patch, :delete
+    [:get, :post, :put, :patch, :delete].each do |x|
+      define_method(x) do |*args ,**opts, &blk|
+        begin
+          current_token.send(x, *args ,**opts, &blk)
+        rescue DwollaV2::ExpiredAccessTokenError, DwollaV2::InvalidAccessTokenError => e
+          # if access token expired or invalid, refresh the tokens and retry
+          @token_mutex.synchronize do
+            @current_token = get_token
+          end
+          current_token.send(x, *args ,**opts, &blk)
+        end
+      end
+    end
 
     def initialize opts
       if opts[:token]
