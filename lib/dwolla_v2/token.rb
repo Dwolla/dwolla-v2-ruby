@@ -6,7 +6,8 @@ module DwollaV2
     HTTP_METHODS = [:get, :post, :put, :patch, :delete]
 
     attr_reader :client, :access_token, :refresh_token, :expires_at,
-      :expires_in, :scope, :app_id, :account_id
+      :expires_in, :refresh_expires_at, :refresh_expires_in, :scope, :app_id,
+      :account_id
 
     delegate [:in_parallel] => :@conn
     delegate [:reject, :empty?] => :stringify_keys
@@ -14,27 +15,39 @@ module DwollaV2
     def initialize client, params
       t = Time.now.utc
       @client = client
-      @access_token  = get_param params, :access_token
-      @refresh_token = get_param params, :refresh_token
-      @expires_in    = get_param params, :expires_in
-      @expires_at    = get_param params, :expires_at
-      @scope         = get_param params, :scope
-      @app_id        = get_param params, :app_id
-      @account_id    = get_param params, :account_id
+      @access_token       = get_param params, :access_token
+      @refresh_token      = get_param params, :refresh_token
+      @expires_in         = get_param params, :expires_in
+      @expires_at         = get_param params, :expires_at
+      @refresh_expires_in = get_param params, :refresh_expires_in
+      @refresh_expires_at = get_param params, :refresh_expires_at
+      @scope              = get_param params, :scope
+      @app_id             = get_param params, :app_id
+      @account_id         = get_param params, :account_id
 
-      # :expires_at passed as a string should be in ISO-8601 format
+      # Convert string expires_at values to Time
       if @expires_at && @expires_at.is_a?(String)
         @expires_at = Time.iso8601(@expires_at)
       end
+      if @refresh_expires_at && @refresh_expires_at.is_a?(String)
+        @refresh_expires_at = Time.iso8601(@refresh_expires_at)
+      end
 
-      # If :expires_at not provided, calculate it based on current time
+      # If expires_at not provided, calculate it based on current time
       if !@expires_at && @expires_in
         @expires_at = t + @expires_in
+      end
+      if !@refresh_expires_at && @refresh_expires_in
+        @refresh_expires_at = t + @refresh_expires_in
       end
     end
 
     def is_expired?
-      @expires_at - EXPIRES_IN_LEEWAY < Time.now.utc
+      @expires_at && (@expires_at - EXPIRES_IN_LEEWAY < Time.now.utc)
+    end
+
+    def is_refresh_expired?
+      @refresh_expires_at && (@refresh_expires_at - EXPIRES_IN_LEEWAY < Time.now.utc)
     end
 
     def [] key
@@ -47,13 +60,15 @@ module DwollaV2
 
     def as_json
       {
-        "access_token"  => access_token,
-        "refresh_token" => refresh_token,
-        "expires_in"    => expires_in,
-        "expires_at"    => expires_at,
-        "scope"         => scope,
-        "app_id"        => app_id,
-        "account_id"    => account_id,
+        "access_token"       => access_token,
+        "refresh_token"      => refresh_token,
+        "expires_in"         => expires_in,
+        "expires_at"         => expires_at,
+        "refresh_expires_in" => refresh_expires_in,
+        "refresh_expires_at" => refresh_expires_at,
+        "scope"              => scope,
+        "app_id"             => app_id,
+        "account_id"         => account_id,
       }
     end
 
