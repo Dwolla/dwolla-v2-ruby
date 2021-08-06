@@ -31,8 +31,6 @@ module DwollaV2
       if !@expires_at && @expires_in
         @expires_at = t + @expires_in
       end
-
-      conn
     end
 
     def is_expired?

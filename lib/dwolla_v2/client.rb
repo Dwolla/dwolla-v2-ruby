@@ -18,9 +18,13 @@ module DwollaV2
     attr_reader :id, :secret, :auths, :tokens
     alias_method :key, :id
 
-    def_delegators :current_token, :get, :post, :delete
+    def_delegators :current_token, :get, :post, :put, :patch, :delete
 
     def initialize opts
+      if opts[:token]
+        @current_token = Token.new(self, opts[:token])
+      end
+
       opts[:id] ||= opts[:key]
       raise ArgumentError.new ":key is required" unless opts[:id].is_a? String
       raise ArgumentError.new ":secret is required" unless opts[:secret].is_a? String
@@ -31,6 +35,14 @@ module DwollaV2
       @auths = Portal.new self, Auth
       @tokens = Portal.new self, Token
       @token_mutex = Mutex.new
+    end
+
+    def token_auth?
+      !!(@current_token && @current_token.refresh_token)
+    end
+
+    def client_auth?
+      !token_auth?
     end
 
     def environment= env
@@ -102,10 +114,20 @@ module DwollaV2
     def current_token
       @token_mutex.synchronize do
         if !@current_token || @current_token.is_expired?
-          @current_token = auths.client
+          @current_token = get_token
         else
           @current_token
         end
+      end
+    end
+
+    private
+
+    def get_token
+      if token_auth?
+        auths.refresh(@current_token)
+      else
+        auths.client
       end
     end
   end
