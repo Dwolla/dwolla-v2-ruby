@@ -73,6 +73,12 @@ describe DwollaV2::Token do
     end
   end
 
+  it "#initialize accepts string-keyed params hash" do
+    string_hash_params = hash_params.inject({}){|x,(k,v)| x[k.to_s] = v; x}
+    token = DwollaV2::Token.new(client, string_hash_params)
+    expect(token.access_token).to eq(hash_params[:access_token])
+  end
+
   context "expires_at value provided" do
     let(:x) { hash_params.merge({:expires_at => "2021-08-05T12:00:00Z"}) }
     let(:method_params) {

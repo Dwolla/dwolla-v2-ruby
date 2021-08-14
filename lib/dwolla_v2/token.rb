@@ -14,6 +14,10 @@ module DwollaV2
 
     def initialize client, params
       t = Time.now.utc
+      # symbolize keys for hash params
+      if params.respond_to?(:keys)
+        params = params.inject({}){|x,(k,v)| x[k.to_sym] = v; x}
+      end
       @client = client
       @access_token       = get_param params, :access_token
       @refresh_token      = get_param params, :refresh_token
