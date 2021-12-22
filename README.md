@@ -187,6 +187,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+- **3.1.1** - Fix deprecation warning on Faraday::Connection#authorization (Thanks @javierjulio!). [#60](https://github.com/Dwolla/dwolla-v2-ruby/pull/60)
 - **3.1.0** - Added `DwollaV2::MaxNumberOfResourcesError` (Thanks @paulyeo21!). [#54](https://github.com/Dwolla/dwolla-v2-ruby/pull/54)
 - **3.0.1** - Update dependencies (Thanks @sealabcore!). [#48](https://github.com/Dwolla/dwolla-v2-ruby/pull/48)
 - **3.0.0** - Add integrations auth functions
