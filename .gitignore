@@ -8,3 +8,9 @@
 /spec/reports/
 /tmp/
 /vendor/
+
+# Visual Studio Code
+.vscode/
+
+# IntelliJ Idea
+.idea/

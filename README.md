@@ -1,12 +1,31 @@
-# DwollaV2
+# Dwolla SDK for Ruby
 
 ![Build Status](https://travis-ci.org/Dwolla/dwolla-v2-ruby.svg)
 
-Dwolla V2 Ruby client.
+This repository contains the source code for Dwolla's Ruby-based SDK, which allows developers to interact with Dwolla's server-side API via a Ruby API. Any action that can be performed via an HTTP request can be made using this SDK when executed within a server-side environment.
 
-[API Documentation](https://docsv2.dwolla.com)
+### Table of Contents
 
-## Installation
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Initialization](#initialization)
+- [Making Requests](#making-requests)
+  - [Low-level Requests](#low-level-requests)
+    - [Setting Headers](#setting-headers)
+    - [Responses](#responses)
+      - [Success](#success)
+      - [Error](#error)
+- [Changelog](#changelog)
+- [Community](#community)
+- [Additional Resources](#additional-resources)
+
+---
+
+## Getting Started
+
+### Installation
+
+To begin using this SDK, you will first need to download it to your machine. We use [RubyGems](https://rubygems.org/gems/dwolla_v2) to distribute this package.
 
 Add this line to your application's Gemfile:
 
@@ -22,15 +41,14 @@ Or install it yourself as:
 
     $ gem install dwolla_v2
 
-## `DwollaV2::Client`
+### Initialization
 
-### Basic usage
+Before any API requests can be made, you must first determine which environment you will be using, as well as fetch the application key and secret. To fetch your application key and secret, please visit one of the following links:
 
-Create a client using your application's consumer key and secret found on the applications page
-([Sandbox][apsandbox], [Production][approd]).
+* Production: https://dashboard.dwolla.com/applications
+* Sandbox: https://dashboard-sandbox.dwolla.com/applications
 
-[apsandbox]: https://dashboard-sandbox.dwolla.com/applications
-[approd]: https://dashboard.dwolla.com/applications
+Finally, you can create an instance of `Client` with `key` and `secret` replaced with the application key and secret that you fetched from one of the aforementioned links, respectively.
 
 ```ruby
 # config/initializers/dwolla.rb
@@ -41,11 +59,7 @@ $dwolla = DwollaV2::Client.new(
 )
 ```
 
-### Integrations Authorization
-
-Check out our [Integrations Authorization Guide](https://developers.dwolla.com/integrations/authorization).
-
-### Configure Faraday (optional)
+#### Configure Faraday (optional)
 
 DwollaV2 uses [Faraday][faraday] to make HTTP requests. You can configure your own
 [Faraday middleware][faraday-middleware] and adapter when configuring your client. Remember to
@@ -68,25 +82,36 @@ $dwolla = DwollaV2::Client.new(
 end
 ```
 
-## Requests
+## Making Requests
 
-`DwollaV2::Client`s can make requests using the `#get`, `#post`, and `#delete` methods.
+Once you've created a `Client`, currently, you can make low-level HTTP requests.
 
+### Low-level Requests
+
+To make low-level HTTP requests, you can use the `get()`, `post()`, and `delete()` methods.
+
+#### `GET`
 ```ruby
 # GET api.dwolla.com/resource?foo=bar
 $dwolla.get "resource", foo: "bar"
+```
 
+#### `POST`
+```ruby
 # POST api.dwolla.com/resource {"foo":"bar"}
 $dwolla.post "resource", foo: "bar"
 
 # POST api.dwolla.com/resource multipart/form-data foo=...
 $dwolla.post "resource", foo: Faraday::UploadIO.new("/path/to/bar.png", "image/png")
+```
 
+#### `DELETE`
+```ruby
 # DELETE api.dwolla.com/resource
 $dwolla.delete "resource"
 ```
 
-#### Setting headers
+##### Setting headers
 
 To set additional headers on a request you can pass a `Hash` of headers as the 3rd argument.
 
@@ -97,9 +122,15 @@ $dwolla.post "customers", { firstName: "John", lastName: "Doe", email: "jd@doe.c
                           { 'Idempotency-Key': 'a52fcf63-0730-41c3-96e8-7147b5d1fb01' }
 ```
 
-## Responses
+#### Responses
 
-Requests return a `DwollaV2::Response`.
+The following snippets demonstrate successful and errored responses from the Dwolla API.
+
+An errored response is returned when Dwolla's servers respond with a status code that is greater than or equal to 400, whereas a successful response is when Dwolla's servers respond with a 200-level status code.
+
+##### Success
+
+Successful requests return a `DwollaV2::Response`.
 
 ```ruby
 res = $dwolla.get "/"
@@ -115,10 +146,10 @@ res._links.events.href
 # => "https://api-sandbox.dwolla.com/events"
 ```
 
-## Errors
+##### Error
 
 If the server returns an error, a `DwollaV2::Error` (or one of its subclasses) will be raised.
-`DwollaV2::Error`s are similar to `DwollaV2::Response`s.
+`DwollaV2::Error`s are similar to `DwollaV2::Response`s`s.
 
 ```ruby
 begin
@@ -140,9 +171,10 @@ rescue DwollaV2::Error => e
 end
 ```
 
-### `DwollaV2::Error` subclasses:
 
-_See https://docsv2.dwolla.com/#errors for more info._
+###### `DwollaV2::Error` subclasses:
+
+_See https://developers.dwolla.com/api-reference#errors for more info._
 
 - `DwollaV2::AccessDeniedError`
 - `DwollaV2::InvalidCredentialsError`
@@ -171,33 +203,19 @@ _See https://docsv2.dwolla.com/#errors for more info._
 - `DwollaV2::TooManyRequestsError`
 - `DwollaV2::ConflictError`
 
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/Dwolla/dwolla-v2-ruby.
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://github.com/Dwolla/dwolla-v2-ruby).
-
 ## Changelog
 
-- **3.1.1** - Fix deprecation warning on Faraday::Connection#authorization (Thanks @javierjulio!). [#60](https://github.com/Dwolla/dwolla-v2-ruby/pull/60)
-- **3.1.0** - Added `DwollaV2::MaxNumberOfResourcesError` (Thanks @paulyeo21!). [#54](https://github.com/Dwolla/dwolla-v2-ruby/pull/54)
-- **3.0.1** - Update dependencies (Thanks @sealabcore!). [#48](https://github.com/Dwolla/dwolla-v2-ruby/pull/48)
+- **3.1.1** - Fix deprecation warning on Faraday::Connection#authorization (Thanks [@javierjulio](https://github.com/javierjulio)!). [#60](https://github.com/Dwolla/dwolla-v2-ruby/pull/60)
+- **3.1.0** - Added `DwollaV2::MaxNumberOfResourcesError` (Thanks [@paulyeo21](https://github.com/paulyeo21)!). [#54](https://github.com/Dwolla/dwolla-v2-ruby/pull/54)
+- **3.0.1** - Update dependencies (Thanks [@sealabcore](https://github.com/sealabcore)!). [#48](https://github.com/Dwolla/dwolla-v2-ruby/pull/48)
 - **3.0.0** - Add integrations auth functions
 - **3.0.0.beta1** - Add token management functionality to `DwollaV2::Client`
 - **2.2.1** - Update dependencies
 - **2.2.0** - Change token url from `www.dwolla.com/oauth/v2/token` to `accounts.dwolla.com/token`
-- **2.1.0** - Ensure `Time.iso8601` is defined so timestamps get parsed. [#38](https://github.com/Dwolla/dwolla-v2-ruby/pull/38) (Thanks @javierjulio!)
-- **2.0.3** - Add `DuplicateResourceError` [#34](https://github.com/Dwolla/dwolla-v2-ruby/pull/34) (Thanks @javierjulio!)
-- **2.0.2** - Fix bug in [#30](https://github.com/Dwolla/dwolla-v2-ruby/pull/30) (Thanks again @sobrinho!)
-- **2.0.1** - Fix bugs in [#27](https://github.com/Dwolla/dwolla-v2-ruby/pull/27) + [#28](https://github.com/Dwolla/dwolla-v2-ruby/pull/28) (Thanks @sobrinho!)
+- **2.1.0** - Ensure `Time.iso8601` is defined so timestamps get parsed. [#38](https://github.com/Dwolla/dwolla-v2-ruby/pull/38) (Thanks [@javierjulio](https://github.com/javierjulio)!)
+- **2.0.3** - Add `DuplicateResourceError` [#34](https://github.com/Dwolla/dwolla-v2-ruby/pull/34) (Thanks [@javierjulio](https://github.com/javierjulio)!)
+- **2.0.2** - Fix bug in [#30](https://github.com/Dwolla/dwolla-v2-ruby/pull/30) (Thanks again [@sobrinho](https://github.com/sobrinho)!
+- **2.0.1** - Fix bugs in [#27](https://github.com/Dwolla/dwolla-v2-ruby/pull/27) + [#28](https://github.com/Dwolla/dwolla-v2-ruby/pull/28) (Thanks [@sobrinho](https://github.com/sobrinho)!)
 - **2.0.0**
 - Rename `DwollaV2::Response` `#status` => `#response_status`, `#headers` => `#response_headers` to prevent
   [conflicts with response body properties][response-conflicts].
@@ -216,6 +234,27 @@ The gem is available as open source under the terms of the [MIT License](https:/
 - **0.3.0** - ISO8601 values in response body are converted to `Time` objects
 - **0.2.0** - Works with `attr_encrypted`
 - **0.1.1** - Handle 500 error with HTML response body when requesting a token
+
+## Community
+* If you have any feedback, please reach out to us on [our forums](https://discuss.dwolla.com/) or by [creating a GitHub issue](https://github.com/Dwolla/dwolla-v2-ruby/issues/new).
+* If you would like to contribute to this library, bug reports and pull requests are welcome on GitHub at https://github.com/Dwolla/dwolla-v2-ruby.
+  * After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment. 
+  * To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+  
+## Additional Resources
+
+To learn more about Dwolla and how to integrate our product with your application, please consider visiting the following resources and becoming a member of our community!
+
+* [Dwolla](https://www.dwolla.com/)
+* [Dwolla Developers](https://developers.dwolla.com/)
+* [SDKs and Tools](https://developers.dwolla.com/sdks-tools)
+  * [Dwolla SDK for C#](https://github.com/Dwolla/dwolla-v2-csharp)
+  * [Dwolla SDK for Kotlin](https://github.com/Dwolla/dwolla-v2-kotlin)
+  * [Dwolla SDK for Node](https://github.com/Dwolla/dwolla-v2-node)
+  * [Dwolla SDK for Python](https://github.com/Dwolla/dwolla-v2-python)
+* [Developer Support Forum](https://discuss.dwolla.com/)
+
+---
 
 [response-conflicts]: https://discuss.dwolla.com/t/document-change-or-more-clarifiation/3964
 [public-suffix]: https://github.com/Dwolla/dwolla-v2-ruby/pull/18#discussion_r108028135
