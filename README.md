@@ -2,9 +2,9 @@
 
 ![Build Status](https://travis-ci.org/Dwolla/dwolla-v2-ruby.svg)
 
-This repository contains the source code for Dwolla's Ruby-based SDK, which allows developers to interact with Dwolla's server-side API via a Ruby API. Any action that can be performed via an HTTP request can be made using this SDK when executed within a server-side environment.
+This repository contains the source code for Dwolla's Ruby-based SDK, which allows developers to interact with Dwolla's server-side API via a Ruby API, with automatic OAuth token management included. Any action that can be performed via an HTTP request can be made using this SDK when executed within a server-side environment.
 
-### Table of Contents
+## Table of Contents
 
 - [Getting Started](#getting-started)
   - [Installation](#installation)
@@ -19,7 +19,6 @@ This repository contains the source code for Dwolla's Ruby-based SDK, which allo
 - [Community](#community)
 - [Additional Resources](#additional-resources)
 
----
 
 ## Getting Started
 
@@ -88,7 +87,7 @@ Once you've created a `Client`, currently, you can make low-level HTTP requests.
 
 ### Low-level Requests
 
-To make low-level HTTP requests, you can use the `get()`, `post()`, and `delete()` methods.
+To make low-level HTTP requests, you can use the [`get()`](#get), [`post()`](#post), and [`delete()`](#delete) methods.
 
 #### `GET`
 ```ruby
@@ -218,7 +217,7 @@ _See https://developers.dwolla.com/api-reference#errors for more info._
 - **2.0.1** - Fix bugs in [#27](https://github.com/Dwolla/dwolla-v2-ruby/pull/27) + [#28](https://github.com/Dwolla/dwolla-v2-ruby/pull/28) (Thanks [@sobrinho](https://github.com/sobrinho)!)
 - **2.0.0**
 - Rename `DwollaV2::Response` `#status` => `#response_status`, `#headers` => `#response_headers` to prevent
-  [conflicts with response body properties][response-conflicts].
+  [conflicts with response body properties](https://discuss.dwolla.com/t/document-change-or-more-clarifiation/3964).
 - Remove support for Ruby versions < 2 ([Bump public_suffix dependency version][public-suffix]).
 - **1.2.3** - Implement `#empty?` on `DwollaV2::Token` to allow it to be passed to ActiveRecord constructor.
 - **1.2.2** - Strip domain from URLs provided to `token.*` methods.
@@ -251,10 +250,8 @@ To learn more about Dwolla and how to integrate our product with your applicatio
   * [Dwolla SDK for C#](https://github.com/Dwolla/dwolla-v2-csharp)
   * [Dwolla SDK for Kotlin](https://github.com/Dwolla/dwolla-v2-kotlin)
   * [Dwolla SDK for Node](https://github.com/Dwolla/dwolla-v2-node)
+  * [Dwolla SDK for PHP](https://github.com/Dwolla/dwolla-v2-php)
   * [Dwolla SDK for Python](https://github.com/Dwolla/dwolla-v2-python)
 * [Developer Support Forum](https://discuss.dwolla.com/)
 
----
 
-[response-conflicts]: https://discuss.dwolla.com/t/document-change-or-more-clarifiation/3964
-[public-suffix]: https://github.com/Dwolla/dwolla-v2-ruby/pull/18#discussion_r108028135
