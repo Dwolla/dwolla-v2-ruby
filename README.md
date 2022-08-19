@@ -218,7 +218,7 @@ _See https://developers.dwolla.com/api-reference#errors for more info._
 - **2.0.0**
 - Rename `DwollaV2::Response` `#status` => `#response_status`, `#headers` => `#response_headers` to prevent
   [conflicts with response body properties](https://discuss.dwolla.com/t/document-change-or-more-clarifiation/3964).
-- Remove support for Ruby versions < 2 ([Bump public_suffix dependency version][public-suffix]).
+- Remove support for Ruby versions < 2 ([Bump public_suffix dependency version](https://github.com/Dwolla/dwolla-v2-ruby/pull/18#discussion_r108028135)).
 - **1.2.3** - Implement `#empty?` on `DwollaV2::Token` to allow it to be passed to ActiveRecord constructor.
 - **1.2.2** - Strip domain from URLs provided to `token.*` methods.
 - **1.2.1** - Update sandbox URLs from uat => sandbox.
