@@ -38,7 +38,7 @@ require "dwolla_v2/errors/server_error"
 require "dwolla_v2/errors/temporarily_unavailable_error"
 require "dwolla_v2/errors/unsupported_grant_type_error"
 
-# Dwolla errors https://docsv2.dwolla.com/#errors
+# Dwolla errors https://developers.dwolla.com/api-reference#errors
 require "dwolla_v2/errors/bad_request_error"
 require "dwolla_v2/errors/validation_error"
 require "dwolla_v2/errors/invalid_credentials_error"
