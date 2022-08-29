@@ -58,9 +58,9 @@ $dwolla = DwollaV2::Client.new(
 )
 ```
 
-#### Configure Faraday (optional)
+#### Configure Faraday (Optional)
 
-DwollaV2 uses [Faraday][faraday] to make HTTP requests. You can configure your own
+Dwolla for Ruby uses [Faraday][faraday] to make HTTP requests. You can configure your own
 [Faraday middleware][faraday-middleware] and adapter when configuring your client. Remember to
 always include an adapter last, even if you want to use the default adapter.
 
@@ -110,9 +110,9 @@ $dwolla.post "resource", foo: Faraday::UploadIO.new("/path/to/bar.png", "image/p
 $dwolla.delete "resource"
 ```
 
-##### Setting headers
+##### Setting Headers
 
-To set additional headers on a request you can pass a `Hash` of headers as the 3rd argument.
+To set additional headers on a request, you can pass a `Hash` of headers as the 3rd argument.
 
 For example:
 
@@ -148,7 +148,7 @@ res._links.events.href
 ##### Error
 
 If the server returns an error, a `DwollaV2::Error` (or one of its subclasses) will be raised.
-`DwollaV2::Error`s are similar to `DwollaV2::Response`s`s.
+`DwollaV2::Error`s are similar to `DwollaV2::Response`s.
 
 ```ruby
 begin
