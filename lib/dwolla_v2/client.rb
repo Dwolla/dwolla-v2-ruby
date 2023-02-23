@@ -20,7 +20,7 @@ module DwollaV2
 
     def_delegators :current_token, :get, :post, :delete
 
-    def initialize opts
+    def initialize **opts
       opts[:id] ||= opts[:key]
       raise ArgumentError.new ":key is required" unless opts[:id].is_a? String
       raise ArgumentError.new ":secret is required" unless opts[:secret].is_a? String
