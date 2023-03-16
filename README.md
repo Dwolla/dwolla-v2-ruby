@@ -204,6 +204,7 @@ _See https://developers.dwolla.com/api-reference#errors for more info._
 
 ## Changelog
 
+- [**3.2.0**](https://github.com/Dwolla/dwolla-v2-ruby/releases/tag/3.2.0) - Minor version update to support Ruby 3.2+. The change involves adding '**' to the codebase to make `opts` in `./lib/dwollav2/client.rb` compliant with Ruby 3.2+. (Thanks [@peterb-onramp](https://github.com/peterb-onramp)!). [#68](https://github.com/Dwolla/dwolla-v2-ruby/pull/68)
 - **3.1.1** - Fix deprecation warning on Faraday::Connection#authorization (Thanks [@javierjulio](https://github.com/javierjulio)!). [#60](https://github.com/Dwolla/dwolla-v2-ruby/pull/60)
 - **3.1.0** - Added `DwollaV2::MaxNumberOfResourcesError` (Thanks [@paulyeo21](https://github.com/paulyeo21)!). [#54](https://github.com/Dwolla/dwolla-v2-ruby/pull/54)
 - **3.0.1** - Update dependencies (Thanks [@sealabcore](https://github.com/sealabcore)!). [#48](https://github.com/Dwolla/dwolla-v2-ruby/pull/48)
