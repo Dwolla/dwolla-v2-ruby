@@ -58,7 +58,7 @@ module DwollaV2
 
     def conn
       @conn ||= Faraday.new do |f|
-        f.request :basic_auth, id, secret
+        f.request :authorization, :basic, id, secret
         f.request :url_encoded
         f.use SetUserAgent
         f.use HandleErrors
