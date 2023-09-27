@@ -8,7 +8,7 @@ require "time"
 require "hashie"
 
 require "faraday"
-require "faraday_middleware"
+require "faraday/multipart"
 
 require "dwolla_v2/version"
 require "dwolla_v2/client"
