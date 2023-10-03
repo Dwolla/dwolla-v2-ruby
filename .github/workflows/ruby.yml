@@ -23,13 +23,12 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         # https://github.com/ruby/setup-ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Install dependencies
-        run: bundle install
+          bundler-cache: true
       - name: Run tests
         run: bundle exec rspec
