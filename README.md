@@ -27,7 +27,7 @@ To begin using this SDK, you will first need to download it to your machine. We 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dwolla_v2', '~> 3.1'
+gem 'dwolla_v2', '~> 4.0'
 ```
 
 And then execute:
